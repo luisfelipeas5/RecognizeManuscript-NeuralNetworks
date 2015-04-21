@@ -1,8 +1,8 @@
-# EP1-IA - MLP
-Repositório destinado ao EP 1 de Inteligência Artifial.
+# EP1-IA
+Repositório destinado ao EP 1 de Inteligência Artificial.
 
 Grupo:
 -André Mello
--Antônio Mateus
+-Antonio Mateus
 -Luís Felipe de Almeida da Silva
 -Marcelo Kazuya 
