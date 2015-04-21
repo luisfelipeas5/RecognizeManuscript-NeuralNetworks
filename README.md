@@ -5,4 +5,4 @@ Grupo:
 -André Mello
 -Antonio Mateus
 -Luís Felipe de Almeida da Silva
--Marcelo Kazuya 
+-Marcelo Kazuya Kajiwara
