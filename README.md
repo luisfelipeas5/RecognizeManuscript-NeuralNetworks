@@ -1,4 +1,4 @@
-# EP1-IA
+# EP1-IA - MLP
 Repositório destinado ao EP 1 de Inteligência Artifial.
 
 Grupo:
