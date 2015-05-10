@@ -6,7 +6,9 @@ import java.lang.Math;
 public class Principal {
 	public static void main (String args[]) {
 		try {
-			MLP rede = new MLP (10, 1.0, "optdigits.tra");
+			Leitura_arquivo l_arquivo = new Leitura_arquivo(); 
+			Situacao_problema s = l_arquivo.obtem_dados(arquivo_dados);
+			MLP rede = new MLP (10, 1.0, s.get_entrada(), s.get_saida());
 			long inicio = System.nanoTime(); 
 			rede.inicializa_rede(); 
 			rede.propagation(); 
