@@ -1,6 +1,6 @@
 import Jama.Matrix;
 
-public class TestaTreinamento {
+public class Testa_Treinamento {
 	public static void main(String[] args) {
 		Treinamento treinamento=new Treinamento();
 		double[][] array_entrada= 	{{1, 1, 1},
