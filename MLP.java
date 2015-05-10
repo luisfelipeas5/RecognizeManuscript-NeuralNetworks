@@ -41,16 +41,15 @@ public class MLP {
 	teremos uma lista de um unico elemento*/  
 	
 	/*Construtor da classe MLP: recebe como parametros o numero de neuronios existentes na camada escondida,
-	a taxa de aprendizado alfa e o nome do arquivo de entrada (que pode conter os dados de treinamento, validacao
-	ou teste*/
-	public MLP (int n_neuronios, double alfa, String arquivo_dados) {
+	a taxa de aprendizado alfa e as matrizes de entrada e de saida esperada*/
+	public MLP (int n_neuronios, double alfa, Matrix entrada, Matrix saida) {
 		this.neuronios_por_camada = n_neuronios; 
-		Leitura_arquivo l_arquivo = new Leitura_arquivo(); 
-		Situacao_problema s = l_arquivo.obtem_dados(arquivo_dados);
-		this.entrada = s.get_entrada(); 
-		this.saida_desejada = s.get_saida();
-		this.numero_entradas = s.numero_entradas(); 
-		this.numero_saidas = s.numero_saidas(); 
+		this.entrada = entrada; 
+		this.saida_desejada = saida;
+		double[][] s = saida.getArrayCopy(); 
+		double[][] e = entrada.getArrayCopy(); 
+		this.numero_entradas = e[0].length; 
+		this.numero_saidas = s[0].length; 
 		matrizes_pesos = new Matrix[2];
 		this.taxa_aprendizado = alfa; 
 	}
