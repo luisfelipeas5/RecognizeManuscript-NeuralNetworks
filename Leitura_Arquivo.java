@@ -12,7 +12,7 @@ import java.lang.Double;
 Serve apenas para ler o arquivo de texto. Para isso, contem o metodo obtem_dados que le o arquivo de entrada por meio de um 
 objeto do tipo Scanner. Este metodo retorna um objeto da classe Situacao_problema, que eh usada para compactar as matrizes 
 de entrada e de saida esperada. */
-public class Leitura_arquivo {
+public class Leitura_Arquivo {
 	public static Situacao_problema obtem_dados (String arquivo) {
 		double[][] matriz_dados;
 		double[][] saida;
