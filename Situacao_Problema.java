@@ -2,13 +2,13 @@ import Jama.Matrix;
 
 /*Classe auxiliar: 
 Serve apenas para compactar as matrizes de entrada e saida esperada, obtidas a partir da leitura do arquivo de texto*/
-public class Situacao_problema {
+public class Situacao_Problema {
 	Matrix entrada; 
 	Matrix saida; 
 	int[] dim_entrada; 
 	int[] dim_saida; 
 	
-	public Situacao_problema (double[][] dados_entrada, double[][] dados_saida) {
+	public Situacao_Problema (double[][] dados_entrada, double[][] dados_saida) {
 		entrada = new Matrix (dados_entrada); 
 		saida = new Matrix (dados_saida);
 		dim_entrada = new int[2]; 

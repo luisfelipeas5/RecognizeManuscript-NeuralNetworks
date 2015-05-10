@@ -36,8 +36,12 @@ public class Treinamento {
 			*/
 			saida=this.calcula_saida(entrada, pesos_a, pesos_b, numero_neuronios_escondidos);
 			
-			double erroTotalAntigo=erro_total;
+			double erro_total_antigo=erro_total;
 			erro_total=this.calcula_erro_total(saida_desejada, saida);
+			while (erro_total>erro_total_antigo) {
+				//TODO: calcular o erro_total ajustando o passo
+				erro_total=erro_total/2;
+			}
 		}
 		
 		int casas_decimais=3;
@@ -51,7 +55,9 @@ public class Treinamento {
 		saida_desejada.print(saida_desejada.getColumnDimension(), casas_decimais);
 		
 	}
-
+	
+	
+	
 	private double calcula_erro_total(Matrix saida_desejada, Matrix saida) {
 		/*
 		*calcular o erro de cada instância processada pela rede e depois
@@ -93,7 +99,7 @@ public class Treinamento {
 
 
 
-	private void atualiza_pesos(Matrix pesos, double alpha) {
+	public void atualiza_pesos(Matrix pesos, double alpha) {
 		//wNew=wOld-alpha*gradiente
 		for(int i=0; i<pesos.getRowDimension(); i++) {
 			for(int j=0; j<pesos.getColumnDimension(); j++) {
@@ -109,7 +115,7 @@ public class Treinamento {
 		return 1;
 	}
 
-	private double calcula_passo() {	
+	public double calcula_passo() {	
 		//TODO Algortitmo da Bissecao
 		return 0.1;
 	}
