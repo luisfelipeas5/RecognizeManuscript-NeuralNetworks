@@ -7,7 +7,7 @@ public class Testa_MLP {
 	public static void main (String args[]) {
 		try {
 			String arquivo_dados=args[0];
-			Situacao_problema s = Leitura_Arquivo.obtem_dados(arquivo_dados);
+			Situacao_Problema s = Leitura_Arquivo.obtem_dados(arquivo_dados);
 			MLP rede = new MLP (10, 1.0, s.get_entrada(), s.get_saida());
 			long inicio = System.nanoTime(); 
 			rede.inicializa_rede(); 
