@@ -9,6 +9,7 @@ class LVQ{
 	int dimensao;	//da entrada
 	double taxa_de_aprendizado;
 	double[][]pesos;
+	int teste; // Testando integracao do Eclipse com o Git
 	
 	public LVQ(int numero_neuronios_entrada, int dimensao, double taxa_de_aprendizado){	//tem outros atributos, eh so comeco
 		this.numero_neuronios_entrada = numero_neuronios_entrada;
