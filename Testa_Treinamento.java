@@ -13,7 +13,8 @@ public class Testa_Treinamento {
 		
 		int numero_neuronios_escondidos=2;
 		int epocas=2;
-		treinamento.treina_mlp(entrada, saida_desejada, numero_neuronios_escondidos, epocas);
+		MLP mlp=new Rede(numero_neuronios_escondidos, true);
+		treinamento.treina(entrada, saida_desejada, numero_neuronios_escondidos, epocas, mlp);
 	}
 }
 

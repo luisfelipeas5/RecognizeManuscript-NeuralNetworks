@@ -2,26 +2,28 @@ import java.util.Random;
 import Jama.Matrix;
 
 public class Treinamento {
-	public void treina_mlp(Matrix entrada, Matrix saida_desejada,
-			int numero_neuronios_escondidos, int epocas) {
+	public void treina_mlp(Matrix entrada, Matrix saida_desejada, int epocas, Rede rede) {
 		//Para a primeira epoca, os pesos devem ser gerados randomicamente
 		
-		int linhas_pesos_a = numero_neuronios_escondidos;
+		int linhas_pesos_a = rede.numero_neuronios_escondidos;
 		int colunas_pesos_a = entrada.getColumnDimension();
 		double[][] array_pesos_a=new double[ linhas_pesos_a ][ colunas_pesos_a ];
 		this.gera_pesos_aleatorios(array_pesos_a);
 		Matrix pesos_a=new Matrix( array_pesos_a);
 		
 		int linhas_pesos_b = 1; //numero de neuronios de saida: nessa MLP em especifico, um unico neuronio de saida
-		int colunas_pesos_b = numero_neuronios_escondidos+1; //Mais o bias
+		int colunas_pesos_b = rede.numero_neuronios_escondidos+1; //Mais o bias
 		double[][] array_pesos_b=new double[ linhas_pesos_b ][ colunas_pesos_b ];
 		this.gera_pesos_aleatorios(array_pesos_b);
 		Matrix pesos_b=new Matrix( array_pesos_b);
 		
-		//MLP mlp =new MLP(numeroNeuroniosEscondidos, 1, );
-		Matrix saida=this.calcula_saida(entrada, pesos_a, pesos_b, numero_neuronios_escondidos);
+		Matrix saidas=new Matrix(1, rede.numero_neuronios_saida);
+		for (int i = 0; i < entrada.getRowDimension(); i++) {
+			Matrix saida=rede.calcula_saida(entrada, saida_desejada, pesos_a, pesos_b);
+			saidas.setMatrix(new int [] {i}, new int[] {1}, saida );
+		}
 		
-		double erro_total=this.calcula_erro_total(saida_desejada, saida);	
+		double erro_total=this.calcula_erro_total(saida_desejada, saidas);	
 		
 		double erro_desejado=0.05;//Deifinir qual seria uma taxa de erro razoavel
 		for( int epoca_atual=1; epoca_atual<epocas && erro_total>erro_desejado; epoca_atual++ ) {
@@ -34,10 +36,13 @@ public class Treinamento {
 			//this.atualizaPesos(pesosA,alpha);
 			//this.atualizaPesos(pesosB,alpha);
 			*/
-			saida=this.calcula_saida(entrada, pesos_a, pesos_b, numero_neuronios_escondidos);
+			for (int i = 0; i < entrada.getRowDimension(); i++) {
+				Matrix saida=rede.calcula_saida(entrada, saida_desejada, pesos_a, pesos_b);
+				saidas.setMatrix(new int [] {i}, new int[] {1}, saida );
+			}
 			
 			double erro_total_antigo=erro_total;
-			erro_total=this.calcula_erro_total(saida_desejada, saida);
+			erro_total=this.calcula_erro_total(saida_desejada, saidas);
 			while (erro_total>erro_total_antigo) {
 				//TODO: calcular o erro_total ajustando o passo
 				erro_total=erro_total/2;
@@ -50,7 +55,7 @@ public class Treinamento {
 		System.out.println("Pesos B");
 		pesos_b.print(colunas_pesos_b, casas_decimais);
 		System.out.println("Saida");
-		saida.print(saida.getColumnDimension(), casas_decimais);
+		saidas.print(saidas.getColumnDimension(), casas_decimais);
 		System.out.println("Saida Desejada");
 		saida_desejada.print(saida_desejada.getColumnDimension(), casas_decimais);
 		
