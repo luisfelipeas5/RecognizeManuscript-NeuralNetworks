@@ -4,7 +4,7 @@ import java.util.Random;
 
 class LVQ extends Rede{
 	
-	public double distancia_euclidiana(double[] vetor1, double[] vetor2){
+	public double distancia_euclidiana(Matrix vetor1, Matrix vetor2){
 		//nao precisa tirar a raiz quadrada
 		double distancia =0;
 		for(int j=0;j<dimensao;j++){
@@ -32,25 +32,9 @@ class LVQ extends Rede{
 	
 	}
 	
-	//public static void main(String[]args){
-	
-		//LVQ so_distancia = new LVQ(2, 2, 1);
+	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b){
 		
-		/*double[] vetor_um = new double[so_distancia.dimensao];
-		vetor_um[0] = 2;
-		vetor_um[1] = 0;
-		
-		double[] vetor_dois = new double[so_distancia.dimensao];
-		vetor_dois[0] = 10;
-		vetor_dois[1] = 1;
-		
-		double distancia = so_distancia.distancia_euclidiana(vetor_um, vetor_dois);
-		System.out.println(distancia);*/
-		so_distancia.inicializa_pesos();
-	//} Nao precisa de main
-	
-	
-	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b);
+	}
 	 
 
 
