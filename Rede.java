@@ -21,8 +21,7 @@ abstract class Rede {
 		double[][] s = saida.getArrayCopy(); 
 		double[][] e = entrada.getArrayCopy(); 
 		this.numero_entradas = e[0].length; 
-		this.numero_saidas = s[0].length; 
-		matrizes_pesos = new Matrix[2];
+		this.numero_saidas = s[0].length;
 	}
 	
 	/*

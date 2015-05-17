@@ -2,7 +2,11 @@
 
 import java.util.Random;
 
+import Jama.Matrix;
+
 class LVQ extends Rede{
+	
+	Matrix resultado;
 	
 	public double distancia_euclidiana(Matrix vetor1, Matrix vetor2){
 		//nao precisa tirar a raiz quadrada
@@ -29,11 +33,12 @@ class LVQ extends Rede{
 		double taxa_atualizada;
 		taxa_atualizada = taxa_de_aprendizado_atual*0.9;
 		return taxa_atualizada;
-	
 	}
 	
+	
 	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b){
-		
+		resultado = entrada.times(pesos_a);
+		return resultado;
 	}
 	 
 
