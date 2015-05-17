@@ -2,26 +2,27 @@ import Jama.Matrix;
 
 
 abstract class Rede {
-	int numero_neuronios_escondidos; // No caso da LVQ = 0
-	int numero_neuronios_saida; // Varia de acordo com a codificacao da saida desejada
-	double taxa_aprendizado;
+	int numero_neuronios_escondidos; // No caso da LVQ = 0 
 	boolean treina_padrao_padrao; 
-	Matrix entrada; 
-	Matrix saida_desejada; 
-	int numero_entradas;
-	int numero_saidas;
-	Matrix[] matrizes_pesos;
-	Matrix[] saidas_rede;
 	
-	Rede (double taxa_aprendizado, int numero_neuronios_escondidos, boolean treina_padrao_padrao, Matrix saida, Matrix entrada){
-		this.taxa_aprendizado=taxa_aprendizado;
+	//Matrix entrada; 
+	//Matrix saida_desejada; 
+	//Matrix[] matrizes_pesos;
+	//Matrix[] saidas_rede;
+	//int numero_neuronios_saida; = saida.getColumnDimension() // Varia de acordo com a codificacao da saida desejada
+	//int numero_entradas; = entrada.getColumnDimension()
+	//int numero_saidas; = saida.getColumnDimension()
+	double taxa_aprendizado;
+	
+	Rede (int numero_neuronios_escondidos, boolean treina_padrao_padrao){
 		this.numero_neuronios_escondidos=numero_neuronios_escondidos;
 		this.treina_padrao_padrao=treina_padrao_padrao;
-		this.saida_desejada = saida;
+		/*
 		double[][] s = saida.getArrayCopy(); 
 		double[][] e = entrada.getArrayCopy(); 
 		this.numero_entradas = e[0].length; 
 		this.numero_saidas = s[0].length;
+		*/
 	}
 	
 	/*
@@ -32,5 +33,5 @@ abstract class Rede {
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	abstract void atualiza_pesos(Double erro, Matrix pesos_a, Matrix pesos_b );
+	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, double taxa_aprendizado );
 }

@@ -13,7 +13,10 @@ public class Testa_Treinamento {
 		
 		int numero_neuronios_escondidos=2;
 		int epocas=2;
-		MLP mlp=new Rede(numero_neuronios_escondidos, true);
+		
+		//treinando padrao a padrao:
+		boolean treina_padrao_padrao=true;
+		Rede mlp=new MLP( numero_neuronios_escondidos, treina_padrao_padrao);
 		treinamento.treina(entrada, saida_desejada, numero_neuronios_escondidos, epocas, mlp);
 	}
 }
