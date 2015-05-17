@@ -18,6 +18,11 @@ abstract class MLP extends Rede{
 	Matrix[] saidas_rede;  
 	Matrix entrada_instancia_atual; 
 	
+	public MLP(double taxa_aprendizado, int numero_neuronios_escondidos, boolean treina_padrao_padrao, 
+			Matrix saida, Matrix entrada) {
+		super(taxa_aprendizado, numero_neuronios_escondidos, treina_padrao_padrao, saida, entrada);
+	}
+	
 	//Funcao de ativacao (logistica)
 	public double sigmoide(double x) {
 		return 1.0/(1.0+Math.exp((-1.0)*x)); 
