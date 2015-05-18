@@ -1,11 +1,12 @@
 //Pacote Jama: 
 import Jama.Matrix; 
+
 //Instrumentos matematicos: 
 import java.lang.Math; 
 //Excecoes: 
 import java.lang.ArrayIndexOutOfBoundsException; 
 
-abstract class MLP extends Rede{
+class MLP extends Rede{
 	/*Durante o processo "propagation", primeiro multiplicamos a matriz de entrada pela primeira matriz
 	de pesos. Ao resultado, aplicamos uma funcao de ativacao (no caso deste ep, eh a funcao sigmoide).
 	A matriz existente antes da aplicacao da funcao foi colocada na posicao 0 do vetor semi_results
@@ -18,9 +19,8 @@ abstract class MLP extends Rede{
 	Matrix[] saidas_rede;  
 	Matrix entrada_instancia_atual; 
 	
-	public MLP(double taxa_aprendizado, int numero_neuronios_escondidos, boolean treina_padrao_padrao, 
-			Matrix saida, Matrix entrada) {
-		super(taxa_aprendizado, numero_neuronios_escondidos, treina_padrao_padrao, saida, entrada);
+	public MLP(int numero_neuronios_escondidos, boolean treina_padrao_padrao) {
+		super(numero_neuronios_escondidos, treina_padrao_padrao);
 	}
 	
 	//Funcao de ativacao (logistica)
@@ -115,7 +115,7 @@ abstract class MLP extends Rede{
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b) {
+	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, double taxa_aprendizado) {
 		try {
 			if (super.treina_padrao_padrao) {
 				double[][] mat = pesos_b.getArrayCopy();
