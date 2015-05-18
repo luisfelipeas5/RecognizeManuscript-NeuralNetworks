@@ -46,11 +46,10 @@ public class Treinamento {
 		}
 		
 		if(treina_batelada) {
+			double erro_medio=erro_epoca/entradas.getRowDimension();
 			//TODO
-			/*
-			double erro_medio=erro/entrada.getRowDimension();
-			rede.atualiza_pesos(erro, this.pesos_a, this.pesos_b, taxa_aprendizado);
-			*/
+			double taxa_aprendizado=0.1;
+			rede.atualiza_pesos(erro_medio, this.pesos_a, this.pesos_b, taxa_aprendizado);
 		}
 		return erro_epoca;
 	}
@@ -91,70 +90,6 @@ public class Treinamento {
 		}
 	}
 	
-	
-	
-	private double calcula_erro_total(Matrix saida_desejada, Matrix saida) {
-		/*
-		*calcular o erro de cada instância processada pela rede e depois
-		*calcular o erro quadrado para determinar o erro total no final da epoca (a primeira epoca no caso)
-		*/
-		//erroQuadrado = ( saidaDesejada - saida) ^ 2		
-		Matrix erro_quadrado=saida_desejada.minus(saida);//Erros estao sem a operacao de potencia
-		//Elevar os erros ao quadrado
-		double erro_total=0;
-		for(int i=0; i<erro_quadrado.getRowDimension(); i++) {
-			for(int j=0; j<erro_quadrado.getColumnDimension(); j++) {
-				double elemento_antigo=erro_quadrado.get(i, j);
-				erro_quadrado.set(i,	j, elemento_antigo*elemento_antigo);
-				erro_total=erro_total+(elemento_antigo*elemento_antigo);
-			}
-		}
-		int casas_decimais=3;
-		System.out.println("Erro Quadrado");
-		erro_quadrado.print(erro_quadrado.getColumnDimension(), casas_decimais);
-		return erro_total;
-	}
-
-
-
-	private Matrix calcula_saida(Matrix entrada, Matrix pesos_a, Matrix pesos_b,int numero_neuronios_escondidos) {
-		//Obter a saida para cada uma das instancias na matriz de entrada
-		double[][] array_saida = new double[entrada.getRowDimension()][1];
-		/*
-		for(int i=0; i<saida.length; i++){
-			arraySaida[i][0]=MLP(entrada[i], pesosA, pesosB, numeroNeuroniosEscondidos);
-		}
-		*/
-		
-		//Por enquanto que nao temos a rede MLP implementada, geramos valores aleatorio para as saidas
-		//this.geraPesosAleatorios(arraySaida);
-		Matrix saida=new Matrix(array_saida);
-		return saida;
-	}
-
-
-
-	public void atualiza_pesos(Matrix pesos, double alpha) {
-		//wNew=wOld-alpha*gradiente
-		for(int i=0; i<pesos.getRowDimension(); i++) {
-			for(int j=0; j<pesos.getColumnDimension(); j++) {
-				double pesoAntigo = pesos.get(i, j);
-				double gradienteNoPonto=this.calcula_gradiente_no_ponto(pesoAntigo);
-				double pesoAtualizado=pesoAntigo-gradienteNoPonto*alpha;
-				pesos.set(i, j, pesoAtualizado);
-			}
-		}
-	}
-
-	private double calcula_gradiente_no_ponto(double x) {
-		return 1;
-	}
-
-	public double calcula_passo() {	
-		//TODO Algortitmo da Bissecao
-		return 0.1;
-	}
-
 	/*
 	 * Esse metodo, dado uma matriz pesos de dimensoes quaisquer, preenche pesos com valores aleatorios
 	 * entre 0.0 e 1.0 
