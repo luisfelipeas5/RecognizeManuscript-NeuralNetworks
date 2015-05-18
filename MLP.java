@@ -55,7 +55,7 @@ abstract class MLP extends Rede{
 		entrada_aux = f(p); 
 		saidas_rede[0] = entrada_aux; 
 		double[][] aux = entrada_aux.getArrayCopy(); 
-		double[][] matriz_entrada = new double[aux.length][aux[0].length+1]; 
+		double[][] matriz_entrada = new double[entrada_aux.getRowDimension()][entrada_aux.getColumnDimension()+1]; 
 		for (int i = 0; i < matriz_entrada.length; i++) {
 			for (int j = 0; j < matriz_entrada[0].length-1; j++) {
 				matriz_entrada[i][j] = aux[i][j]; 
@@ -80,15 +80,15 @@ abstract class MLP extends Rede{
 			double ei_n = erro; 
 			double[][] saida_rede_af = semi_results[1].getArrayCopy(); 
 			double fl_vin = sigmoide_linha(saida_rede_af[0][i]); 
-			double[][] pseudo_entrada = saidas_rede[0].getArrayCopy(); 
-			double[][] pseudo_entrada2 = new double[pseudo_entrada.length][pseudo_entrada[0].length+1]; 
-			for (int m = 0; m < pseudo_entrada2.length; m++) {
-				for (int o = 0; o < pseudo_entrada2[0].length -1; o++) {
-					pseudo_entrada2[m][o] = pseudo_entrada[m][o]; 
+			double[][] aux = saidas_rede[0].getArrayCopy(); 
+			double[][] pseudo_entrada = new double[saidas_rede[0].getRowDimension()][saidas_rede[0].getColumnDimension()+1]; 
+			for (int m = 0; m < pseudo_entrada.length; m++) {
+				for (int o = 0; o < pseudo_entrada[0].length -1; o++) {
+					pseudo_entrada[m][o] = aux[m][o]; 
 				}
-				pseudo_entrada2[m][pseudo_entrada2[0].length - 1] = 1.0; 
+				pseudo_entrada[m][pseudo_entrada[0].length - 1] = 1.0; 
 			}
-			double yj_n = pseudo_entrada2[0][j]; 
+			double yj_n = pseudo_entrada[0][j]; 
 			return super.taxa_aprendizado*ei_n*fl_vin*yj_n; 	
 		}
 		else {
@@ -99,15 +99,15 @@ abstract class MLP extends Rede{
 			double ei_n = seg_mat_pesos[0][i]*e1_n*fl_v1n; 				
 			saida_rede_af = semi_results[0].getArrayCopy(); 
 			double fl_vin = sigmoide_linha(saida_rede_af[0][i]); 
-			double[][] ent = entrada_instancia_atual.getArrayCopy();
-			double[][] ent2 = new double[ent.length][ent[0].length+1]; 
-			for (int m = 0; m < ent2.length; m++) {
-				for (int n = 0; n < ent2[0].length -1; n++) {
-					ent2[m][n] = ent[m][n]; 
+			double[][] aux = entrada_instancia_atual.getArrayCopy();
+			double[][] ent = new double[entrada_instancia_atual.getRowDimension()][entrada_instancia_atual.getColumnDimension()+1]; 
+			for (int m = 0; m < ent.length; m++) {
+				for (int n = 0; n < ent[0].length -1; n++) {
+					ent[m][n] = aux[m][n]; 
 				}
-				ent2[m][ent2[0].length - 1] = 1.0; 
+				ent[m][ent[0].length - 1] = 1.0; 
 			}
-			double xj_n = ent2[0][j];
+			double xj_n = ent[0][j];
 			return super.taxa_aprendizado*ei_n*fl_vin*xj_n; 
 		}
 	}
@@ -124,12 +124,14 @@ abstract class MLP extends Rede{
 						mat[i][j] = mat[i][j] + calcula_melhoria(true, pesos_b, i, j, erro); 
 					}
 				}
+				pesos_a = new Matrix(mat); 
 				mat = pesos_a.getArrayCopy();
 				for (int i = 0; i < mat.length; i++) {
 					for (int j = 0; j < mat[0].length; j++) {
 						mat[i][j] = mat[i][j] + calcula_melhoria(false, pesos_b, i, j, erro); 
 					}
-				}				
+				}
+				pesos_b = new Matrix(mat); 
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException a) {
