@@ -47,9 +47,10 @@ public class Treinamento {
 		
 		if(treina_batelada) {
 			double erro_medio=erro_epoca/entradas.getRowDimension();
-			//TODO
-			double taxa_aprendizado=0.1;
-			rede.atualiza_pesos(erro_medio, this.pesos_a, this.pesos_b, taxa_aprendizado);
+			for(int i=0; i<entradas.getRowDimension(); i++) {
+				entrada=entradas.getMatrix(i, i, 0, entradas.getColumnDimension()-1);
+				rede.atualiza_pesos(erro_medio, this.pesos_a, this.pesos_b, entrada);
+			}
 		}
 		return erro_epoca;
 	}
