@@ -1,6 +1,5 @@
 import Jama.Matrix;
 
-
 abstract class Rede {
 	int numero_neuronios_escondidos; // No caso da LVQ = 0 
 	boolean treina_padrao_padrao; 
@@ -33,5 +32,5 @@ abstract class Rede {
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, Matrix entrada );
+	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b);
 }
