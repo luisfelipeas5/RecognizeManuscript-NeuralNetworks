@@ -1,12 +1,11 @@
 //Pacote Jama: 
 import Jama.Matrix; 
-
 //Instrumentos matematicos: 
 import java.lang.Math; 
 //Excecoes: 
 import java.lang.ArrayIndexOutOfBoundsException; 
 
-class MLP extends Rede{
+public class MLP extends Rede{
 	/*Durante o processo "propagation", primeiro multiplicamos a matriz de entrada pela primeira matriz
 	de pesos. Ao resultado, aplicamos uma funcao de ativacao (no caso deste ep, eh a funcao sigmoide).
 	A matriz existente antes da aplicacao da funcao foi colocada na posicao 0 do vetor semi_results
@@ -69,6 +68,14 @@ class MLP extends Rede{
 		return saidas_rede[1]; 		
 	}
 	
+	public Matrix get_semi_result (int pos) { 
+		return semi_results[pos]; 
+	}
+	
+	public Matrix get_saida_rede (int pos) { 
+		return semi_results[pos]; 
+	}
+	
 	/* 
 	* ultima -> valor booleano que indica se a matriz de pesos a ser atualizada é a ultima ou não
 	* pesos_b --> segunda matriz de pesos
@@ -89,7 +96,7 @@ class MLP extends Rede{
 				pseudo_entrada[m][pseudo_entrada[0].length - 1] = 1.0; 
 			}
 			double yj_n = pseudo_entrada[0][j]; 
-			return super.taxa_aprendizado*ei_n*fl_vin*yj_n; 	
+			return 0.9*ei_n*fl_vin*yj_n; 	
 		}
 		else {
 			double e1_n = erro; 
@@ -108,14 +115,14 @@ class MLP extends Rede{
 				ent[m][ent[0].length - 1] = 1.0; 
 			}
 			double xj_n = ent[0][j];
-			return super.taxa_aprendizado*ei_n*fl_vin*xj_n; 
+			return 0.9*ei_n*fl_vin*xj_n; 
 		}
 	}
 	
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, double taxa_aprendizado) {
+	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b) {
 		try {
 			if (super.treina_padrao_padrao) {
 				double[][] mat = pesos_b.getArrayCopy();
