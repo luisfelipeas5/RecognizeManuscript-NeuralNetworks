@@ -1,36 +1,25 @@
 import Jama.Matrix;
 
-
 abstract class Rede {
-	int numero_neuronios_escondidos; // No caso da LVQ = 0
-	int numero_neuronios_saida; // Varia de acordo com a codificacao da saida desejada
-	double taxa_aprendizado;
+	int numero_neuronios_escondidos; // No caso da LVQ = 0 
 	boolean treina_padrao_padrao; 
-	Matrix entrada; 
-	Matrix saida_desejada; 
-	int numero_entradas;
-	int numero_saidas;
-	Matrix[] matrizes_pesos;
-	Matrix[] saidas_rede;
+	boolean treina_batelada;
 	
-	Rede (double taxa_aprendizado, int numero_neuronios_escondidos, boolean treina_padrao_padrao, Matrix saida, Matrix entrada){
-		this.taxa_aprendizado=taxa_aprendizado;
+	Rede (int numero_neuronios_escondidos, boolean treina_padrao_padrao, boolean treina_batelada){
 		this.numero_neuronios_escondidos=numero_neuronios_escondidos;
 		this.treina_padrao_padrao=treina_padrao_padrao;
-		this.saida_desejada = saida;
-		double[][] s = saida.getArrayCopy(); 
-		double[][] e = entrada.getArrayCopy(); 
-		this.numero_entradas = e[0].length; 
-		this.numero_saidas = s[0].length;
+		this.treina_batelada=treina_batelada;
 	}
 	
 	/*
-	 *Esse metodo calcula a saida dessa rede para uma instancia somente, 
-	 *dado duas matrizes de peso  
+	 *Esse metodo retorna o erro quadratico total da epoca, dado
+	 *- um conjunto de entradas
+	 *- um conjunto de saidas desejadas
 	 */
-	abstract Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b);
+	abstract double calcula_saida(Matrix entradas, Matrix saida_desejadas, Matrix pesos_a, Matrix pesos_b);
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
+	 * manipulado pela classe calcula_saida
 	 */
-	abstract void atualiza_pesos(Double erro, Matrix pesos_a, Matrix pesos_b );
+	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b);
 }
