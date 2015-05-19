@@ -67,7 +67,7 @@ public class Testa_Treinamento {
 		
 		//Um objeto treinamento para cada tipo de rede
 		Treinamento treinamento=new Treinamento(mlp);
-		treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		//treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
 		
 		//Exibe matrizes geradas
 		System.out.println("Matriz de entradas sem bias");
