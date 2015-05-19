@@ -64,7 +64,7 @@ public class Treinamento {
 	public void gera_pesos_aleatorios(Matrix pesos) {
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
-			for(int j=0; j<pesos.getColumnDimension();i++) {
+			for(int j=0; j<pesos.getColumnDimension();j++) {
 				pesos.set(i, j, random.nextDouble());
 			}
 		}
