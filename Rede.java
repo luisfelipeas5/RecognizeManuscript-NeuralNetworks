@@ -22,5 +22,5 @@ abstract class Rede {
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 * manipulado pela classe calcula_saida
 	 */
-	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, Matrix entrada );
+	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b);
 }

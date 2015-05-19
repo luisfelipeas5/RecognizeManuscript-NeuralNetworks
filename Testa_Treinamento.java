@@ -11,14 +11,12 @@ public class Testa_Treinamento {
 		Matrix saidas_desejadas=new Matrix(array_saida_desejada);
 		
 		int numero_neuronios_escondidos=2;
-		//int epocas=2; 
-		/*
-		o numero de epocas na verdade eh definido no ponto de interseccao quando:
-		validacao.erro==treinamento.erro
-		*/
+		int epocas_max=2; 
+		
 		//treinando padrao a padrao:
 		boolean treina_padrao_padrao=true;
-		Rede mlp=new MLP( numero_neuronios_escondidos, treina_padrao_padrao);
+		boolean treina_batelada=!treina_padrao_padrao;
+		Rede mlp=new MLP( numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
 		
 		//70% treinamento 30% validacao
 		double validacao=0.3;
@@ -28,7 +26,7 @@ public class Testa_Treinamento {
 		
 		//Um objeto treinamento para cada tipo de rede
 		Treinamento treinamento=new Treinamento(mlp);
-		treinamento.treina(entradas, saidas_desejadas, entradas_validacao, saidas_desejadas_validacao);
+		treinamento.treina(entradas, saidas_desejadas, entradas_validacao, saidas_desejadas_validacao, epocas_max);
 	}
 }
 

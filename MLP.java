@@ -1,12 +1,11 @@
 //Pacote Jama: 
 import Jama.Matrix; 
-
 //Instrumentos matematicos: 
 import java.lang.Math; 
 //Excecoes: 
 import java.lang.ArrayIndexOutOfBoundsException; 
 
-class MLP extends Rede{
+public class MLP extends Rede{
 	/*Durante o processo "propagation", primeiro multiplicamos a matriz de entrada pela primeira matriz
 	de pesos. Ao resultado, aplicamos uma funcao de ativacao (no caso deste ep, eh a funcao sigmoide).
 	A matriz existente antes da aplicacao da funcao foi colocada na posicao 0 do vetor semi_results
@@ -19,8 +18,8 @@ class MLP extends Rede{
 	Matrix[] saidas_rede;  
 	Matrix entrada_instancia_atual; 
 	
-	public MLP(int numero_neuronios_escondidos, boolean treina_padrao_padrao) {
-		super(numero_neuronios_escondidos, treina_padrao_padrao);
+	public MLP(int numero_neuronios_escondidos, boolean treina_padrao_padrao, boolean treina_batelada) {
+		super(numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
 	}
 	
 	//Funcao de ativacao (logistica)
@@ -45,7 +44,7 @@ class MLP extends Rede{
 		return sigmoide(x)*(1.0-sigmoide(x)); 
 	}
 	
-	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
+	double calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
 		this.entrada_instancia_atual = entrada; 
 		Matrix entrada_aux = entrada;
 		semi_results = new Matrix[2]; 
@@ -65,8 +64,18 @@ class MLP extends Rede{
 		entrada_aux = new Matrix(matriz_entrada);
 		p = entrada_aux.times(pesos_b.transpose()); 
 		semi_results[1] = p; 
-		saidas_rede[1] = f(p); 
-		return saidas_rede[1]; 		
+		saidas_rede[1] = f(p);
+		
+		double erro=0.0;
+		return erro; 		
+	}
+	
+	public Matrix get_semi_result (int pos) { 
+		return semi_results[pos]; 
+	}
+	
+	public Matrix get_saida_rede (int pos) { 
+		return semi_results[pos]; 
 	}
 	
 	/* 
@@ -89,7 +98,7 @@ class MLP extends Rede{
 				pseudo_entrada[m][pseudo_entrada[0].length - 1] = 1.0; 
 			}
 			double yj_n = pseudo_entrada[0][j]; 
-			return super.taxa_aprendizado*ei_n*fl_vin*yj_n; 	
+			return 0.9*ei_n*fl_vin*yj_n; 	
 		}
 		else {
 			double e1_n = erro; 
@@ -108,14 +117,14 @@ class MLP extends Rede{
 				ent[m][ent[0].length - 1] = 1.0; 
 			}
 			double xj_n = ent[0][j];
-			return super.taxa_aprendizado*ei_n*fl_vin*xj_n; 
+			return 0.9*ei_n*fl_vin*xj_n; 
 		}
 	}
 	
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b, double taxa_aprendizado) {
+	void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b) {
 		try {
 			if (super.treina_padrao_padrao) {
 				double[][] mat = pesos_b.getArrayCopy();
