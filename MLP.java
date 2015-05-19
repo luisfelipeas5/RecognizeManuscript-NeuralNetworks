@@ -18,8 +18,8 @@ public class MLP extends Rede{
 	Matrix[] saidas_rede;  
 	Matrix entrada_instancia_atual; 
 	
-	public MLP(int numero_neuronios_escondidos, boolean treina_padrao_padrao) {
-		super(numero_neuronios_escondidos, treina_padrao_padrao);
+	public MLP(int numero_neuronios_escondidos, boolean treina_padrao_padrao, boolean treina_batelada) {
+		super(numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
 	}
 	
 	//Funcao de ativacao (logistica)
@@ -44,7 +44,7 @@ public class MLP extends Rede{
 		return sigmoide(x)*(1.0-sigmoide(x)); 
 	}
 	
-	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
+	double calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
 		this.entrada_instancia_atual = entrada; 
 		Matrix entrada_aux = entrada;
 		semi_results = new Matrix[2]; 
@@ -64,8 +64,18 @@ public class MLP extends Rede{
 		entrada_aux = new Matrix(matriz_entrada);
 		p = entrada_aux.times(pesos_b.transpose()); 
 		semi_results[1] = p; 
-		saidas_rede[1] = f(p); 
-		return saidas_rede[1]; 		
+		saidas_rede[1] = f(p);
+		
+		double erro=0.0;
+		return erro; 		
+	}
+	
+	public Matrix get_semi_result (int pos) { 
+		return semi_results[pos]; 
+	}
+	
+	public Matrix get_saida_rede (int pos) { 
+		return semi_results[pos]; 
 	}
 	
 	public Matrix get_semi_result (int pos) { 
