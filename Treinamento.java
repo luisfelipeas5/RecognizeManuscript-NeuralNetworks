@@ -11,7 +11,16 @@ public class Treinamento {
 		this.rede=rede;
 	}
 
-	public void treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
+	/*
+	 * Esse método treina a rede setada para a instância da classe
+	 * passando como o conjunto de dados para treinamento a matriz passada como parâmetro,
+	 * e utilizando como condicao de parada um numero limite de epocas ou quando os erros de validacao
+	 * e treinamento sao iguais em determinada epoca, retornando uma matriz coluna com
+	 * os erros quadraticos da rede calculados pela propria rede em cada epoca que houve treinamento.
+	 * O metodo de treinamento esta definido internamente na Rede, e foi decidido quando esta foi
+	 * instanciada
+	 */
+	public Matrix treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
 			Matrix entradas_validacao, Matrix saidas_desejadas_validacao, int numero_limite_epocas) {
 		//Para a primeira epoca, os pesos devem ser gerados randomicamente
 		Matrix pesos_a= new Matrix( rede.numero_neuronios_escondidos, entradas_treinamento.getColumnDimension() );
@@ -19,6 +28,12 @@ public class Treinamento {
 		this.gera_pesos_aleatorios(pesos_a);
 		this.gera_pesos_aleatorios(pesos_b);
 		
+		/*
+		 * Armazenar erros quadraticos totais da rede de cada epoca:
+		 * - erros do treinamento sao guardados na primeira coluna
+		 * - erros de validacao sao guardados na segunda coluna 
+		 */
+		Matrix erros_epocas=new Matrix(numero_limite_epocas, 2);
 		//Cada conjunto de dados vai ter o seu erro com o passar das épocas
 		double erro_total_treinamento=1.0;
 		double erro_total_validacao=-1.0;
@@ -45,16 +60,22 @@ public class Treinamento {
 			this.rede.treina_batelada=treina_batelada_old;
 			this.rede.treina_padrao_padrao=treina_padrao_padrao_old;
 			
+			//Armazena erros de treinamento e validacao da epoca atual
+			erros_epocas.set(epoca_atual, 1, erro_total_treinamento);
+			erros_epocas.set(epoca_atual, 2, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 			
 			/* Printar os pesos a cada iteracao */
+			System.out.println("Epoca "+epoca_atual);
 			int casas_decimais=3;
 			System.out.println("Pesos A");
 			pesos_a.print(pesos_a.getColumnDimension(), casas_decimais);
 			System.out.println("Pesos B");
 			pesos_b.print(pesos_b.getColumnDimension(), casas_decimais);
 		}
+		
+		return erros_epocas;
 	}
 	
 	/*
@@ -64,7 +85,7 @@ public class Treinamento {
 	public void gera_pesos_aleatorios(Matrix pesos) {
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
-			for(int j=0; j<pesos.getColumnDimension();i++) {
+			for(int j=0; j<pesos.getColumnDimension();j++) {
 				pesos.set(i, j, random.nextDouble());
 			}
 		}
