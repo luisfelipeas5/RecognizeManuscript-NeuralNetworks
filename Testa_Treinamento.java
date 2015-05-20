@@ -7,28 +7,20 @@ public class Testa_Treinamento {
 		Matrix entradas_sem_bias=Matrix.random(10, 4);//new Matrix(10,4);
 		Matrix saidas_desejadas=Matrix.random(10,1);//new Matrix(10,1);
 		
-		//Adicionando o Bias
-		Matrix entradas=new Matrix( entradas_sem_bias.getRowDimension(), entradas_sem_bias.getColumnDimension()+1 );
-		for (int i = 0; i < entradas_sem_bias.getRowDimension(); i++) {
-			Matrix entrada_sem_bias=entradas_sem_bias.getMatrix(i, i, 0, entradas_sem_bias.getColumnDimension()-1);
-			entradas.setMatrix(i, i, 0, entradas.getColumnDimension()-2, entrada_sem_bias);
-			//Acrescenta 1 como bias
-			double bias=1;
-			entradas.set(i, entradas.getColumnDimension()-1, bias);
-		}
+		Matrix entradas=adiciona_bias(entradas_sem_bias);
 
-		Matrix entradas_treinamento;
-		Matrix saidas_desejadas_treinamento;
-		Matrix entradas_validacao;
-		Matrix saidas_desejadas_validacao;
-		Matrix entradas_teste;
-		Matrix saidas_desejadas_teste;
+		Matrix entradas_treinamento=null;
+		Matrix saidas_desejadas_treinamento=null;
+		Matrix entradas_validacao=null;
+		Matrix saidas_desejadas_validacao=null;
+		Matrix entradas_teste=null;
+		Matrix saidas_desejadas_teste=null;
 		
 		//60% treinamento 20% validacao 20% teste
  		double porcentagem_validacao=0.2;
  		double porcentagem_teste=0.2;
-		
-		//Definicao do conjunto de dados para treinamento
+
+ 		//Definicao do conjunto de dados para treinamento
 		int num_linhas_treinamento= (int) (entradas.getRowDimension() * (1-porcentagem_validacao-porcentagem_teste));
 		int i_inicio_treinamento=0;
 		int i_final_treinamento=i_inicio_treinamento+num_linhas_treinamento-1;
@@ -53,8 +45,8 @@ public class Testa_Treinamento {
 		entradas_teste=entradas.getMatrix(i_inicio_teste, i_final_teste,
 			0, entradas.getColumnDimension()-1) ;
 		saidas_desejadas_teste=saidas_desejadas.getMatrix(i_inicio_teste, i_final_teste,
-			0, saidas_desejadas.getColumnDimension()-1) ;;											
-		
+			0, saidas_desejadas.getColumnDimension()-1) ;
+ 		
 		//Definicao das configuracoes da rede
 		int numero_neuronios_escondidos=2;
 		
@@ -99,6 +91,24 @@ public class Testa_Treinamento {
 		System.out.println("\tTreinamento a batelada ("+mlp.treina_batelada+")");
 		System.out.println("\tTreinamento a padrao a padrao ("+mlp.treina_padrao_padrao+")");
 		
+	}
+	
+	/*
+	 * Esse metodo acrescenta a entrada bias a uma determinada matriz de entradas sem bias,
+	 * ou seja, acrescenta uma coluna de 1's a mais
+	 */
+	public static Matrix adiciona_bias(Matrix entradas_sem_bias) {
+		Matrix entradas;
+		//Adicionando o Bias
+		entradas=new Matrix( entradas_sem_bias.getRowDimension(), entradas_sem_bias.getColumnDimension()+1 );
+		for (int i = 0; i < entradas_sem_bias.getRowDimension(); i++) {
+			Matrix entrada_sem_bias=entradas_sem_bias.getMatrix(i, i, 0, entradas_sem_bias.getColumnDimension()-1);
+			entradas.setMatrix(i, i, 0, entradas.getColumnDimension()-2, entrada_sem_bias);
+			//Acrescenta 1 como bias
+			double bias=1;
+			entradas.set(i, entradas.getColumnDimension()-1, bias);
+		}
+		return entradas;
 	}
 }
 
