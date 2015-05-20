@@ -59,7 +59,7 @@ public class Testa_Treinamento {
 		
 		//Um objeto treinamento para cada tipo de rede
 		Treinamento treinamento=new Treinamento(mlp);
-		//treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		Matrix erros_epocas = treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
 		
 		//Exibe matrizes geradas
 		System.out.println("Matriz de entradas sem bias");
@@ -91,6 +91,8 @@ public class Testa_Treinamento {
 		System.out.println("\tTreinamento a batelada ("+mlp.treina_batelada+")");
 		System.out.println("\tTreinamento a padrao a padrao ("+mlp.treina_padrao_padrao+")");
 		
+		System.out.println("Erros por epoca.\n\terro treinamento: coluna 1\terro validacao: coluna 2");
+		erros_epocas.print(erros_epocas.getColumnDimension(), 3);
 	}
 	
 	/*

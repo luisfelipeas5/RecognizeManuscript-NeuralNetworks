@@ -57,6 +57,24 @@ public class Classificacao_Numeros {
 		saidas_desejadas_teste=saidas_desejadas.getMatrix(i_inicio_teste, i_final_teste,
 			0, saidas_desejadas.getColumnDimension()-1) ;
 		
+		//Definicao das configuracoes da rede
+		int numero_neuronios_escondidos=2;
+		//Definicao das condicoes do treinamento da rede
+		boolean treina_padrao_padrao=true; //a rede ira ser treinada padrao a padrao (online)?
+		boolean treina_batelada=!treina_padrao_padrao; //a rede ira ser treinada a batelada (batch)?
+		int epocas_max=2; //numero de epocas maximas que a rede ira ser treinada
+		
+		//Treinamento de uma MLP
+		Rede mlp=new MLP(numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
+		Treinamento treinamento_mlp = new Treinamento(mlp);
+		Matrix erros_epocas_mlp = treinamento_mlp.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		
+		//Treinamento de uma LVQ
+		Rede lvq=new LVQ();
+		Treinamento treinamento_lvq = new Treinamento(lvq);
+		Matrix erros_epocas_lvq = treinamento_lvq.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		
+		/*
 		System.out.println("Matriz de entradas sem bias");
 		entradas_sem_bias.print(entradas_sem_bias.getColumnDimension(), 3);
 		System.out.println("Matriz de saidas desejadas");
@@ -79,6 +97,7 @@ public class Classificacao_Numeros {
 		entradas_teste.print(entradas_teste.getColumnDimension(), 3);
 		System.out.println("Matriz de saidas desejadas do teste");
 		saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
+		*/
 	}
 
 	public static Matrix adiciona_bias(Matrix entradas_sem_bias) {
