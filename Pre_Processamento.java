@@ -1,147 +1,182 @@
 import Jama.Matrix;
 import edu.umbc.cs.maple.utils.*;
-// http://www.seas.upenn.edu/~eeaton/software/Utils/javadoc/edu/umbc/cs/maple/utils/JamaUtils.html
 import optimization.*;
 // http://www.seas.upenn.edu/~eeaton/software/Utils/javadoc/edu/umbc/cs/maple/utils/JamaUtils.html
-
+// http://www.seas.upenn.edu/~eeaton/software.html
 public class Pre_Processamento{
 	
-	
-	public static Matrix minmax(Matrix dados, int colClasse){
-		double[] minCol;
+	public static Matrix max(Matrix dados){
 		double[] maxCol;
+		Matrix resultado;
+		Matrix col;
+
+		for(int coluna = 1; coluna <= dados.getColumnDimension(); coluna++){
+			maxCol[coluna] = JamaUtils.getMax(JamaUtils.getcol(dados, coluna));
+		}
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+				if(maxCol[coluna]!=0){
+					resultado.set(linha, coluna, dados.get(linha, coluna)/maxCol[coluna]);
+				}
+				else{
+					resultado.set(linha, coluna, 0);
+				}
+			}
+		}
+		return resultado;
+	}
+	
+	public static Matrix minmax(Matrix dados){
 		double[] intervCol;
-		int coluna = 0;
-		int linha = 0;
+		Matrix resultado;
+		
+		intervCol = calculaIntervalo(dados);
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+				if(intervCol[coluna]!=0){
+					resultado.set(linha, coluna, ((dados.get(linha, coluna) - minCol[coluna])/intervCol[coluna])); 
+				}
+				else{
+					resultado.set(linha, coluna, 0);
+				}
+			}
+		}
+		
+		return resultado;
+	}
+	
+	public static Matrix sigmoidal(Matrix dados){
+		double[] intervCol;
+		Matrix resultado;
+		
+		intervCol = calculaIntervalo(dados);
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+				if(intervCol[coluna]!=0){
+					resultado.set(linha, coluna, -1/(1+Math.exp(-((dados.get(linha, coluna) - minCol[coluna])/intervCol[coluna])))); 
+				}
+				else{
+					resultado.set(linha, coluna, 0);
+				}
+			}
+		}
+		
+		return resultado;
+	}
+	
+	public static Matrix zscore(Matrix dados){
+		
+		double[] medCol;
+		double[] varCol;
 		Matrix resultado;
 		Matrix col;
 		
-		//resultado.copy(dados);
-		/*
-		if(){
-			
-		}else{
-			
-		}
-		*/
+		medCol = calculaMedia(dados);
+		varCol = calculaVariancia(dados);
 		
-		while(coluna < dados.getColumnDimension()){
-			
+		for(int coluna = 1; coluna <= dados.getColumnDimension(); coluna++){
+			for(int linha = 1; linha <= dados.getRowDimension(); linha++){
+				if(varCol[coluna]!=0){
+					resultado.set(linha, coluna, dados.get(linha, coluna)-medCol[coluna]/Math.sqrt(varCol[coluna]));
+				}
+				else{
+					resultado.set(linha, coluna, 0);
+				}
+			}
+		}
+		
+		return resultado;
+	}
+	
+	public static Matrix removeZeros(Matrix dados, int porcentagem){
+		// Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
+		// Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
+		// int porcentagem = 100. Com isso, corte = numero de linhas das colunas.
+		int corte = (porcentagem/100)*dados.getRowDimension();
+		int contaZeros = 0;
+		Matrix resultado;
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha < dados.getRowDimension(); linha++) {
+				if(dados.get(linha, coluna) == 0){
+					contaZeros++;
+				}
+			}
+			// Se a quantidade de zeros for menor que o corte, adiciona essa coluna
+			if(contaZeros < corte){
+				for (int linha = 1; linha < dados.getRowDimension(); linha++) {
+						resultado.set(linha, coluna, dados.get(linha, coluna));
+				}
+			}
+			contaZeros = 0;
+		}
+		
+		return resultado;
+	}
+	
+	public static Matrix removeDesvioBaixo(Matrix dados, int limiar){
+		// Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
+		// Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
+		// int porcentagem = 100. Com isso, corte = numero de linhas das colunas.
+		double[] varCol;
+		Matrix resultado;
+		
+		varCol = calculaVariancia(dados);
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha < dados.getRowDimension(); linha++) {
+				if(Math.sqrt(varCol[coluna]) > limiar){
+					resultado.set(linha, coluna, dados.get(linha, coluna));
+				}
+			}
+		}
+		
+		return resultado;
+	}
+	
+	public static double[] calculaVariancia(Matrix dados){
+		double[] medCol;
+		double[] auxCol;
+		double[] varCol;
+		
+		medCol = calculaMedia(dados);
+		
+		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
+			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+				auxCol[coluna]= 
+						auxCol[coluna] + (dados.get(linha, coluna)-medCol[coluna]) * (dados.get(linha, coluna)-medCol[coluna]);
+			}
+			 
+			varCol[coluna] = auxCol[coluna]/medCol[coluna];
+		}
+		
+		return varCol;
+	}
+	
+	public static double[] calculaMedia(Matrix dados){
+		double[] medCol;
+		
+		for (int coluna = 1; coluna < dados.getColumnDimension(); coluna++) {
+			medCol[coluna] = JamaUtils.colsum(dados, coluna)/dados.getRowDimension();
+		}
+		
+		return medCol;
+	}
+	
+	public static double[] calculaIntervalo(Matrix dados){
+		double[] minCol;
+		double[] maxCol;
+		double[] intervCol;
+		
+		for (int coluna = 1; coluna < dados.getColumnDimension(); coluna++) {
 			minCol[coluna] = JamaUtils.getMin(JamaUtils.getcol(dados, coluna));
-			maxCol[coluna] = JamaUtils.getMin(JamaUtils.getcol(dados, coluna));
-			
+			maxCol[coluna] = JamaUtils.getMax(JamaUtils.getcol(dados, coluna));
 			intervCol[coluna] = maxCol[coluna] - minCol[coluna];
-			coluna++;
 		}
-		coluna = 1;
-		double[][] dados_double = dados.getArrayCopy();
-		double[][] resultado_double;
 		
-		while(coluna < dados.getColumnDimension()){
-			while(linha < dados.getRowDimension() ){
-				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, ((dados_double[linha][coluna] - minCol[coluna])/intervCol[coluna])); 
-				}
-				else{
-					resultado.set(linha, coluna, 0);
-				}
-				linha++;
-			}
-			linha = 1;
-			coluna++;
-		}
-		return resultado;
+		return intervCol;
 	}
-	
-	public Matrix max(Matrix dados, int colClasse){
-		
-		double[] maxCol;
-		double[] medCol;
-		double[] desCol;
-		int coluna = 0;
-		int linha = 0;
-		Matrix resultado;
-		Matrix col;
-		//resultado.copy(dados);
-		/*
-		if(){
-			
-		}else{
-			
-		}
-		*/
-		
-		while(coluna < dados.getColumnDimension()){
-			maxCol[coluna] = JamaUtils.getMin(JamaUtils.getcol(dados, coluna));
-			coluna++;
-		}
-		coluna = 1;
-		double[][] dados_double = dados.getArrayCopy();
-		
-		while(coluna < dados.getColumnDimension()){
-			while(linha < dados.getRowDimension() ){
-				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, ((dados_double[linha][coluna]/maxCol[coluna]))); 
-				}
-				else{
-					resultado.set(linha, coluna, 0);
-				}
-				linha++;
-			}
-			linha = 1;
-			coluna++;
-		}
-		return resultado;
-	}
-	
-	public Matrix zscore(Matrix dados, int colClasse){
-		
-		double[] minCol;
-		double[] maxCol;
-		double[] intervCol;
-		double[] medCol;
-		double[] desCol;
-		int coluna = 0;
-		int linha = 0;
-		Matrix resultado;
-		Matrix col;
-		
-		//resultado.clone(dados);
-		/*
-		if(){
-			
-		}else{
-			
-		}
-		*/
-		while(coluna < dados.getColumnDimension()){
-			medCol[coluna] = JamaUtils.colsum(dados, coluna)/dados.getRowDimension();
-			coluna++;
-		}
-		coluna = 1;
-		while(coluna < dados.getColumnDimension()){
-			medCol[coluna] = JamaUtils.colsum(dados, coluna)/dados.getRowDimension();
-			desCol[coluna] = 
-			coluna++;
-		}
-		coluna = 1;
-		double[][] dados_double = dados.getArrayCopy();
-		
-		while(coluna < dados.getColumnDimension()){
-			while(linha < dados.getRowDimension() ){
-				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, ((dados_double[linha][coluna]/maxCol[coluna]))); 
-				}
-				else{
-					resultado.set(linha, coluna, 0);
-				}
-				linha++;
-			}
-			linha = 1;
-			coluna++;
-		}
-		return resultado;
-	}
-	
-	
 }
