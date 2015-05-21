@@ -51,7 +51,7 @@ public class Grafico extends ApplicationFrame{
     */
     
     private CategoryDataset setDados(Matrix dados) {
-        // Padronizar para MATRIX?
+        
     	final DefaultCategoryDataset dados_dataset = new DefaultCategoryDataset();
         
         for(int linha = 0; linha < dados.getRowDimension(); linha++){
@@ -80,26 +80,39 @@ public class Grafico extends ApplicationFrame{
         rangeAxis.setAutoRangeIncludesZero(true);
 		
         final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-//        renderer.setDrawShapes(true);
 
-        renderer.setSeriesStroke(
-            0, new BasicStroke(
-                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                1.0f, new float[] {10.0f, 6.0f}, 0.0f
-            )
-        );
+        
+        for (int i = 0; i < dados.getRowCount(); i++) {
+        	renderer.setSeriesStroke(
+                    i, new BasicStroke(
+                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                        1.0f, new float[] {10.0f, 6.0f}, 0.0f
+                    )
+                );	
+		}
         
         return grafico;
     }
     
     public static void main(final String[] args) {
     	
-    	double[][] demo_d = new double[1][200];
-        for (int i = 0; i < demo_d[0].length; i++) {
-			demo_d[0][i] = 10+Math.random();
+    	double[][] demo_d = new double[3][200];
+    	for (int i = 0; i < demo_d.length; i++) {
+    		for (int j = 0; j < demo_d[0].length; j++) {
+    			demo_d[i][j] = 10+Math.random();
+    		}	
 		}
+        
         Matrix demo = new Matrix(demo_d);
-        final Grafico grafico = new Grafico("Erro x Epoca", demo);
+        Matrix demo2 = new Matrix(5, 50);
+        
+        for (int i = 0; i < demo2.getRowDimension(); i++) {
+			for (int j = 0; j < demo2.getColumnDimension(); j++) {
+				demo2.set(i, j, j*j-5*j+100*i);
+			}
+		}
+        
+        final Grafico grafico = new Grafico("Erro x Epoca", demo2);
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);

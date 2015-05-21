@@ -228,4 +228,12 @@ public class Pre_Processamento{
 		
 		return intervCol;
 	}
+	
+	
+	public static void main(String[] args){
+		Situacao_Problema sit = Leitura_Arquivo.obtem_dados(args[0]);
+		Matrix demo = sit.get_entrada();
+		Matrix demo_minmax = Pre_Processamento.minmax(demo);
+		demo_minmax.print(demo_minmax.getColumnDimension(), 2);
+	}
 }
