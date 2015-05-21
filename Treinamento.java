@@ -80,13 +80,19 @@ public class Treinamento {
 	
 	/*
 	 * Esse metodo, dado uma matriz pesos de dimensoes quaisquer, preenche pesos com valores aleatorios
-	 * entre 0.0 e 1.0 
+	 * entre -1.0 e 1.0 
 	 */
 	public void gera_pesos_aleatorios(Matrix pesos) {
+		//TODO escolher o intervalo de valores dos pesos
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
 			for(int j=0; j<pesos.getColumnDimension();j++) {
-				pesos.set(i, j, random.nextDouble());
+				if(i%2==0) {
+					pesos.set(i, j, random.nextDouble());
+				}else {
+					pesos.set(i, j, -random.nextDouble());
+				}
+				
 			}
 		}
 	}

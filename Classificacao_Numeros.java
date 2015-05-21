@@ -3,7 +3,9 @@ import Jama.Matrix;
 
 public class Classificacao_Numeros {
 	public static void main(String[] args) {
-		String nome_arquivo_conjunto_dados="conjunto_dados.txt";
+		String nome_arquivo_conjunto_dados;
+		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
+		nome_arquivo_conjunto_dados="optdigits.total.txt";
 		
 		Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
 		
@@ -30,6 +32,8 @@ public class Classificacao_Numeros {
  		double porcentagem_validacao=0.2;
  		double porcentagem_teste=0.2;
 
+ 		//TODO Escolher as linhas para os conjuntos de forma estratificada
+ 		
  		//Definicao do conjunto de dados para treinamento
 		int num_linhas_treinamento= (int) (entradas.getRowDimension() * (1-porcentagem_validacao-porcentagem_teste));
 		int i_inicio_treinamento=0;
@@ -67,13 +71,26 @@ public class Classificacao_Numeros {
 		//Treinamento de uma MLP
 		Rede mlp=new MLP(numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
 		Treinamento treinamento_mlp = new Treinamento(mlp);
-		Matrix erros_epocas_mlp = treinamento_mlp.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		//Matrix erros_epocas_mlp = treinamento_mlp.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
 		
 		//Treinamento de uma LVQ
-		Rede lvq=new LVQ();
-		Treinamento treinamento_lvq = new Treinamento(lvq);
-		Matrix erros_epocas_lvq = treinamento_lvq.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
+		//Rede lvq=new LVQ(0, treina_padrao_padrao, treina_batelada);
+		//Treinamento treinamento_lvq = new Treinamento(lvq);
+		//Matrix erros_epocas_lvq = treinamento_lvq.treina(entradas_treinamento, saidas_desejadas_treinamento, entradas_validacao, saidas_desejadas_validacao, epocas_max);
 		
+		for (int j = 0; j < entradas_treinamento.getColumnDimension(); j++) {
+			System.out.print(entradas_treinamento.get(1, j) + " ");
+		}
+		System.out.println();
+		
+		for (int j = 0; j < entradas_validacao.getColumnDimension(); j++) {
+			System.out.print(entradas_validacao.get(1, j) + " ");
+		}
+		System.out.println();
+		
+		for (int j = 0; j < entradas_teste.getColumnDimension(); j++) {
+			System.out.print(entradas_teste.get(1, j) + " ");
+		}
 		/*
 		System.out.println("Matriz de entradas sem bias");
 		entradas_sem_bias.print(entradas_sem_bias.getColumnDimension(), 3);
