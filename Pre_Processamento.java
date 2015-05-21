@@ -6,18 +6,12 @@ import optimization.*;
 public class Pre_Processamento{
 	
 	public static Matrix max(Matrix dados){
-		double[] maxCol;
-		Matrix resultado;
-		Matrix col;
+		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 
-		for(int coluna = 1; coluna <= dados.getColumnDimension(); coluna++){
-			maxCol[coluna] = JamaUtils.getMax(JamaUtils.getcol(dados, coluna));
-		}
-		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
-				if(maxCol[coluna]!=0){
-					resultado.set(linha, coluna, dados.get(linha, coluna)/maxCol[coluna]);
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
+				if(JamaUtils.getMax(JamaUtils.getcol(dados, coluna))!=0){
+					resultado.set(linha, coluna, dados.get(linha, coluna)/JamaUtils.getMax(JamaUtils.getcol(dados, coluna)));
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -28,15 +22,15 @@ public class Pre_Processamento{
 	}
 	
 	public static Matrix minmax(Matrix dados){
-		double[] intervCol;
-		Matrix resultado;
+		double[] intervCol = new double[dados.getColumnDimension()];
+		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 		
 		intervCol = calculaIntervalo(dados);
 		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, ((dados.get(linha, coluna) - minCol[coluna])/intervCol[coluna])); 
+					resultado.set(linha, coluna, ((dados.get(linha, coluna) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna)))/intervCol[coluna])); 
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -48,15 +42,17 @@ public class Pre_Processamento{
 	}
 	
 	public static Matrix sigmoidal(Matrix dados){
-		double[] intervCol;
-		Matrix resultado;
+		double[] intervCol = new double[dados.getColumnDimension()];
+		double[] medCol = new double[dados.getColumnDimension()];
+		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 		
+		medCol = calculaMedia(dados);
 		intervCol = calculaIntervalo(dados);
 		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, -1/(1+Math.exp(-((dados.get(linha, coluna) - minCol[coluna])/intervCol[coluna])))); 
+					resultado.set(linha, coluna, -1/(1+Math.exp(-((dados.get(linha, coluna) - medCol[coluna])/intervCol[coluna])))); 
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -69,16 +65,15 @@ public class Pre_Processamento{
 	
 	public static Matrix zscore(Matrix dados){
 		
-		double[] medCol;
-		double[] varCol;
-		Matrix resultado;
-		Matrix col;
+		double[] medCol = new double[dados.getColumnDimension()];
+		double[] varCol = new double[dados.getColumnDimension()];
+		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 		
 		medCol = calculaMedia(dados);
 		varCol = calculaVariancia(dados);
 		
-		for(int coluna = 1; coluna <= dados.getColumnDimension(); coluna++){
-			for(int linha = 1; linha <= dados.getRowDimension(); linha++){
+		for(int coluna = 0; coluna < dados.getColumnDimension(); coluna++){
+			for(int linha = 0; linha < dados.getRowDimension(); linha++){
 				if(varCol[coluna]!=0){
 					resultado.set(linha, coluna, dados.get(linha, coluna)-medCol[coluna]/Math.sqrt(varCol[coluna]));
 				}
@@ -92,60 +87,117 @@ public class Pre_Processamento{
 	}
 	
 	public static Matrix removeZeros(Matrix dados, int porcentagem){
-		// Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
-		// Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
-		// int porcentagem = 100. Com isso, corte = numero de linhas das colunas.
+		/* Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
+		Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
+		int porcentagem = 100. Com isso, corte = numero de linhas das colunas. */
+		
+		/* O codigo abaixo serve para preencher a matrix aux apenas com as colunas que
+		possuem desvio padrao maior que o limite desejado.
+		As colunas com numero de zeros maior que o desejado sao "puladas", ou seja
+		nao sao copiadas para a matriz aux. A matriz aux possui as mesmas dimensoes
+		da matriz de dados fornecida. Isso pode ser constatado em sua inicializacao.
+		 
+		Como algumas colunas serao "puladas" (seus valores nao serao inseridos),
+		as suas ultimas X colunas ficarao preenchidas com zeros. Saberemos quais serao
+		as ultimas colunas a ser removidas atraves do contatos removeColunas 
+		(X = removeColunas). Ao fim do codigo teremos uma matriz de dimensao 
+		m por (n - removeColunas), onde m e n sao os numeros de linhas e colunas 
+		da matriz de dados passada como parametro da funcao. */
+		
 		int corte = (porcentagem/100)*dados.getRowDimension();
 		int contaZeros = 0;
+		int removeColunas = 0;
+		Matrix aux = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 		Matrix resultado;
 		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha < dados.getRowDimension(); linha++) {
+		
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				if(dados.get(linha, coluna) == 0){
 					contaZeros++;
 				}
 			}
 			// Se a quantidade de zeros for menor que o corte, adiciona essa coluna
 			if(contaZeros < corte){
-				for (int linha = 1; linha < dados.getRowDimension(); linha++) {
-						resultado.set(linha, coluna, dados.get(linha, coluna));
+				for (int linha = 0; linha < dados.getRowDimension(); linha++) {
+						aux.set(linha, coluna, dados.get(linha, coluna));
 				}
+			}else{
+				removeColunas++;
 			}
 			contaZeros = 0;
 		}
+		
+		/* Cria uma matriz de dimensoes reduzidas, ja que colunas serao removidas as ultimas
+		X colunas. */
+		resultado = new Matrix(dados.getRowDimension(), dados.getColumnDimension()-removeColunas);
+		
+		/* Pega a submatriz de linhas 1 a m e colunas 1 a (n - removeColunas), sendo m e n
+		a dimensao das linhas e colunas da matriz de dados fornecida como parametro. */
+		resultado.getMatrix(1, dados.getRowDimension(), 1, dados.getRowDimension()-removeColunas);
 		
 		return resultado;
 	}
 	
 	public static Matrix removeDesvioBaixo(Matrix dados, int limiar){
-		// Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
-		// Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
-		// int porcentagem = 100. Com isso, corte = numero de linhas das colunas.
-		double[] varCol;
+		/* Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
+		Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
+		int porcentagem = 100. Com isso, corte = numero de linhas das colunas. */
+		
+		/* O codigo abaixo serve para preencher a matrix aux apenas com as colunas que
+		possuem desvio padrao maior que o limite desejado.
+		As colunas com desvio padrao maior que o limite sao "puladas", ou seja
+		nao sao copiadas para a matriz aux. A matriz aux possui as mesmas dimensoes
+		da matriz de dados fornecida. Isso pode ser constatado em sua inicializacao.
+		 
+		Como algumas colunas serao "puladas" (seus valores nao serao inseridos),
+		as suas ultimas X colunas ficarao preenchidas com zeros. Saberemos quais serao
+		as ultimas colunas a ser removidas atraves do contatos removeColunas 
+		(X = removeColunas). Ao fim do codigo teremos uma matriz de dimensao 
+		m por (n - removeColunas), onde m e n sao os numeros de linhas e colunas 
+		da matriz de dados passada como parametro da funcao. */
+				
+		double[] varCol = new double[dados.getColumnDimension()];
+		// Inicializa aux como uma matriz de zeros de m por n colunas
+		Matrix aux = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
 		Matrix resultado;
+		int removeColunas = 0;
 		
 		varCol = calculaVariancia(dados);
 		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha < dados.getRowDimension(); linha++) {
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
+				// Se o desvio padrao for maior que o limiar desejado, todas as linhas
+				// dacoluna sao copiadas.
 				if(Math.sqrt(varCol[coluna]) > limiar){
-					resultado.set(linha, coluna, dados.get(linha, coluna));
+					aux.set(linha, coluna, dados.get(linha, coluna));
+				}else{
+					// Caso contrario, indica-se que mas uma coluna devera ser removida
+					removeColunas++;
 				}
 			}
 		}
+		
+		/* Cria uma matriz de dimensoes reduzidas, ja que colunas serao removidas as ultimas
+		X colunas. */
+		resultado = new Matrix(dados.getRowDimension(), dados.getColumnDimension()-removeColunas);
+		
+		/* Pega a submatriz de linhas 1 a m e colunas 1 a (n - removeColunas), sendo m e n
+		a dimensao das linhas e colunas da matriz de dados fornecida como parametro. */
+		resultado.getMatrix(1, dados.getRowDimension(), 1, dados.getRowDimension()-removeColunas);
 		
 		return resultado;
 	}
 	
 	public static double[] calculaVariancia(Matrix dados){
-		double[] medCol;
-		double[] auxCol;
-		double[] varCol;
+		double[] medCol = new double[dados.getColumnDimension()];
+		double[] auxCol = new double[dados.getColumnDimension()];
+		double[] varCol = new double[dados.getColumnDimension()];
 		
 		medCol = calculaMedia(dados);
 		
-		for (int coluna = 1; coluna <= dados.getColumnDimension(); coluna++) {
-			for (int linha = 1; linha <= dados.getRowDimension(); linha++) {
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				auxCol[coluna]= 
 						auxCol[coluna] + (dados.get(linha, coluna)-medCol[coluna]) * (dados.get(linha, coluna)-medCol[coluna]);
 			}
@@ -157,9 +209,9 @@ public class Pre_Processamento{
 	}
 	
 	public static double[] calculaMedia(Matrix dados){
-		double[] medCol;
+		double[] medCol = new double[dados.getColumnDimension()];
 		
-		for (int coluna = 1; coluna < dados.getColumnDimension(); coluna++) {
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			medCol[coluna] = JamaUtils.colsum(dados, coluna)/dados.getRowDimension();
 		}
 		
@@ -167,14 +219,11 @@ public class Pre_Processamento{
 	}
 	
 	public static double[] calculaIntervalo(Matrix dados){
-		double[] minCol;
-		double[] maxCol;
-		double[] intervCol;
+		double[] intervCol = new double[dados.getColumnDimension()];
 		
-		for (int coluna = 1; coluna < dados.getColumnDimension(); coluna++) {
-			minCol[coluna] = JamaUtils.getMin(JamaUtils.getcol(dados, coluna));
-			maxCol[coluna] = JamaUtils.getMax(JamaUtils.getcol(dados, coluna));
-			intervCol[coluna] = maxCol[coluna] - minCol[coluna];
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			intervCol[coluna] = 
+					JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna));
 		}
 		
 		return intervCol;

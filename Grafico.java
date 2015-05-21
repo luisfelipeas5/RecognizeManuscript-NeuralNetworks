@@ -15,10 +15,21 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import Jama.Matrix;
+
 public class Grafico extends ApplicationFrame{
     
-    public Grafico(final String titulo, double[] dados) {
-        super(titulo);
+    public Grafico(final String titulo, Matrix dados) {
+    	/* Basta chamar esse construtor passando o Titulo do grafico
+    	 e matriz de dado que se deseja usar para se desenhar o grafico.
+		 A principio trata-se de uma matriz linha que sera utilizada da seguinte forma:
+    	 Uma linha representa o conjunto de erros obtidos pela rede ao longo das epocas.
+    	 Cada coluna representa a Epoca daquele Erro.
+    	 Ex.: Se na Epoca 1 o Erro era igual a 100 e na Epoca 2 igual a 70, esses
+    	 valores seriam acessados através de:
+    	 dados.get(1, 1) e dados.get(1, 2). */	
+        
+    	super(titulo);
         final JFreeChart grafico = criaGrafico(setDados(dados));
         final ChartPanel painel = new ChartPanel(grafico);
         painel.setPreferredSize(new Dimension(800, 600));
@@ -39,11 +50,14 @@ public class Grafico extends ApplicationFrame{
     }
     */
     
-    private CategoryDataset setDados(double[] dados_double) {
-        final DefaultCategoryDataset dados_dataset = new DefaultCategoryDataset();
+    private CategoryDataset setDados(Matrix dados) {
+        // Padronizar para MATRIX?
+    	final DefaultCategoryDataset dados_dataset = new DefaultCategoryDataset();
         
-        for(int i = 0; i < dados_double.length; i++){
-        	dados_dataset.addValue(dados_double[i], "Serie 1", ""+i+"");
+        for(int linha = 0; linha < dados.getRowDimension(); linha++){
+        	for(int coluna = 0; coluna < dados.getColumnDimension(); coluna++){
+        		dados_dataset.addValue(dados.get(linha, coluna), "Serie "+linha, ""+coluna+"");
+        	}
         }
         
     	return dados_dataset;
@@ -80,11 +94,12 @@ public class Grafico extends ApplicationFrame{
     
     public static void main(final String[] args) {
     	
-    	double[] demo = new double[100];
-        for (int i = 0; i < demo.length; i++) {
-			demo[i] = Math.random();
+    	double[][] demo_d = new double[1][200];
+        for (int i = 0; i < demo_d[0].length; i++) {
+			demo_d[0][i] = 10+Math.random();
 		}
-        final Grafico grafico = new Grafico("Erro X Epoca", demo);
+        Matrix demo = new Matrix(demo_d);
+        final Grafico grafico = new Grafico("Erro x Epoca", demo);
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
