@@ -1,14 +1,10 @@
 import Jama.Matrix;
 
 abstract class Rede {
-	int numero_neuronios_escondidos; // No caso da LVQ = 0 
-	boolean treina_padrao_padrao; 
-	boolean treina_batelada;
+	int numero_neuronios; // No caso da LVQ = 0
 	
-	Rede (int numero_neuronios_escondidos, boolean treina_padrao_padrao, boolean treina_batelada){
-		this.numero_neuronios_escondidos=numero_neuronios_escondidos;
-		this.treina_padrao_padrao=treina_padrao_padrao;
-		this.treina_batelada=treina_batelada;
+	Rede (int numero_neuronios){
+		this.numero_neuronios=numero_neuronios; 
 	}
 	
 	/*
@@ -16,10 +12,14 @@ abstract class Rede {
 	 *- um conjunto de entradas
 	 *- um conjunto de saidas desejadas
 	 */
-	abstract double calcula_saida(Matrix entradas, Matrix saida_desejadas, Matrix pesos_a, Matrix pesos_b);
+	//abstract void calcula_saida(Matrix entrada, Matrix saida_desejadas, );
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 * manipulado pela classe calcula_saida
 	 */
-	abstract void atualiza_pesos(double erro, Matrix pesos_a, Matrix pesos_b);
+	//abstract void atualiza_pesos(Matrix entrada, Matrix saida, Matrix pesos_a, Matrix pesos_b);
+	abstract double get_erro(int modo_treinamento); 
+	abstract Matrix get_saidas(); 
+	abstract void set_pesos (Matrix pesos_a, Matrix pesos_b); 
+	abstract void set_problema (Matrix entrada, Matrix saida_desejada); 		
 }
