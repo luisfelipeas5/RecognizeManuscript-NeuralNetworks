@@ -157,6 +157,30 @@ public class Classificacao_Numeros {
  			}
  			
  			System.out.println("------Estratificacao Finalizada-----");
+ 		}else {
+ 			//Definicao do conjunto de dados para treinamento
+ 			int i_inicio_treinamento=0;
+ 			int i_final_treinamento=i_inicio_treinamento+num_linhas_treinamento-1;
+ 			entradas_treinamento=entradas.getMatrix(i_inicio_treinamento, i_final_treinamento,
+ 				0, entradas.getColumnDimension()-1);
+ 			saidas_desejadas_treinamento=saidas_desejadas.getMatrix(i_inicio_treinamento, i_final_treinamento,
+ 				0, saidas_desejadas.getColumnDimension()-1);
+ 			
+ 			//Definicao do conjunto de dados para validacao
+ 			int i_inicio_validacao=i_final_treinamento+1;
+ 			int i_final_validacao=i_inicio_validacao+num_linhas_validacao-1;
+ 			entradas_validacao=entradas.getMatrix(i_inicio_validacao, i_final_validacao,
+ 				0, entradas.getColumnDimension()-1) ;
+ 			saidas_desejadas_validacao=saidas_desejadas.getMatrix(i_inicio_validacao, i_final_validacao,
+ 				0, saidas_desejadas.getColumnDimension()-1) ;;
+ 			
+ 			//Definicao do conjunto de dados para teste
+ 			int i_inicio_teste=i_final_validacao+1;
+ 			int i_final_teste=i_inicio_teste+num_linhas_teste-1;
+ 			entradas_teste=entradas.getMatrix(i_inicio_teste, i_final_teste,
+ 				0, entradas.getColumnDimension()-1) ;
+ 			saidas_desejadas_teste=saidas_desejadas.getMatrix(i_inicio_teste, i_final_teste,
+ 				0, saidas_desejadas.getColumnDimension()-1) ;
  		}
  		
  		Map<Double,List<Integer>> indices_instancias_classe_treinamento; //Map que armazena em quais indices estao cada uma dos valores de saida desejadas
@@ -196,29 +220,7 @@ public class Classificacao_Numeros {
  		System.exit(0);
  		
  		
- 		//Definicao do conjunto de dados para treinamento
-		int i_inicio_treinamento=0;
-		int i_final_treinamento=i_inicio_treinamento+num_linhas_treinamento-1;
-		entradas_treinamento=entradas.getMatrix(i_inicio_treinamento, i_final_treinamento,
-			0, entradas.getColumnDimension()-1);
-		saidas_desejadas_treinamento=saidas_desejadas.getMatrix(i_inicio_treinamento, i_final_treinamento,
-			0, saidas_desejadas.getColumnDimension()-1);
-		
-		//Definicao do conjunto de dados para validacao
-		int i_inicio_validacao=i_final_treinamento+1;
-		int i_final_validacao=i_inicio_validacao+num_linhas_validacao-1;
-		entradas_validacao=entradas.getMatrix(i_inicio_validacao, i_final_validacao,
-			0, entradas.getColumnDimension()-1) ;
-		saidas_desejadas_validacao=saidas_desejadas.getMatrix(i_inicio_validacao, i_final_validacao,
-			0, saidas_desejadas.getColumnDimension()-1) ;;
-		
-		//Definicao do conjunto de dados para teste
-		int i_inicio_teste=i_final_validacao+1;
-		int i_final_teste=i_inicio_teste+num_linhas_teste-1;
-		entradas_teste=entradas.getMatrix(i_inicio_teste, i_final_teste,
-			0, entradas.getColumnDimension()-1) ;
-		saidas_desejadas_teste=saidas_desejadas.getMatrix(i_inicio_teste, i_final_teste,
-			0, saidas_desejadas.getColumnDimension()-1) ;
+ 		
 		
 		//Definicao das configuracoes da rede
 		int numero_neuronios_escondidos=2;
