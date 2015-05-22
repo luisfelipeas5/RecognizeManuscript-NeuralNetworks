@@ -6,8 +6,8 @@ import optimization.*;
 public class Pre_Processamento{
 	
 	public static Matrix max(Matrix dados){
-		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
-
+		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
+	
 		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				if(JamaUtils.getMax(JamaUtils.getcol(dados, coluna))!=0){
@@ -23,7 +23,7 @@ public class Pre_Processamento{
 	
 	public static Matrix minmax(Matrix dados){
 		double[] intervCol = new double[dados.getColumnDimension()];
-		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
+		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
 		intervCol = calculaIntervalo(dados);
 		
@@ -44,7 +44,7 @@ public class Pre_Processamento{
 	public static Matrix sigmoidal(Matrix dados){
 		double[] intervCol = new double[dados.getColumnDimension()];
 		double[] medCol = new double[dados.getColumnDimension()];
-		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
+		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
 		medCol = calculaMedia(dados);
 		intervCol = calculaIntervalo(dados);
@@ -52,7 +52,7 @@ public class Pre_Processamento{
 		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, -1/(1+Math.exp(-((dados.get(linha, coluna) - medCol[coluna])/intervCol[coluna])))); 
+					resultado.set(linha, coluna, 1/(1+Math.exp(-((dados.get(linha, coluna) - medCol[coluna])/intervCol[coluna])))); 
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -67,7 +67,7 @@ public class Pre_Processamento{
 		
 		double[] medCol = new double[dados.getColumnDimension()];
 		double[] varCol = new double[dados.getColumnDimension()];
-		Matrix resultado = new Matrix(dados.getColumnDimension(),dados.getRowDimension());
+		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
 		medCol = calculaMedia(dados);
 		varCol = calculaVariancia(dados);
@@ -202,7 +202,7 @@ public class Pre_Processamento{
 						auxCol[coluna] + (dados.get(linha, coluna)-medCol[coluna]) * (dados.get(linha, coluna)-medCol[coluna]);
 			}
 			 
-			varCol[coluna] = auxCol[coluna]/medCol[coluna];
+			varCol[coluna] = auxCol[coluna]/dados.getRowDimension()-1;
 		}
 		
 		return varCol;
@@ -231,9 +231,45 @@ public class Pre_Processamento{
 	
 	
 	public static void main(String[] args){
-		Situacao_Problema sit = Leitura_Arquivo.obtem_dados(args[0]);
-		Matrix demo = sit.get_entrada();
-		Matrix demo_minmax = Pre_Processamento.minmax(demo);
-		demo_minmax.print(demo_minmax.getColumnDimension(), 2);
+		//Situacao_Problema sit = Leitura_Arquivo.obtem_dados(args[0]);
+		//Matrix demo = sit.get_entrada();
+		Matrix demo2 = new Matrix(5, 5);
+        
+        /*for (int i = 0; i < demo2.getRowDimension(); i++) {
+			for (int j = 0; j < demo2.getColumnDimension(); j++) {
+				demo2.set(i, j, i+j);
+			}
+		}*/
+		
+		
+		int aux = 0;
+		for (int i = 0; i < demo2.getRowDimension(); i++) {
+			for (int j = 0; j < demo2.getColumnDimension(); j++) {
+				aux++;
+				demo2.set(i, j, aux);
+			}
+		}
+		
+		
+		/*
+		double[] media = calculaMedia(demo2);
+		for (int i = 0; i < media.length; i++) {
+			System.out.println(media[i]);
+		}
+		*/
+		
+		/*
+		double[] desv = calculaVariancia(demo2);
+		for (int i = 0; i < desv.length; i++) {
+			System.out.println(Math.sqrt(desv[i]));
+		}
+		*/
+		
+		
+		
+		//demo2.print(1, 1);
+        Matrix teste1 = Pre_Processamento.zscore(demo2);
+        teste1.print(1, 3);
+		
 	}
 }

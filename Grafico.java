@@ -81,7 +81,7 @@ public class Grafico extends ApplicationFrame{
 		
         final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
 
-        
+        // Estiliza as linhas com tracejado
         for (int i = 0; i < dados.getRowCount(); i++) {
         	renderer.setSeriesStroke(
                     i, new BasicStroke(
