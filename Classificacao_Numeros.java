@@ -72,9 +72,9 @@ public class Classificacao_Numeros {
  		double porcentagem_teste=0.2;
 		
 		//Calculando o numero de linhas para cada conjunto de dados
- 		int num_linhas_treinamento=(int)(entradas.getRowDimension()*(1-porcentagem_validacao-porcentagem_teste));
- 		int num_linhas_validacao=(int)(entradas.getRowDimension()*(porcentagem_validacao));
- 		int num_linhas_teste=(int)(entradas.getRowDimension()*(porcentagem_teste));
+ 		int num_linhas_treinamento=(int)Math.ceil(entradas.getRowDimension()*(1-porcentagem_validacao-porcentagem_teste));
+ 		int num_linhas_validacao=(int)Math.ceil(entradas.getRowDimension()*(porcentagem_validacao));
+ 		int num_linhas_teste=(int)Math.ceil(entradas.getRowDimension()*(porcentagem_teste));
  		//Declarando e instanciando as matrizes que armazenarao os respectivos conjuntos de entradas
  		entradas_treinamento=new Matrix( num_linhas_treinamento, entradas.getColumnDimension() );
 		saidas_desejadas_treinamento=new Matrix( num_linhas_treinamento, saidas_desejadas.getColumnDimension());
@@ -105,18 +105,24 @@ public class Classificacao_Numeros {
  			 * no laco, eh calculada a proporcao de cada classe em numero de instancia
  			 * que entrara em cada classe, utilizando o Map criado anteriormente para o calculo
  			 */
- 			Set<Double> valores_classe = indices_instancias_classe.keySet();
+ 			
+ 			Set<Double> valores_classe = indices_instancias_classe.keySet();//valores das classes existentes
  			Iterator<Double> iterator_valores_classe = valores_classe.iterator();
+ 			//Itera sobre todos os valores de classes
  			while (iterator_valores_classe.hasNext()) {
- 				Double valor=iterator_valores_classe.next();
- 				List<Integer> lista_indices = indices_instancias_classe.get(valor);
+ 				Double valor=iterator_valores_classe.next(); //valor da classe iterada
+ 				//System.out.println("Classe "+valor);
  				
+ 				//Indices onde estao as instancias da classe iterada
+ 				List<Integer> lista_indices = indices_instancias_classe.get(valor);
  				Iterator<Integer> iterator_indices = lista_indices.iterator();
- 				//System.out.println("Indices "+lista_indices);
+ 				//System.out.println("\tIndices da classe iterada"+lista_indices);
 
+ 				//Numero de instancias da classe iterada que cada conjunto ira receber
  				int limite_treinamento=(int)Math.ceil((1-porcentagem_teste-porcentagem_validacao)*lista_indices.size());
- 				//int limite_teste=(int)Math.ceil( (porcentagem_teste)*lista_indices.size() );
  				int limite_validacao=(int)Math.ceil((porcentagem_validacao)*lista_indices.size());
+ 				int limite_teste=(int)Math.ceil( (porcentagem_teste)*lista_indices.size() );
+ 				
  				//System.out.println(limite_treinamento);
  				//System.out.println(limite_validacao);
  				//System.out.println(limite_teste);
@@ -156,10 +162,12 @@ public class Classificacao_Numeros {
  					linha_vazia_validacao+=1;
 				}
  				
+ 				
  				while (iterator_indices.hasNext()) {
  					Integer indice = iterator_indices.next();
  					//System.out.println("i="+indice+"->Teste");
  					Matrix instancia_entrada=entradas.getMatrix(indice, indice,0, entradas.getColumnDimension()-1);
+ 					
  					entradas_teste.setMatrix(linha_vazia_teste, linha_vazia_teste,
  							0, entradas.getColumnDimension()-1, instancia_entrada);
  					
@@ -169,15 +177,6 @@ public class Classificacao_Numeros {
  					
  					linha_vazia_teste+=1;
 				}
- 				/*
- 				double soma_porcentagem_teste=0;
- 				while(soma_porcentagem_teste< porcentagem_teste && iterator_indices.hasNext()) {
- 					Integer indice = iterator_indices.next();
- 					entradas_teste=entradas.getMatrix(indice, indice,0, entradas.getColumnDimension()-1);
- 					soma_porcentagem_teste+=porcentagem_por_instancia;
- 				}
- 				System.out.println("Soma porcentagem teste "+soma_porcentagem_teste);
- 				*/
  			}
  			
  			Map<Double,List<Integer>> indices_instancias_classe_treinamento; //Map que armazena em quais indices estao cada uma dos valores de saida desejadas
@@ -270,7 +269,7 @@ public class Classificacao_Numeros {
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
-				System.out.println("\nOne x One: "+classes[i]+"x"+classes[j]);
+				System.out.println("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
 				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
