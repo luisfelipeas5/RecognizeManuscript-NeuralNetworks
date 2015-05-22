@@ -20,6 +20,7 @@ abstract class Rede {
 	//abstract void atualiza_pesos(Matrix entrada, Matrix saida, Matrix pesos_a, Matrix pesos_b);
 	abstract double get_erro(int modo_treinamento); 
 	abstract Matrix get_saidas(); 
+	abstract void set_modo_treinamento (int modo_treinamento); 
 	abstract void set_pesos (Matrix pesos_a, Matrix pesos_b); 
 	abstract void set_problema (Matrix entrada, Matrix saida_desejada); 		
 }
