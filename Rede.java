@@ -18,7 +18,7 @@ abstract class Rede {
 	 * manipulado pela classe calcula_saida
 	 */
 	//abstract void atualiza_pesos(Matrix entrada, Matrix saida, Matrix pesos_a, Matrix pesos_b);
-	abstract double get_erro(int modo_treinamento); 
+	abstract double get_erro(); 
 	abstract Matrix get_saidas(); 
 	abstract void set_modo_treinamento (int modo_treinamento); 
 	abstract void set_pesos (Matrix pesos_a, Matrix pesos_b); 
