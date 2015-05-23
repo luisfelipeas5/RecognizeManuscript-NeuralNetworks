@@ -80,7 +80,6 @@ public class LVQ extends Rede{
 	}
 	
 	/* Imprime a matriz de pesos */
-	
 	void imprime_matriz_de_pesos(){
 		for(int x=0; x < numero_neuronios_saida*numero_de_classes; x++){    
 			for(int y=0; y < dimensao; y++){
@@ -122,7 +121,7 @@ public class LVQ extends Rede{
 			System.out.println("Epoca 0");
 			System.out.println("");
 			
-			/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
+		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
 			
 			for(int k = 0; k < numero_de_instancias; k++){	
 		
@@ -194,11 +193,5 @@ public class LVQ extends Rede{
 
 		return saidas;
 	}
-
-	@Override
-	void set_necessidade_atualizacao() {
-		necessiadade_atualizar_pesos=!necessiadade_atualizar_pesos;
-	} 
-	
 	
 }

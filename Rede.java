@@ -24,5 +24,7 @@ abstract class Rede {
 	abstract void set_modo_treinamento (int modo_treinamento); 
 	abstract void set_pesos (Matrix pesos_a, Matrix pesos_b); 
 	abstract void set_problema (Matrix entrada, Matrix saida_desejada); 		
-	abstract void set_necessidade_atualizacao();
+	void set_necessidade_atualizacao() {
+		necessiadade_atualizar_pesos=!necessiadade_atualizar_pesos;
+	}
 }
