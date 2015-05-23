@@ -21,6 +21,7 @@ public class Classificacao_Numeros {
 	static Matrix saidas_desejadas_teste; //conjunto de saidas desejadas para as intancias do conjunto de teste retirado do conjunto de saidas desejadas
 	
 	static Map<Double,List<Integer>> indices_instancias_classe; //Map que armazena em quais indices estao cada uma dos valores de saida desejadas
+	static boolean pesos_aleatorios;
 	
 	public static void main(String[] args) {
 		//Estabelece o nome do arquivo que contem o conjunto de dados
@@ -44,36 +45,49 @@ public class Classificacao_Numeros {
 		//Argumentos para a rede
 		double taxa_aprendizado_inicial=0.9; //Taxa de apredizado inicial
 		boolean taxa_aprendizado_variavel=true; //A taxa de aprendizado sera atualizada durante o treinamento das redes
-		
+		pesos_aleatorios=true;
 		
 		/* -----------------------LVQ----------------------------------------------
 		 * Uma nova lvq eh criada com numero de neuronios por classe e taxa de aprendizado inicial definidas
 		 * anteriormente. Na instanciacao do novo objeto eh passado como informacao quantas instancias
 		 * existem por classe
 		 */
-		/*
+		
 		//Argumentos para a LVQ
-		int numero_neuronios_classes=3; //Numero de neuronios por classe na LVQ
-		Rede lvq=null;
-		//lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial);
-		lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial, numero_de_classes);
-		*/
+		int numero_neuronios_classe=3; //Numero de neuronios por classe na LVQ
+		double[] classes; //array das classes existentes no conjunto de saidas desejadas (rotulos da LVQ)
+		Set<Double> classes_keySet = indices_instancias_classe.keySet();
+		classes=new double[classes_keySet.size()];
+		Iterator<Double> iterator_classes = classes_keySet.iterator();
+		for(int i=0; iterator_classes.hasNext();i++) { 
+			classes[i]=iterator_classes.next();
+		}
+		Rede lvq=new LVQ(numero_neuronios_classe, taxa_aprendizado_inicial, classes);
 		
 		/* -----------------------MLP----------------------------------------------
 		 * Uma nova mlp eh criada com numero de neuronios e taxa de aprendizado definidas
 		 * anteriormente. Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
 		 * ira ser atualizada durante o treinamento ou nao
 		 */
-		
 		//Argumentos para a MLP
 		int modo_treinamento=1; //modo que treinamento sera feito: a padra a padrao(=1) ou a batelada(=2)
 		int numero_neuronios_escondidos=2; //Numero de neuronios na camada escondida
-		Rede mlp=null;
-		mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
+		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento definido a cima		
 		
 		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
 		
+		Matrix pesos_a= new Matrix( lvq.numero_neuronios, entradas_treinamento.getColumnDimension() );
+		Matrix pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), lvq.numero_neuronios );
+		Treinamento.gera_pesos_aleatorios(pesos_a);
+		Treinamento.gera_pesos_aleatorios(pesos_b);
+		lvq.set_necessidade_atualizacao();
+		lvq.set_pesos(pesos_a, pesos_b);
+		lvq.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
+		lvq.set_necessidade_atualizacao();
+		Matrix saidas_epoca_lvq=lvq.get_saidas();
+		
+		System.exit(0);
 		//mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
 		//grafico_erro_epoca(mlp, numero_epocas);
 		
@@ -304,7 +318,7 @@ public class Classificacao_Numeros {
 
 		Matrix erros_epocas =
 				treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
-						entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+						entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas, pesos_aleatorios);
 		Grafico g = new Grafico("Erros X Epocas",erros_epocas);
 	}
 	

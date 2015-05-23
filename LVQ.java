@@ -31,7 +31,7 @@ public class LVQ extends Rede{
 	boolean necessiadade_atualizar_pesos=true;
 	
 	public LVQ(int numero_neuronios_classe, double taxa_de_aprendizado, double[] classes){	
-		super(0);
+		super(numero_neuronios_classe);
 		this.numero_neuronios_saida = numero_neuronios_classe;
 		this.taxa_de_aprendizado = taxa_de_aprendizado;
 		this.numero_de_classes = classes.length;
@@ -42,7 +42,7 @@ public class LVQ extends Rede{
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getColumnDimension();
-		this.dimensao = entrada.getRowDimension();
+		this.dimensao = entrada.getColumnDimension();
 		this.classe_alvo = saida_desejada.getRowPackedCopy();		//ver certinho 
 	}
 	
@@ -174,24 +174,23 @@ public class LVQ extends Rede{
 		
 		int neuronio_ganhador = 0;
 		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];	
-			
-			for(int k = 0; k < numero_de_instancias; k++){			
+		for(int k = 0; k < numero_de_instancias; k++){			
 			neuronio_ganhador = 0;
-				for(int i = 0; i< numero_neuronios_saida*numero_de_classes; i++){
-					distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
-					
-					/* A classe do neuronio ganhador eh colocada em uma matriz, sendo retornada */
-					
-					if(i!= 0){
-						if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
-							neuronio_ganhador = i;
-							saidas_da_rede[k] = rotulo_pesos[i];
-						}
+			for(int i = 0; i< distancia_euclidiana.length; i++){
+				distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
+				
+				/* A classe do neuronio ganhador eh colocada em uma matriz, sendo retornada */
+				
+				if(i!= 0){
+					if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
+						neuronio_ganhador = i;
+						saidas_da_rede[k] = rotulo_pesos[i];
 					}
-				}					
-			}
+				}
+			}					
+		}
 			
-			Matrix saidas = new Matrix(saidas_da_rede, numero_de_instancias);
+		Matrix saidas = new Matrix(saidas_da_rede, numero_de_instancias);
 
 		return saidas;
 	}
