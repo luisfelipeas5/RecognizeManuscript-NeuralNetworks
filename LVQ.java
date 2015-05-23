@@ -114,30 +114,35 @@ public class LVQ extends Rede{
 	double get_erro(){	
 	
 		double contador_de_erros = 0;
-		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];	//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo
+		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo
 
-			imprime_matriz_de_pesos();
-			System.out.println("");
-			System.out.println("Epoca 0");
-			System.out.println("");
+		imprime_matriz_de_pesos();
+		System.out.println("");
+		System.out.println("Epoca 0");
+		System.out.println("");
 			
 		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
 			
-			for(int k = 0; k < numero_de_instancias; k++){	
+		for(int k = 0; k < numero_de_instancias; k++){	
 		
 			/* Passo 2 - Encontrar o vetor (neuronio) de saida tal que a distancia seja minima */
-		
+			
 			neuronio_ganhador = 0;
-				for(int i = 0; i< numero_neuronios_saida*numero_de_classes; i++){
-					distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
-					if(i!= 0){
-						if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
-							neuronio_ganhador = i;
-						}
+			for(int i = 0; i< numero_neuronios_saida*numero_de_classes; i++){
+				distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
+				if(i!= 0){
+					if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
+						neuronio_ganhador = i;
 					}
-					System.out.println(distancia_euclidiana[i] + "	neuronio ganhador:" + neuronio_ganhador);
 				}
-				
+				System.out.println(distancia_euclidiana[i] + "	neuronio ganhador:" + neuronio_ganhador);
+			}
+		
+			/*
+			 * Se os pesos devem ser atualizados (conjunto de entradas eh o conjunto de treinamento)
+			 *  (nao se deve atualizar os peses quando temos o conjunto de validacao como conjunto de entradas):
+			 */
+			if(necessiadade_atualizar_pesos) {
 				/* Passo 3 - Alterando os pesos analisando a classe definida. Sao aplicados as regras de aprendizado. A soma ocorre quando 
 				a classificacao sugerida pela LVQ eh correta (o vetor resultante da operação está situado entre o vetor protótipo e o vetor
 				de dados, ou seja, houve a movimentação do vetor protótipo na direção do dado). Já a subtracao ocorre quando a classificacao
@@ -149,24 +154,21 @@ public class LVQ extends Rede{
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] + (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 
 					}
 				}else{
-				
 					System.out.println("Errou!");
 					contador_de_erros++;
 					for(int a = 0; a < dimensao; a++){
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] - (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 
 					}
 				}
+			
+				/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
+				taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);	
 			}
-			
-			/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
-			
-			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);	
-			
-			return contador_de_erros;
+		}
+		return contador_de_erros;
 	}
 	
 	/* Metodo que gera uma Matrix com as saidas da rede para uma sequencia de entradas */
-	
 	Matrix get_saidas(){
 		double[] saidas_da_rede = new double[numero_de_instancias];
 		
