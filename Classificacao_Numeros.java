@@ -302,8 +302,10 @@ public class Classificacao_Numeros {
 	public static void grafico_erro_epoca(Rede rede, int numero_limite_epocas) {
 		Treinamento treinamento=new Treinamento(rede);
 
-		//treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
-		//		entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+		Matrix erros_epocas =
+				treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
+						entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+		Grafico g = new Grafico("Erros X Epocas",erros_epocas);
 	}
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
@@ -377,16 +379,34 @@ public class Classificacao_Numeros {
 				for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
 					if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
 						//Se a classe predita for igual a classe real
-						if(saidas.get(k, 0)==saidas_desejadas_one_one.get(k, 0)) {
-							verdadeiro_positivo+=1;
-						}else {	//Se a classe predita for diferente da classe real
-							falso_negativo+=1;
+						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
+						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
+						if(k<saidas_desejadas_one_one.getRowDimension()){
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) {
+								verdadeiro_positivo+=1;
+							}else {	//Se a classe predita for diferente da classe real
+								falso_negativo+=1;
+							}	
+						}else{
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0)) {
+								verdadeiro_positivo+=1;
+							}else {	//Se a classe predita for diferente da classe real
+								falso_negativo+=1;
+							}
 						}
 					}else { //Se a classe real for clases[j]
-						if(saidas.get(k, 0)==saidas_desejadas_one_one.get(k, 0)) { //Se a classe predita for igual a classe real
-							verdadeiro_negativo+=1;
-						}else { //Se a classe predita for diferente da classe real
-							falso_positivo+=1;
+						if(k<saidas_desejadas_one_one.getRowDimension()){
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) { //Se a classe predita for igual a classe real
+								verdadeiro_negativo+=1;
+							}else { //Se a classe predita for diferente da classe real
+								falso_positivo+=1;
+							}
+						}else{
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0)) { //Se a classe predita for igual a classe real
+								verdadeiro_negativo+=1;
+							}else { //Se a classe predita for diferente da classe real
+								falso_positivo+=1;
+							}
 						}
 					}
 				}
