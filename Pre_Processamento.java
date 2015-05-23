@@ -42,17 +42,17 @@ public class Pre_Processamento{
 	}
 	
 	public static Matrix sigmoidal(Matrix dados){
-		double[] intervCol = new double[dados.getColumnDimension()];
+		double[] desCol = new double[dados.getColumnDimension()];
 		double[] medCol = new double[dados.getColumnDimension()];
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
 		medCol = calculaMedia(dados);
-		intervCol = calculaIntervalo(dados);
+		desCol = calculaVariancia(dados);
 		
 		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
-				if(intervCol[coluna]!=0){
-					resultado.set(linha, coluna, 1/(1+Math.exp(-((dados.get(linha, coluna) - medCol[coluna])/intervCol[coluna])))); 
+				if(desCol[coluna]!=0){
+					resultado.set(linha, coluna, 1/(1+Math.exp(-(dados.get(linha, coluna) - medCol[coluna])/desCol[coluna])));
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -75,7 +75,7 @@ public class Pre_Processamento{
 		for(int coluna = 0; coluna < dados.getColumnDimension(); coluna++){
 			for(int linha = 0; linha < dados.getRowDimension(); linha++){
 				if(varCol[coluna]!=0){
-					resultado.set(linha, coluna, dados.get(linha, coluna)-medCol[coluna]/Math.sqrt(varCol[coluna]));
+					resultado.set(linha, coluna, (dados.get(linha, coluna)-medCol[coluna])/Math.sqrt(varCol[coluna]));
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -199,10 +199,9 @@ public class Pre_Processamento{
 		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
 				auxCol[coluna]= 
-						auxCol[coluna] + (dados.get(linha, coluna)-medCol[coluna]) * (dados.get(linha, coluna)-medCol[coluna]);
+						auxCol[coluna] + ((dados.get(linha, coluna)-medCol[coluna]) * (dados.get(linha, coluna)-medCol[coluna]));
 			}
-			 
-			varCol[coluna] = auxCol[coluna]/dados.getRowDimension()-1;
+			varCol[coluna] = auxCol[coluna]/((double)(dados.getRowDimension()-1));
 		}
 		
 		return varCol;
@@ -258,6 +257,12 @@ public class Pre_Processamento{
 		}
 		*/
 		
+		double[] var = calculaVariancia(demo2);
+		for (int i = 0; i < var.length; i++) {
+			System.out.println(var[i]);
+		}
+		
+		
 		/*
 		double[] desv = calculaVariancia(demo2);
 		for (int i = 0; i < desv.length; i++) {
@@ -268,8 +273,10 @@ public class Pre_Processamento{
 		
 		
 		//demo2.print(1, 1);
-        Matrix teste1 = Pre_Processamento.zscore(demo2);
-        teste1.print(1, 3);
+        //Matrix teste1 = Pre_Processamento.sigmoidal(demo2);
+        //teste1.print(1, 3);
+		
+		
 		
 	}
 }
