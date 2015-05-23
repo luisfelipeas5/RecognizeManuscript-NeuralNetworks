@@ -45,9 +45,11 @@ public class Treinamento {
 		 * a funcao.
 		 */
 		int epoca_atual=0;
-		while (erro_total_treinamento!=erro_total_validacao && epoca_atual<numero_limite_epocas) {
+		while (erro_total_treinamento>erro_total_validacao && epoca_atual<numero_limite_epocas) {
 			//erro total para o conjunto de treinamento
 			erro_total_treinamento= this.rede.calcula_saida(entradas_treinamento, saidas_desejadas_treinamento, pesos_a, pesos_b);
+			//erro_total_treinamento= this.rede.get_erro_epoca(entradas_treinamento, saidas_desejadas_treinamento, pesos_a, pesos_b);
+			
 			/*erro total para o conjunto de validacao
 				*nao eh feita nenhum tipo de atualizacao de pesos, por isso
 				*a rede nao pode atualizar padrao a padrao, nem mesmo em batch 
@@ -61,8 +63,8 @@ public class Treinamento {
 			this.rede.treina_padrao_padrao=treina_padrao_padrao_old;
 			
 			//Armazena erros de treinamento e validacao da epoca atual
-			erros_epocas.set(epoca_atual, 1, erro_total_treinamento);
-			erros_epocas.set(epoca_atual, 2, erro_total_validacao);
+			erros_epocas.set(epoca_atual, 0, erro_total_treinamento);
+			erros_epocas.set(epoca_atual, 1, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 			

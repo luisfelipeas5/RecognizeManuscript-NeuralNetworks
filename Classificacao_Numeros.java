@@ -3,21 +3,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import Jama.Matrix;
 
 
 public class Classificacao_Numeros {
-	static Matrix entradas;
-	static Matrix saidas_desejadas;
+	static Matrix entradas; //conjunto de entradas com bias que contem todas as instancias do arquivo
+	static Matrix saidas_desejadas; //conjunto de saidas desejadas que contem todas as saidas da instancia do arquivo
 	
-	static Matrix entradas_treinamento;
-	static Matrix saidas_desejadas_treinamento;
-	static Matrix entradas_validacao;
-	static Matrix saidas_desejadas_validacao;
-	static Matrix entradas_teste;
-	static Matrix saidas_desejadas_teste;
+	static Matrix entradas_treinamento; //conjunto de entradas para treinamento retirado do conjunto de entradas
+	static Matrix saidas_desejadas_treinamento; //conjunto de saidas desejadas para as intancias do conjunto de treinamento retirado do conjunto de saidas desejadas
+	static Matrix entradas_validacao; //conjunto de entradas para validaca retirado do conjunto de entradas
+	static Matrix saidas_desejadas_validacao; //conjunto de saidas desejadas para as intancias do conjunto de validaca retirado do conjunto de saidas desejadas
+	static Matrix entradas_teste; //conjunto de entradas para validacao retirado do conjunto de entradas
+	static Matrix saidas_desejadas_teste; //conjunto de saidas desejadas para as intancias do conjunto de teste retirado do conjunto de saidas desejadas
 	
 	static Map<Double,List<Integer>> indices_instancias_classe; //Map que armazena em quais indices estao cada uma dos valores de saida desejadas
 	
@@ -37,26 +38,53 @@ public class Classificacao_Numeros {
 		Matrix entradas_sem_bias=situacao_problema_conjunto_dados.get_entrada();
 		saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
 		
-		/*
-		 * Adiciona à matriz de entrada as entradas referentes ao bias!
+		entradas=adiciona_bias(entradas_sem_bias); //Adiciona à matriz de entrada as entradas referentes ao bias!
+		
+		boolean estratificado=true;//o Holdout ira ser estratificado ou nao?
+		separa_conjuntos(estratificado); //Define os conjuntos de treinamento, validacao e teste usando o HOLDOUT
+		
+		//Argumentos para a rede
+		double taxa_aprendizado_inicial=0.9; //Taxa de apredizado inicial. Entende-se tambem como o limite superior no metodo da bissecao
+		boolean taxa_aprendizado_variavel=true; //A taxa de aprendizado sera atualizada durante o treinamento das redes
+		
+		
+		/* -----------------------MLP----------------------------------------------
+		 * Uma nova mlp eh criada com numero de neuronios e taxa de aprendizado definidas
+		 * anteriormente. Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
+		 * ira ser atualizada durante o treinamento ou nao
 		 */
-		entradas=adiciona_bias(entradas_sem_bias);//Matriz das instâncias de entrada com bias
 		
-		separa_conjuntos();
-		
-		int numero_epocas=10;
-		
-		int numero_neuronios_escondidos=2;
+		//Argumentos para a MLP
+		int modo_treinamento=1; //modo que treinamento sera feito: a padra a padrao(=1) ou a batelada(=2)
+		int numero_neuronios_escondidos=2; //Numero de neuronios na camada escondida
 		Rede mlp=null;
-		//mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial);
-		matriz_confusao(mlp);
+		//mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
+		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento definido a cima		
+		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		
-		int numero_neuronios_classes=3;
+		
+		/* -----------------------LVQ----------------------------------------------
+		 * Uma nova lvq eh criada com numero de neuronios por classe e taxa de aprendizado inicial definidas
+		 * anteriormente. Na instanciacao do novo objeto eh passado como informacao quantas instancias
+		 * existem por classe
+		 */
+		//Argumentos para a LVQ
+		//int numero_neuronios_classes=3; //Numero de neuronios por classe na LVQ
+		/*
 		Rede lvq=null;
-		//lvq=new LVQ(numero_neuronios_classes);
+		lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial);
+		*/
+		
+		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
 	}
 	
-	public static void separa_conjuntos() {
+	public static void separa_conjuntos(boolean estratificado) {
+		/*
+		 * Troca as posicoes das instancias para que o holdout 
+		 * separe randomicamente as instancias nos conjuntos
+		 */
+		embaralhar_conjuntos(entradas, saidas_desejadas);
+		
 		/*
 		 * Separacao do conjunto de entradas em conjunto de :
 		 *  - treinamento ( 1-(porcentagem_validacao+porcentagem_teste)% do conjunto de entradas)
@@ -91,8 +119,7 @@ public class Classificacao_Numeros {
  		 * eh necessario que cada classe seja representada em numero de instancias
  		 * igualmente no conjunto de treinamento, validacao e teste
  		 */
- 		boolean estratificacao=true;
- 		if(estratificacao) {
+ 		if(estratificado) {
  			System.out.println("------Inicio da Estratificacao-----");
  			
  			//Indice da linha onde sera incluida a nova instancia em cada conjunto
@@ -105,7 +132,6 @@ public class Classificacao_Numeros {
  			 * no laco, eh calculada a proporcao de cada classe em numero de instancia
  			 * que entrara em cada classe, utilizando o Map criado anteriormente para o calculo
  			 */
- 			
  			Set<Double> valores_classe = indices_instancias_classe.keySet();//valores das classes existentes
  			Iterator<Double> iterator_valores_classe = valores_classe.iterator();
  			//Itera sobre todos os valores de classes
@@ -121,7 +147,7 @@ public class Classificacao_Numeros {
  				//Numero de instancias da classe iterada que cada conjunto ira receber
  				int limite_treinamento=(int)Math.ceil((1-porcentagem_teste-porcentagem_validacao)*lista_indices.size());
  				int limite_validacao=(int)Math.ceil((porcentagem_validacao)*lista_indices.size());
- 				int limite_teste=(int)Math.ceil( (porcentagem_teste)*lista_indices.size() );
+ 				//int limite_teste=(int)Math.ceil( (porcentagem_teste)*lista_indices.size() );
  				
  				//System.out.println(limite_treinamento);
  				//System.out.println(limite_validacao);
@@ -243,6 +269,28 @@ public class Classificacao_Numeros {
 	}
 	
 	/*
+	 * Dado duas matrizes, o metodo troca as instancias de lugares para
+	 * embaralhar o conjunto de dados originais, utilizando um metodo Randomico
+	 */
+	public static void embaralhar_conjuntos(Matrix entradas, Matrix saidas_desejadas) {
+		Random random=new Random();
+		for(int indice_instancia=0; indice_instancia<entradas.getRowDimension(); indice_instancia++) {
+			int nova_indice_instancia=random.nextInt(entradas.getRowDimension());
+			
+			Matrix entrada=entradas.getMatrix(indice_instancia, indice_instancia, 0, entradas.getColumnDimension()-1);
+			Matrix saida_desejada=saidas_desejadas.getMatrix(indice_instancia, indice_instancia, 0, saidas_desejadas.getColumnDimension()-1);
+			
+			Matrix nova_entrada=entradas.getMatrix(nova_indice_instancia, nova_indice_instancia, 0, entradas.getColumnDimension()-1);
+			Matrix nova_saida_desejada=saidas_desejadas.getMatrix(nova_indice_instancia, nova_indice_instancia, 0, saidas_desejadas.getColumnDimension()-1);
+			
+			entradas.setMatrix(indice_instancia, indice_instancia, 0, entradas.getColumnDimension()-1, nova_entrada);
+			entradas.setMatrix(nova_indice_instancia, nova_indice_instancia, 0, entradas.getColumnDimension()-1, entrada);
+			saidas_desejadas.setMatrix(indice_instancia, indice_instancia, 0, saidas_desejadas.getColumnDimension()-1, nova_saida_desejada);
+			saidas_desejadas.setMatrix(nova_indice_instancia, nova_indice_instancia, 0, saidas_desejadas.getColumnDimension()-1, saida_desejada);
+		}
+	}
+
+	/*
 	 * Esse metodo disponibiliza o grafico erro X epocas de uma determinada rede
 	 * 		- O numero de epocas eh passado como parametro;
 	 */
@@ -309,18 +357,62 @@ public class Classificacao_Numeros {
 				System.out.println("Saidas One x One");
 				saidas_desejadas_one_one.print(saidas_desejadas_one_one.getColumnDimension(), 3);
 				
-				//rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
-				//Matrix saidas=rede.get_saidas();
-				
+				//Elementos da matriz de confusao
 				int falso_negativo=0;
 				int falso_positivo=0;
 				int verdadeiro_positivo=0;
 				int verdadeiro_negativo=0;
 				
-				//for (int k = 0; k < saidas.getRowDimension(); k++) {
-					
-				//}
+				//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
+				rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
+				Matrix saidas=rede.get_saidas();
+				
+				//Dadas as saidas da rede, compara-las com as saidas desejadas para montar
+				//a matriz de confusao
+				for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+					if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
+						//Se a classe predita for igual a classe real
+						if(saidas.get(k, 0)==saidas_desejadas_one_one.get(k, 0)) {
+							verdadeiro_positivo+=1;
+						}else {	//Se a classe predita for diferente da classe real
+							falso_negativo+=1;
+						}
+					}else { //Se a classe real for clases[j]
+						if(saidas.get(k, 0)==saidas_desejadas_one_one.get(k, 0)) { //Se a classe predita for igual a classe real
+							verdadeiro_negativo+=1;
+						}else { //Se a classe predita for diferente da classe real
+							falso_positivo+=1;
+						}
+					}
+				}
+				System.out.println("Matriz de confusao" +classes[i]+" X "+classes[j]);
+				System.out.println("Verdadeiro positivo: " + verdadeiro_positivo);
+				System.out.println("Falso negativo: "+falso_negativo);
+				System.out.println("Falso positivo: "+falso_positivo);
+				System.out.println("Verdadeiro negativo: "+verdadeiro_negativo);
+				
+				/*TODO contabiliza cada um dos elementos da matriz de confusao
+				//Medidas extraidas da matriz de confusao
+				double sensibilidade=verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
+				double taxa_falsos_positivos=falso_positivo/(verdadeiro_negativo+falso_positivo);
+				double especificidade=verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
+				double precisao= verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
+				double preditividade_negativa=taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
+				double taxa_falsas_descobertas=falso_positivo/(verdadeiro_positivo+falso_positivo);
+				double taxa_acuracia=(verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+				double taxa_erro=(falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+				
+				System.out.println("\nSensibilidade="+sensibilidade);
+				System.out.println("\nTaxa de falsos positivos="+taxa_falsos_positivos);
+				System.out.println("\nEspecificidade="+especificidade);
+				System.out.println("\nPrecisao="+precisao);
+				System.out.println("\nPreditividade Negativa="+preditividade_negativa);
+				System.out.println("\nTaxa de falsas descobertas="+taxa_falsas_descobertas);
+				System.out.println("\nTaxa de Acuracidade="+taxa_acuracia);
+				System.out.println("\nTaxa de Erro="+taxa_erro);
+				*/
 				System.out.println("----------Fim One x One: "+classes[i]+"x"+classes[j]+"--------\n");
+				
 			}
 		}
 	}
@@ -329,6 +421,7 @@ public class Classificacao_Numeros {
 	 * Esse metodo devolve uma lista que contem o numero de valores repetidos
 	 * de cada valor dentro de uma matriz de dados passada como argumento
 	 */
+
 	public static Map<Double,List<Integer>> contar_numero_de_instancias(Matrix dados) {
 		Map<Double,List<Integer>> indice_de_instancias=new HashMap<Double,List<Integer>>();
 		for (int i = 0; i < dados.getRowDimension(); i++) {
