@@ -76,7 +76,6 @@ public class Classificacao_Numeros {
 		
 		//mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
 		//grafico_erro_epoca(mlp, numero_epocas);
-		//Grafico g = new Grafico("Erros X Epocas", matriz_erros_epocas);
 		
 		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
 		//grafico_erro_epoca(lvq, numero_epocas);
@@ -303,8 +302,10 @@ public class Classificacao_Numeros {
 	public static void grafico_erro_epoca(Rede rede, int numero_limite_epocas) {
 		Treinamento treinamento=new Treinamento(rede);
 
-		//treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
-		//		entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+		Matrix erros_epocas =
+				treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
+						entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+		Grafico g = new Grafico("Erros X Epocas",erros_epocas);
 	}
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
