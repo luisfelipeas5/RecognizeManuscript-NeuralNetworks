@@ -1,17 +1,14 @@
-/*  Observacoes para o Luis :p 
- * 
- *  Os pesos precisam ter os rotulos, ou seja, a classe de cada vetor prototipo, entao vc precisa me passar isso tambem de acordo com a 
- *  codificacao das classes, vc poderia me passar como parametro na matriz de pesos set_Pesos, onde a matriz a seria de pesos ou vetores 
- *  e a matriz b a das classes (uma dimensao)
- *  
- *  Precisa ter o metodo de remover neuronios nao utilizados apos o treinamento e deve ser feito da seguinte maneira: se uma entrada for da 
+/*
+ *  Observacoes para o Senhor Marcelo
+ *  Sobre os rotulos, decidi passar no construtor, então se vc reparar, eu mudei um pouco o construtor!
+ */
+
+/* 
+ *  TODO Precisa ter o metodo de remover neuronios nao utilizados apos o treinamento e deve ser feito da seguinte maneira: se uma entrada for da 
  *  da classe x, podemos testar apenas com os neuronios da classe x (exemplo, se a entrada eh da classe 1, deve-se testar quais neuronios
  *  sao ativados da classe 1, apenas), entrada classe 2 -> neuronios da classe 2, e assim por diante. Podemos tentar fazer juntos, nao fiz
  *  pq nao sei como ele ira funcionar no treinamento exatamente
- * 
- * 
  * */
-
 
 import Jama.Matrix;
 import java.util.Random;
@@ -19,7 +16,7 @@ import java.util.Random;
 public class LVQ extends Rede{
 	
 	double[][] vetores_de_entrada;	// dados de entrada
-	double[] classe_alvo;	// vetor que guarda as classes das instancias (de entrada)
+	double[] classe_alvo;			// vetor que guarda as classes das instancias (de entrada)
 	int numero_de_instancias;		// vetores_de_entrada[i]
 	int dimensao;					// da entrada
 	int numero_de_classes;			// alvo, pode ser assumido como 10!!!
@@ -30,17 +27,18 @@ public class LVQ extends Rede{
 	double taxa_de_aprendizado;		// definir
 	int neuronio_ganhador;			// indice do vetor da classe ganhadora
 	double[] distancia_euclidiana;	// conterah as distancias de uma entrada em relacao aos neuronios
-
 	
-	public LVQ(int numero_neuronios_saida, double taxa_de_aprendizado, int numero_de_classes){	
+	boolean necessiadade_atualizar_pesos=true;
+	
+	public LVQ(int numero_neuronios_classe, double taxa_de_aprendizado, double[] classes){	
 		super(0);
-		this.numero_neuronios_saida = numero_neuronios_saida;
+		this.numero_neuronios_saida = numero_neuronios_classe;
 		this.taxa_de_aprendizado = taxa_de_aprendizado;
-		this.numero_de_classes = numero_de_classes;
+		this.numero_de_classes = classes.length;
+		this.rotulo_pesos=classes;
 	}
 	
 	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */
-
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getColumnDimension();
@@ -48,11 +46,12 @@ public class LVQ extends Rede{
 		this.classe_alvo = saida_desejada.getRowPackedCopy();		//ver certinho 
 	}
 	
-	/* Na LVQ, a matriz de pesos, que eh a matriz onde cada linha corresponde a um vetor prototipo (neuronio) sera passado como parametro */
-	
+	/* 
+	 * Na LVQ, a matriz de pesos, que eh a matriz onde cada linha corresponde 
+	 * a um vetor prototipo (neuronio) sera passado como parametro 
+	 */
 	void set_pesos (Matrix pesos_a, Matrix pesos_b){
 		this.pesos = pesos_a.getArrayCopy();
-		//this.rotulo_pesos = pesos_b.getArrayCopy();
 	} 
 	
 	void set_modo_treinamento (int modo_treinamento){
@@ -60,7 +59,6 @@ public class LVQ extends Rede{
 	} 
 	
 	/* Distancia Euclidiana sera utilizada no EP */
-	
 	public double distancia_euclidiana(double[] vetor1, double[] vetor2){
 		double distancia =0;
 		for(int j=0;j<dimensao;j++){
@@ -71,7 +69,6 @@ public class LVQ extends Rede{
 	
 	/* A matriz de pesos tem o numero de linhas igual ao numero de neuronios de saida
 	e numero de colunas igual ao numero de atributo, ou seja, a dimensao das entrasas */
-	
 	public void inicializa_pesos(){	
 		pesos = new double[numero_neuronios_saida*numero_de_classes][dimensao];
 		Random rd = new Random();
@@ -83,7 +80,6 @@ public class LVQ extends Rede{
 	}
 	
 	/* Imprime a matriz de pesos */
-	
 	void imprime_matriz_de_pesos(){
 		for(int x=0; x < numero_neuronios_saida*numero_de_classes; x++){    
 			for(int y=0; y < dimensao; y++){
@@ -107,7 +103,6 @@ public class LVQ extends Rede{
 	
 	/* A constante pode ser trocada, porem como visto em aula, 0.9 eh um bom numero
 	 * Funcoes tambem podem ser utilizadas para o decrescimento da taxa */
-	
 	public double diminui_taxa_de_aprendizado(double taxa_de_aprendizado_atual){
 		double taxa_atualizada;
 		taxa_atualizada = taxa_de_aprendizado_atual*0.9;
@@ -116,7 +111,6 @@ public class LVQ extends Rede{
 
 	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador nao era da mesma classe que a instancia
 	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
-	
 	double get_erro(){	
 	
 		double contador_de_erros = 0;
@@ -127,7 +121,7 @@ public class LVQ extends Rede{
 			System.out.println("Epoca 0");
 			System.out.println("");
 			
-			/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
+		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
 			
 			for(int k = 0; k < numero_de_instancias; k++){	
 		
@@ -198,7 +192,6 @@ public class LVQ extends Rede{
 			Matrix saidas = new Matrix(saidas_da_rede, numero_de_instancias);
 
 		return saidas;
-	} 
-	
+	}
 	
 }

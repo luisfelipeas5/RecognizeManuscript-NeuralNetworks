@@ -2,6 +2,7 @@ import Jama.Matrix;
 
 abstract class Rede {
 	int numero_neuronios; // No caso da LVQ = 0
+	boolean necessiadade_atualizar_pesos=true;
 	
 	Rede (int numero_neuronios){
 		this.numero_neuronios=numero_neuronios; 
@@ -23,4 +24,7 @@ abstract class Rede {
 	abstract void set_modo_treinamento (int modo_treinamento); 
 	abstract void set_pesos (Matrix pesos_a, Matrix pesos_b); 
 	abstract void set_problema (Matrix entrada, Matrix saida_desejada); 		
+	void set_necessidade_atualizacao() {
+		necessiadade_atualizar_pesos=!necessiadade_atualizar_pesos;
+	}
 }
