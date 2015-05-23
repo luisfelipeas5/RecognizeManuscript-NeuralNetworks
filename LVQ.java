@@ -117,7 +117,7 @@ public class LVQ extends Rede{
 	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador nao era da mesma classe que a instancia
 	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
 	
-	double get_erro(int modo_treinamento){	
+	double get_erro(){	
 	
 		double contador_de_erros = 0;
 		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];	//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo

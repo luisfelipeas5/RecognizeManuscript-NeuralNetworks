@@ -24,10 +24,6 @@ public class Treinamento {
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
 						int numero_limite_epocas, boolean pesos_aleatorios) {
 		rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
-		
-		Matrix pesos_a;
-		Matrix pesos_b;
-		
 		/*
 		 * para saber se os pesos devem ter uma coluna a mais, eh necessario detectar
 		 * se a rede do treinamento eh uma MLP. Caso seja uma LVQ, o acrescimo nao eh necessario
@@ -39,8 +35,8 @@ public class Treinamento {
 			acrescimo_bias=0;
 		}
 		
-		pesos_a= new Matrix( rede.numero_neuronios, entradas_treinamento.getColumnDimension()+acrescimo_bias );
-		pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), rede.numero_neuronios+acrescimo_bias );
+		Matrix pesos_a= new Matrix( rede.numero_neuronios, entradas_treinamento.getColumnDimension()+acrescimo_bias );
+		Matrix pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), rede.numero_neuronios+acrescimo_bias );
 		
 		if(pesos_aleatorios) {
 			//Para a primeira epoca, os pesos devem ser gerados de forma randomica

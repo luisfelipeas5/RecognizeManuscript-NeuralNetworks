@@ -51,11 +51,14 @@ public class Classificacao_Numeros {
 		 * anteriormente. Na instanciacao do novo objeto eh passado como informacao quantas instancias
 		 * existem por classe
 		 */
+		/*
 		//Argumentos para a LVQ
 		int numero_neuronios_classes=3; //Numero de neuronios por classe na LVQ
 		Rede lvq=null;
 		//lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial);
-				
+		lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial, numero_de_classes);
+		*/
+		
 		/* -----------------------MLP----------------------------------------------
 		 * Uma nova mlp eh criada com numero de neuronios e taxa de aprendizado definidas
 		 * anteriormente. Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
@@ -68,16 +71,16 @@ public class Classificacao_Numeros {
 		Rede mlp=null;
 		mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento definido a cima		
-		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		
 		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
 		
-		mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
-		grafico_erro_epoca(mlp, numero_epocas);
+		//mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
+		//grafico_erro_epoca(mlp, numero_epocas);
 		
-		lvq.set_problema(entradas_treinamento, saidas_desejadas);
-		grafico_erro_epoca(lvq, numero_epocas);
+		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
+		//grafico_erro_epoca(lvq, numero_epocas);
 		
+		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 	}
 	
 	public static void separa_conjuntos(boolean estratificado) {
