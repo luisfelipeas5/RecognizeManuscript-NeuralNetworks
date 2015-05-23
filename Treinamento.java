@@ -44,8 +44,6 @@ public class Treinamento {
 			this.gera_pesos_aleatorios(pesos_b);
 		}
 		
-		
-		
 		//a rede recebe pesos definidos aqui. Se a Rede for LVQ, ela tratará os pesos b como null internamente
 		rede.set_pesos(pesos_a, pesos_b);
 		
@@ -74,14 +72,8 @@ public class Treinamento {
 			/*erro total para o conjunto de validacao
 				*nao eh feita nenhum tipo de atualizacao de pesos, por isso
 				*a rede nao pode atualizar padrao a padrao, nem mesmo em batch 
-			*/		
-			boolean treina_batelada_old=this.rede.treina_batelada;
-			boolean treina_padrao_padrao_old=this.rede.treina_padrao_padrao; //armazena o antigo tipo de treinamento da rede antes de mudar 
-			this.rede.treina_padrao_padrao=false;
-			this.rede.treina_batelada=false;
-			erro_total_validacao= this.rede.calcula_saida(entradas_validacao, saidas_desejadas_validacao, pesos_a, pesos_b);
-			this.rede.treina_batelada=treina_batelada_old;
-			this.rede.treina_padrao_padrao=treina_padrao_padrao_old;
+			*/
+			erro_total_validacao=this.rede.get_erro_validacao();
 			
 			//Armazena erros de treinamento e validacao da epoca atual
 			erros_epocas.set(epoca_atual, 0, erro_total_treinamento);
