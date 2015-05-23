@@ -35,19 +35,27 @@ public class Classificacao_Numeros {
 		 * Colocando-os em matrizes
 		 */
 		Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
-		Matrix entradas_sem_bias=situacao_problema_conjunto_dados.get_entrada();
+		entradas=situacao_problema_conjunto_dados.get_entrada();
 		saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
-		
-		entradas=adiciona_bias(entradas_sem_bias); //Adiciona à matriz de entrada as entradas referentes ao bias!
 		
 		boolean estratificado=true;//o Holdout ira ser estratificado ou nao?
 		separa_conjuntos(estratificado); //Define os conjuntos de treinamento, validacao e teste usando o HOLDOUT
 		
 		//Argumentos para a rede
-		double taxa_aprendizado_inicial=0.9; //Taxa de apredizado inicial. Entende-se tambem como o limite superior no metodo da bissecao
+		double taxa_aprendizado_inicial=0.9; //Taxa de apredizado inicial
 		boolean taxa_aprendizado_variavel=true; //A taxa de aprendizado sera atualizada durante o treinamento das redes
 		
 		
+		/* -----------------------LVQ----------------------------------------------
+		 * Uma nova lvq eh criada com numero de neuronios por classe e taxa de aprendizado inicial definidas
+		 * anteriormente. Na instanciacao do novo objeto eh passado como informacao quantas instancias
+		 * existem por classe
+		 */
+		//Argumentos para a LVQ
+		int numero_neuronios_classes=3; //Numero de neuronios por classe na LVQ
+		Rede lvq=null;
+		//lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial);
+				
 		/* -----------------------MLP----------------------------------------------
 		 * Uma nova mlp eh criada com numero de neuronios e taxa de aprendizado definidas
 		 * anteriormente. Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
@@ -58,24 +66,18 @@ public class Classificacao_Numeros {
 		int modo_treinamento=1; //modo que treinamento sera feito: a padra a padrao(=1) ou a batelada(=2)
 		int numero_neuronios_escondidos=2; //Numero de neuronios na camada escondida
 		Rede mlp=null;
-		//mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
+		mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento definido a cima		
 		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		
-		
-		/* -----------------------LVQ----------------------------------------------
-		 * Uma nova lvq eh criada com numero de neuronios por classe e taxa de aprendizado inicial definidas
-		 * anteriormente. Na instanciacao do novo objeto eh passado como informacao quantas instancias
-		 * existem por classe
-		 */
-		//Argumentos para a LVQ
-		//int numero_neuronios_classes=3; //Numero de neuronios por classe na LVQ
-		/*
-		Rede lvq=null;
-		lvq=new LVQ(numero_neuronios_classes, taxa_aprendizado_inicial);
-		*/
-		
 		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
+		
+		mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
+		grafico_erro_epoca(mlp, numero_epocas);
+		
+		lvq.set_problema(entradas_treinamento, saidas_desejadas);
+		grafico_erro_epoca(lvq, numero_epocas);
+		
 	}
 	
 	public static void separa_conjuntos(boolean estratificado) {
@@ -296,9 +298,9 @@ public class Classificacao_Numeros {
 	 */
 	public static void grafico_erro_epoca(Rede rede, int numero_limite_epocas) {
 		Treinamento treinamento=new Treinamento(rede);
-		
-		treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
-				entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
+
+		//treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
+		//		entradas_validacao, saidas_desejadas_validacao, numero_limite_epocas);
 	}
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
@@ -421,7 +423,6 @@ public class Classificacao_Numeros {
 	 * Esse metodo devolve uma lista que contem o numero de valores repetidos
 	 * de cada valor dentro de uma matriz de dados passada como argumento
 	 */
-
 	public static Map<Double,List<Integer>> contar_numero_de_instancias(Matrix dados) {
 		Map<Double,List<Integer>> indice_de_instancias=new HashMap<Double,List<Integer>>();
 		for (int i = 0; i < dados.getRowDimension(); i++) {
