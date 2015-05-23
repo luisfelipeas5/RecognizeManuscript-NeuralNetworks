@@ -27,7 +27,8 @@ public class LVQ extends Rede{
 	double taxa_de_aprendizado;		// definir
 	int neuronio_ganhador;			// indice do vetor da classe ganhadora
 	double[] distancia_euclidiana;	// conterah as distancias de uma entrada em relacao aos neuronios
-
+	
+	boolean necessiadade_atualizar_pesos=true;
 	
 	public LVQ(int numero_neuronios_classe, double taxa_de_aprendizado, double[] classes){	
 		super(0);
@@ -38,7 +39,6 @@ public class LVQ extends Rede{
 	}
 	
 	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */
-
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getColumnDimension();
@@ -59,7 +59,6 @@ public class LVQ extends Rede{
 	} 
 	
 	/* Distancia Euclidiana sera utilizada no EP */
-	
 	public double distancia_euclidiana(double[] vetor1, double[] vetor2){
 		double distancia =0;
 		for(int j=0;j<dimensao;j++){
@@ -70,7 +69,6 @@ public class LVQ extends Rede{
 	
 	/* A matriz de pesos tem o numero de linhas igual ao numero de neuronios de saida
 	e numero de colunas igual ao numero de atributo, ou seja, a dimensao das entrasas */
-	
 	public void inicializa_pesos(){	
 		pesos = new double[numero_neuronios_saida*numero_de_classes][dimensao];
 		Random rd = new Random();
@@ -106,7 +104,6 @@ public class LVQ extends Rede{
 	
 	/* A constante pode ser trocada, porem como visto em aula, 0.9 eh um bom numero
 	 * Funcoes tambem podem ser utilizadas para o decrescimento da taxa */
-	
 	public double diminui_taxa_de_aprendizado(double taxa_de_aprendizado_atual){
 		double taxa_atualizada;
 		taxa_atualizada = taxa_de_aprendizado_atual*0.9;
@@ -115,7 +112,6 @@ public class LVQ extends Rede{
 
 	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador nao era da mesma classe que a instancia
 	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
-	
 	double get_erro(){	
 	
 		double contador_de_erros = 0;
@@ -197,6 +193,11 @@ public class LVQ extends Rede{
 			Matrix saidas = new Matrix(saidas_da_rede, numero_de_instancias);
 
 		return saidas;
+	}
+
+	@Override
+	void set_necessidade_atualizacao() {
+		necessiadade_atualizar_pesos=!necessiadade_atualizar_pesos;
 	} 
 	
 	
