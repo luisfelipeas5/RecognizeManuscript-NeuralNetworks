@@ -33,29 +33,28 @@ public class Testa_MLP {
 			}
 			
 			//Testes: 
-			//primeiro teste -- esta dando erro
-			Rede rede = new MLP (2, 0.9, true);
-			rede.set_modo_treinamento(1);
-			//segundo teste -- esta dando erro
+			//primeiro teste -- Atualização padrão a padrão com atualização de alfa
+			/*Rede rede = new MLP (2, 0.9, true);
+			rede.set_modo_treinamento(1);*/
+			//segundo teste -- Atualização padrão a padrão sem atualização de alfa 
 			/*Rede rede = new MLP (2, 0.9, false); 	
 			rede.set_modo_treinamento(1);*/
-			//terceiro teste 
+			//terceiro teste -- Atualização em batch com atualização de alfa
 			/*Rede rede = new MLP (2, 0.9, true); 
-			rede.set_modo_treinamento (2); */
-			//quarto lote 
-			/*Rede rede = new MLP (2, 0.9, false); 
-			rede.set_modo_treinamento (2) */
-			System.out.println (saida_esperada.getRowDimension()); 
+			rede.set_modo_treinamento (2);*/
+			//quarto lote -- Atualização em batch sem atualização de alfa
+			Rede rede = new MLP (2, 0.9, false); 
+			rede.set_modo_treinamento (2);  
 			rede.set_problema(entrada,saida_esperada); 
 			rede.set_pesos(A,B); 
-			System.out.println ("Testa_MLP mandou um oi"); 
-			Matrix a = rede.get_saidas(); 
+			//rede.set_necessidade_atualizacao(); 
+			rede.get_saidas().print(0,0); 
 			long fim = System.nanoTime(); 
 			long intervalo = fim - inicio; 
-			System.out.println ("Apos o processo de treinamento da rede MLP com base nos dados de treinamento, passaram-se (aproximadamente) " +intervalo +" segundos");
+			System.out.println ("Apos o processo de treinamento da rede MLP com base nos dados de treinamento, passaram-se (aproximadamente) " +intervalo +" nanossegundos");
 		}
 		catch (NullPointerException n) {
-			System.out.println (); 
+			System.out.println (n.getMessage()); 
 		}		
 	}
 }
