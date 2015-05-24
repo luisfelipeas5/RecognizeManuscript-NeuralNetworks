@@ -28,7 +28,7 @@ public class Grafico extends ApplicationFrame{
     	 Ex.: Se na Epoca 1 o Erro era igual a 100 e na Epoca 2 igual a 70, esses
     	 valores seriam acessados através de:
     	 dados.get(1, 1) e dados.get(1, 2). */	
-        
+        //TESTE
     	super(titulo);
         final JFreeChart grafico = criaGrafico(setDados(dados));
         final ChartPanel painel = new ChartPanel(grafico);
