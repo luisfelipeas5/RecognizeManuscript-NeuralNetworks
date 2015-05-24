@@ -9,7 +9,7 @@ import java.io.Writer;
 import Jama.Matrix;
 
 
-public class Grava_resultados {
+public class Grava_Resultados {
 	
 	public static void grava_arquivo(String nome_arquivo, Matrix resposta_rede, String[] medidas_avaliacao, int epoca_parada){
 		String novaLinha = System.getProperty("line.separator");
