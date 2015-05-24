@@ -23,7 +23,7 @@ public class Treinamento {
 	public Matrix treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
 						int numero_limite_epocas, boolean pesos_aleatorios) {
-		rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
+		
 		/*
 		 * para saber se os pesos devem ter uma coluna a mais, eh necessario detectar
 		 * se a rede do treinamento eh uma MLP. Caso seja uma LVQ, o acrescimo nao eh necessario
@@ -69,15 +69,15 @@ public class Treinamento {
 			//erro total para o conjunto de treinamento
 			erro_total_treinamento=this.rede.get_erro();
 			
-			/*erro total para o conjunto de validacao
-				*nao eh feita nenhum tipo de atualizacao de pesos, por isso
-				*a rede nao pode atualizar padrao a padrao, nem mesmo em batch 
-			*/
-			erro_total_validacao=this.rede.get_erro_validacao();
+			//erro total para o conjunto de validacao,nao eh feita nenhum tipo de atualizacao de pesos 
+			rede.set_necessidade_atualizacao();
+			erro_total_validacao=this.rede.get_erro();
+			rede.set_necessidade_atualizacao();
 			
 			//Armazena erros de treinamento e validacao da epoca atual
 			erros_epocas.set(epoca_atual, 0, erro_total_treinamento);
 			erros_epocas.set(epoca_atual, 1, erro_total_validacao);
+			
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 			
@@ -97,7 +97,7 @@ public class Treinamento {
 	 * Esse metodo, dado uma matriz pesos de dimensoes quaisquer, preenche pesos com valores aleatorios
 	 * entre -1.0 e 1.0 
 	 */
-	public void gera_pesos_aleatorios(Matrix pesos) {
+	public static void gera_pesos_aleatorios(Matrix pesos) {
 		//TODO escolher o intervalo de valores dos pesos
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {

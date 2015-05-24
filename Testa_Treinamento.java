@@ -1,3 +1,6 @@
+import java.util.Set;
+import java.util.TreeSet;
+
 import Jama.Matrix;
 
 public class Testa_Treinamento {
@@ -55,7 +58,18 @@ public class Testa_Treinamento {
 		boolean treina_batelada=!treina_padrao_padrao; //a rede ira ser treinada a batelada (batch)?
 		int epocas_max=2; //numero de epocas maximas que a rede ira ser treinada
 		
-		Rede mlp=new MLP( numero_neuronios_escondidos, treina_padrao_padrao, treina_batelada);
+		
+		
+		int numero_neuronios_classe=3;
+		double taxa_de_aprendizado=0.9;
+		
+		Set<Double> classes_list = new TreeSet<Double>();
+		for (int i = 0; i < saidas_desejadas_treinamento.getRowDimension(); i++) {
+			
+		}
+		double[] classes;
+		
+		Rede rede=new LVQ(numero_neuronios_classe, taxa_de_aprendizado, classes);
 		
 		//Um objeto treinamento para cada tipo de rede
 		Treinamento treinamento=new Treinamento(mlp);

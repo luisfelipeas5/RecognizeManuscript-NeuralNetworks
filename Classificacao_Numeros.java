@@ -77,19 +77,43 @@ public class Classificacao_Numeros {
 		
 		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
 		
-		Matrix pesos_a= new Matrix( lvq.numero_neuronios, entradas_treinamento.getColumnDimension() );
-		Matrix pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), lvq.numero_neuronios );
+		/*-----------Testando MLP--------------*/
+		Matrix pesos_a= new Matrix( mlp.numero_neuronios, entradas_teste.getColumnDimension()+1 );
+		Matrix pesos_b= new Matrix( saidas_desejadas_teste.getColumnDimension(), mlp.numero_neuronios+1 );
 		Treinamento.gera_pesos_aleatorios(pesos_a);
 		Treinamento.gera_pesos_aleatorios(pesos_b);
+		
+		Matrix entradas_teste_bias=adiciona_bias(entradas_teste);
+		
+		//entradas_teste_bias.print(entradas_teste_bias.getColumnDimension(), 3);
+		//saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
+		//pesos_a.print(pesos_a.getColumnDimension(), 3);
+		//pesos_b.print(pesos_b.getColumnDimension(), 3);
+		
+		mlp.set_pesos(pesos_a, pesos_b);
+		mlp.set_problema(entradas_teste_bias, saidas_desejadas_teste);
+		double erro = mlp.get_erro();
+		System.out.println("Erro="+erro);
+		Matrix saidas_epoca_mlp=mlp.get_saidas();
+		
+		System.out.println("Saida epoca Mlp");
+		saidas_epoca_mlp.print(saidas_epoca_mlp.getColumnDimension(), 3);
+		//-------------------------
+		/*-----------Testando LVQ--------------
+		pesos_a= new Matrix( lvq.numero_neuronios, entradas_treinamento.getColumnDimension() );
+		pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), lvq.numero_neuronios );
+		Treinamento.gera_pesos_aleatorios(pesos_a);
+		Treinamento.gera_pesos_aleatorios(pesos_b);
+		
 		lvq.set_necessidade_atualizacao();
 		lvq.set_pesos(pesos_a, pesos_b);
 		lvq.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 		lvq.set_necessidade_atualizacao();
 		Matrix saidas_epoca_lvq=lvq.get_saidas();
+		-------------------------------*/
 		
-		System.exit(0);
-		//mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
-		//grafico_erro_epoca(mlp, numero_epocas);
+		mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
+		grafico_erro_epoca(mlp, numero_epocas);
 		
 		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
 		//grafico_erro_epoca(lvq, numero_epocas);
