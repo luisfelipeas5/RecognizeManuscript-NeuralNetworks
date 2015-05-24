@@ -144,7 +144,9 @@ public class Principal {
 		}else if(args.length==5){
 			Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
 			Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
+			entradas = Pre_Processamento.normaliza_sigmoidal(entradas);
 			Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
+			saidas_desejadas = Pre_Processamento.normaliza_minmax(saidas_desejadas);
 			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
 			
 			System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
