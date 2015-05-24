@@ -118,9 +118,9 @@ public class Classificacao_Numeros {
 		
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
-			System.out.print(classes[i]+", ");
+			//System.out.print(classes[i]+", ");
 		}
-		System.out.println(".");
+		//System.out.println(".");
 		
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {

@@ -68,7 +68,6 @@ public class Principal {
 			}	
 		}else if(args.length==5){
 			nome_arquivo_conjunto_dados = args[0];
-			
 			taxa_aprendizado_inicial = Double.parseDouble(args[1]);
 			numero_neuronios_escondidos = Integer.parseInt(args[2]);
 			numero_neuronios_classe = Integer.parseInt(args[3]);
@@ -95,38 +94,38 @@ public class Principal {
 			Situacao_Problema situacao_problema_conjunto_dados_treinamento = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_treinamento);
 			
 			Matrix entradas_treinamento=situacao_problema_conjunto_dados_treinamento.get_entrada();
-			System.out.println("Antes: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
+			//System.out.println("Antes: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
 			entradas_treinamento = Pre_Processamento.normaliza_sigmoidal(entradas_treinamento);
-			System.out.println("Depois: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
+			//System.out.println("Depois: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
 			
 			Matrix saidas_desejadas_treinamento = situacao_problema_conjunto_dados_treinamento.get_saida();
-			System.out.println("Antes: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
+			//System.out.println("Antes: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
 			saidas_desejadas_treinamento = Pre_Processamento.normaliza_minmax(saidas_desejadas_treinamento);
-			System.out.println("Depois: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
+			//System.out.println("Depois: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
 						
 			Situacao_Problema situacao_problema_conjunto_dados_validacao = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_validacao);
 			
 			Matrix entradas_validacao = situacao_problema_conjunto_dados_validacao.get_entrada();
-			System.out.println("Antes: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
+			//System.out.println("Antes: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
 			entradas_validacao = Pre_Processamento.normaliza_sigmoidal(entradas_validacao);
-			System.out.println("Depois: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
+			//System.out.println("Depois: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
 			
 			Matrix saidas_desejadas_validacao=situacao_problema_conjunto_dados_validacao.get_saida();
-			System.out.println("Antes: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
+			//System.out.println("Antes: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
 			saidas_desejadas_validacao = Pre_Processamento.normaliza_minmax(saidas_desejadas_validacao);
-			System.out.println("Depois: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
+			//System.out.println("Depois: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
 			
 			Situacao_Problema situacao_problema_conjunto_dados_teste = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_teste);
 
 			Matrix entradas_teste=situacao_problema_conjunto_dados_teste.get_entrada();
-			System.out.println("Antes: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
+			//System.out.println("Antes: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
 			entradas_teste = Pre_Processamento.normaliza_sigmoidal(entradas_teste);
-			System.out.println("Depois: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
+			//System.out.println("Depois: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
 			
 			Matrix saidas_desejadas_teste=situacao_problema_conjunto_dados_teste.get_saida();
-			System.out.println("Antes: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
+			//System.out.println("Antes: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
 			saidas_desejadas_teste = Pre_Processamento.normaliza_minmax(saidas_desejadas_teste);
-			System.out.println("Depois: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
+			//System.out.println("Depois: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
 			
 			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
 			
@@ -164,11 +163,11 @@ public class Principal {
 										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
 		
-		/*
+		
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 										numero_neuronios_classe, numero_epocas);
 		System.out.println("#----------------Termino da Analise da LVQ----------------#");
-		*/
+		
 	}
 }

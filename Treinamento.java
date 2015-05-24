@@ -25,8 +25,9 @@ public class Treinamento {
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
 						int numero_limite_epocas, boolean pesos_aleatorios) {
 		/*
-		 * para saber se as linhas dos pesos devem ser multiplcadas pelo numero de classes
-		 * se a rede do treinamento eh uma LVQ. Caso seja uma MLP, o multiplcacao nao eh necessario
+		 * Define se as linhas dos pesos devem ser multiplcadas pelo numero de classes
+		 * Multiplcacao pelo numero de neuronios por classe caso a rede seja uma LVQ.
+		 * Caso seja uma MLP, o multiplcacao nao eh necessario
 		 */
 		boolean eh_mlp=false;
 		int fator_multiplicacao=1;
@@ -75,11 +76,6 @@ public class Treinamento {
 			}
 			Holdout.embaralhar_conjuntos(entradas_treinamento, saidas_desejadas_treinamento);
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
-			
-			//((MLP) rede).entrada_completa.print(((MLP) rede).entrada_completa.getColumnDimension(), 3);
-			//((MLP) rede).saida_desejada_completa.print(((MLP) rede).saida_desejada_completa.getColumnDimension(), 3);
-			//((MLP) rede).pesos_a.print(((MLP) rede).pesos_a.getColumnDimension(), 3);
-			//((MLP) rede).pesos_b.print(((MLP) rede).pesos_b.getColumnDimension(), 3);
 			
 			//erro total para o conjunto de treinamento
 			erro_total_treinamento=this.rede.get_erro();
