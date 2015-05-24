@@ -73,6 +73,7 @@ public class Treinamento {
 			if(eh_mlp) {
 				if(erro_total_treinamento<=erro_total_validacao) break;
 			}
+			Holdout.embaralhar_conjuntos(entradas_treinamento, saidas_desejadas_treinamento);
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			
 			//((MLP) rede).entrada_completa.print(((MLP) rede).entrada_completa.getColumnDimension(), 3);
@@ -83,6 +84,7 @@ public class Treinamento {
 			//erro total para o conjunto de treinamento
 			erro_total_treinamento=this.rede.get_erro();
 			
+			Holdout.embaralhar_conjuntos(entradas_validacao, saidas_desejadas_validacao);
 			rede.set_problema(entradas_validacao, saidas_desejadas_validacao);
 			//rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			//erro total para o conjunto de validacao,nao eh feita nenhum tipo de atualizacao de pesos 
