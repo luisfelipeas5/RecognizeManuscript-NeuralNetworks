@@ -1,8 +1,11 @@
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.jfree.ui.RefineryUtilities;
+
 import Jama.Matrix;
 
 
@@ -110,7 +113,9 @@ public class Classificacao_Numeros {
 		//Armazena os valores de classes existentes
 		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(this.saidas_desejadas_teste);
 		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
-
+		Arrays.sort(classes);
+		double intervalo = classes[1] - classes[0];
+		
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
 			System.out.print(classes[i]+", ");
@@ -179,9 +184,9 @@ public class Classificacao_Numeros {
 						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
 						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
 						if(k<saidas_desejadas_one_one.getRowDimension()){
-							System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
-							System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - 0.5 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + 0.5) {
+							//System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
+							//System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) {
 								verdadeiro_positivo+=1;
 							}else {	//Se a classe predita for diferente da classe real
 								falso_negativo+=1;
@@ -189,7 +194,7 @@ public class Classificacao_Numeros {
 						}
 					}else { //Se a classe real for clases[j]
 						if(k<saidas_desejadas_one_one.getRowDimension()){
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - 0.5 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + 0.5) { //Se a classe predita for igual a classe real
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) { //Se a classe predita for igual a classe real
 								verdadeiro_negativo+=1;
 							}else { //Se a classe predita for diferente da classe real
 								falso_positivo+=1;

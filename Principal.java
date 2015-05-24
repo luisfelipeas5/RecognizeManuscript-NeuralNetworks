@@ -13,6 +13,9 @@ public class Principal {
 		 * */
 		//Parametros que deve ser passados como parametro
 		String nome_arquivo_conjunto_dados; //Nome do conjunto de dados
+		String nome_arquivo_dados_treinamento = null;
+		String nome_arquivo_dados_validacao = null;
+		String nome_arquivo_dados_teste = null;
 		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
 		nome_arquivo_conjunto_dados="optdigits.total.txt";
 		double taxa_aprendizado_inicial=0.9;
@@ -26,7 +29,7 @@ public class Principal {
 		//Numero maximo de epocas para analise
 		int numero_epocas=20;
 		
-		/*
+		
 		if(args.length != 7 && args.length != 5){
 			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
 					+ " \n"
@@ -48,9 +51,9 @@ public class Principal {
 		}
 		
 		if(args.length==7){
-			String nome_arquivo_dados_treinamento = args[0];
-			String nome_arquivo_dados_validacao = args[1];
-			String nome_arquivo_dados_teste = args[2];
+			nome_arquivo_dados_treinamento = args[0];
+			nome_arquivo_dados_validacao = args[1];
+			nome_arquivo_dados_teste = args[2];
 			
 			taxa_aprendizado_inicial = Double.parseDouble(args[3]);
 			numero_neuronios_escondidos = Integer.parseInt(args[4]);
@@ -78,7 +81,7 @@ public class Principal {
 				System.exit(0);
 			}
 		}
-		*/
+		
 		
 		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
 		/*
@@ -87,29 +90,60 @@ public class Principal {
 		 *  - Atributos Classe (Saidas Desejadas).
 		 * Colocando-os em matrizes
 		 */
-		Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
-		Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
-		Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
-		System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
+		Classificacao_Numeros classificacao_numeros = null;
+		if(args.length==7){
+			Situacao_Problema situacao_problema_conjunto_dados_treinamento = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_treinamento);
+			Matrix entradas_treinamento=situacao_problema_conjunto_dados_treinamento.get_entrada();
+			Matrix saidas_desejadas_treinamento=situacao_problema_conjunto_dados_treinamento.get_saida();
+			
+			Situacao_Problema situacao_problema_conjunto_dados_validacao = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_validacao);
+			Matrix entradas_validacao=situacao_problema_conjunto_dados_validacao.get_entrada();
+			Matrix saidas_desejadas_validacao=situacao_problema_conjunto_dados_validacao.get_saida();
+			
+			Situacao_Problema situacao_problema_conjunto_dados_teste = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_teste);
+			Matrix entradas_teste=situacao_problema_conjunto_dados_teste.get_entrada();
+			Matrix saidas_desejadas_teste=situacao_problema_conjunto_dados_teste.get_saida();
+			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
+			
+			System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
+			Matrix[][] conjuntos_dados = new Matrix[3][2];
+			
+			conjuntos_dados[0][0]=entradas_treinamento;
+			conjuntos_dados[1][0]=entradas_validacao;
+			conjuntos_dados[2][0]=entradas_teste;
+			conjuntos_dados[0][1]=saidas_desejadas_treinamento;
+			conjuntos_dados[1][1]=saidas_desejadas_validacao;
+			conjuntos_dados[2][1]=saidas_desejadas_teste;
+			System.out.println("#-----------Termino da Separacao dos Conjuntos------------------");
+			
+			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
+		}else if(args.length==5){
+			Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
+			Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
+			Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
+			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
+			
+			System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
+			boolean estratificado=true;
+			Holdout holdout=new Holdout();
+			Matrix[][] conjuntos_dados=holdout.separa_conjunto(entradas, saidas_desejadas, estratificado);
+			System.out.println("#-----------Termino da Separacao dos Conjuntos------------------");
+			
+			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
+		}
 		
-		System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
-		boolean estratificado=true;
-		Holdout holdout=new Holdout();
-		Matrix[][] conjuntos_dados=holdout.separa_conjunto(entradas, saidas_desejadas, estratificado);
-		System.out.println("#-----------Termino da Separacao dos Conjuntos------------------");
 		
-		Classificacao_Numeros classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		
-		/*
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
 		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
-		*/
 		
+		/*
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 										numero_neuronios_classe, numero_epocas);
 		System.out.println("#----------------Termino da Analise da LVQ----------------#");
+		*/
 	}
 }
