@@ -21,17 +21,16 @@ public class Pre_Processamento{
 	}
 	
 	public static Matrix normaliza_minmax(Matrix dados){
-		double[] intervCol = new double[dados.getColumnDimension()];
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
 		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
 			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
-				if(intervCol[coluna]!=0){
+				if((JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna)))!=0.0){
 					resultado.set(linha, coluna, 
-							((dados.get(linha, coluna) - 
+							(((dados.get(linha, coluna) - 
 									JamaUtils.getMin(JamaUtils.getcol(dados, coluna)))
 									/
-									(JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna))))); 
+									((JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna))))))); 
 				}
 				else{
 					resultado.set(linha, coluna, 0);
@@ -307,8 +306,8 @@ public class Pre_Processamento{
 		Matrix demo3 = new Matrix(demo3d);
 		//demo3.print(1, 1);
 		
-        //Matrix teste1 = Pre_Processamento.remove_zeros(demo3, 90);
-        //teste1.print(1, 3);
+        Matrix teste1 = Pre_Processamento.normaliza_minmax(demo3);
+        teste1.print(1, 3);
 		
         //Matrix teste_remove = remove_desvio_baixo(demo3, 0.01);
 		//teste_remove.print(1, 2);
