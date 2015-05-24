@@ -90,7 +90,7 @@ public class MLP extends Rede{
 			treina_uma_epoca (pesos_a, pesos_b); 
 		}
 		Matrix saidas_instancias = new Matrix (this.saidas_todas_instancias.size(), 1); 
-		System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
+		//System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
 		for (int i = 0; i < this.saidas_todas_instancias.size(); i++) {
 			saidas_instancias.set(i,0,this.saidas_todas_instancias.get(i).get(0,0));
 		}
@@ -314,7 +314,7 @@ public class MLP extends Rede{
 			double taxa_aprendizado; 
 			taxa_aprendizado = this.alpha; 
 			if (this.treina_padrao_padrao && !this.treina_batelada) { //atualizacao em padrao a padrao
-				System.out.println ("Atualizacao padrao a padrao"); 
+				//System.out.println ("Atualizacao padrao a padrao"); 
 				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
 					Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
 					for (int j = 0; j < ent.getColumnDimension(); j++) {
@@ -330,7 +330,7 @@ public class MLP extends Rede{
 						taxa_aprendizado = calcula_taxa_aprendizado (pesos_a, pesos_b, 0.0); 
 					}
 					else {
-						System.out.println ("Nao atualiza alpha"); 
+						//System.out.println ("Nao atualiza alpha"); 
 						this.saidas_todas_instancias.add(calcula_saida (ent, saida, pesos_a, pesos_b));						
 						this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());
 						for (int i = 0; i < this.dJdB.getRowDimension(); i++) {
@@ -375,7 +375,7 @@ public class MLP extends Rede{
 				if (this.atualiza_alpha) { this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); }
 			}
 			else if (!this.treina_padrao_padrao && this.treina_batelada) { //atualizacao em batelada 
-				System.out.println ("Atualizacao em batch"); 
+				//System.out.println ("Atualizacao em batch"); 
 				Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
 				Matrix saida = new Matrix(1, this.saida_desejada_completa.getColumnDimension()); 
 				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
@@ -408,7 +408,7 @@ public class MLP extends Rede{
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException a) {
-			System.out.println ("Erro ao acessar um campo inexistente de uma matriz. Por favor, verifique o arquivo MLP.java"); 
+			//System.out.println ("Erro ao acessar um campo inexistente de uma matriz. Por favor, verifique o arquivo MLP.java"); 
 		}
 	}
 }

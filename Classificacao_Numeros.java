@@ -50,7 +50,6 @@ public class Classificacao_Numeros {
 		Matrix erros_epocas =treinamento.treina(adiciona_bias(entradas_treinamento), saidas_desejadas_treinamento,
 									adiciona_bias(entradas_validacao), saidas_desejadas_validacao,
 									numero_epocas, pesos_aleatorios);
-		erros_epocas.print(erros_epocas.getColumnDimension(), 3);
 		System.out.println("\t#--------------Termino da Fase de Treinamento--------#");
 		
 		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");
