@@ -322,7 +322,7 @@ public class MLP extends Rede{
 						if (n == 0) { atualiza_alpha = true; }
 					}
 					if (super.necessidade_atualizar_pesos) {
-						for (int i = 0; i < .getRowDimension(); i++) {
+						for (int i = 0; i < pesos_b.getRowDimension(); i++) {
 							for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
 								pesos_b.set(i,j,(pesos_b.get(i,j)+taxa_aprendizado*this.dJdB.get(i,j)));  									
 							}
