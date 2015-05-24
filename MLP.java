@@ -34,7 +34,7 @@ public class MLP extends Rede{
 	double EQM = 0.0; 
 	boolean atualiza_alpha; 
 	List<Matrix> erros; 
-	List<Matrix> saidas_todas_instancias; 
+	List<Matrix> saidas_todas_instancias = new LinkedList<Matrix>(); 
 	Matrix erro_instancia_atual;
 		
 	public MLP(int numero_neuronios_escondidos, double alpha_inicial, boolean atualiza_alpha) {
@@ -63,17 +63,18 @@ public class MLP extends Rede{
 	
 	
 	public double get_erro() {
-		atualiza_pesos (pesos_a, pesos_b); 
+		if (this.EQM == 0.0) {
+			treina_uma_epoca (pesos_a, pesos_b); 
+		}
 		return this.EQM; 
 	}
 	
 	public Matrix get_saidas () {
-		if (this.saidas_todas_instancias == null) {
-			this.saidas_todas_instancias = new LinkedList<Matrix>(); 
-			atualiza_pesos (pesos_a, pesos_b); 
+		if (this.saidas_todas_instancias.size() == 0) {
+			treina_uma_epoca (pesos_a, pesos_b); 
 		}
 		Matrix saidas_instancias = new Matrix (this.saidas_todas_instancias.size(), 1); 
-		//System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
+		System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
 		for (int i = 0; i < this.saidas_todas_instancias.size(); i++) {
 			saidas_instancias.set(i,0,this.saidas_todas_instancias.get(i).get(0,0));
 		}
@@ -227,7 +228,6 @@ public class MLP extends Rede{
 		Matrix a; 
 		if (this.treina_batelada && erro_medio != 0.0) { erro = erro_medio; } 
 		if (!this.treina_batelada && this.EQM == 0.0) { this.saidas_todas_instancias.add(calcula_saida(this.entrada_instancia_atual, this.saida_instancia_atual, A, B)); 
-		
 		erro = this.erro_instancia_atual.get(0,0); }
 		this.dJdA = calcula_gradientes_A_B (A, B, erro, true);
 		this.dJdB = calcula_gradientes_A_B (A, B, erro, false);
@@ -290,7 +290,7 @@ public class MLP extends Rede{
 	/*
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
-	void atualiza_pesos(Matrix pesos_a, Matrix pesos_b) {
+	void treina_uma_epoca(Matrix pesos_a, Matrix pesos_b) {
 		try {
 			double taxa_aprendizado; 
 			taxa_aprendizado = this.alpha; 
