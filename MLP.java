@@ -297,7 +297,7 @@ public class MLP extends Rede{
 			double taxa_aprendizado; 
 			taxa_aprendizado = this.alpha; 
 			if (this.treina_padrao_padrao && !this.treina_batelada) { //atualizacao em padrao a padrao
-				System.out.println ("Atualizacao padrao a padrao"); 
+				//System.out.println ("Atualizacao padrao a padrao"); 
 				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
 					if (n == 0) { atualiza_alpha = false; }
 					Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
@@ -342,7 +342,7 @@ public class MLP extends Rede{
 				if (this.atualiza_alpha) { this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); }
 			}
 			else if (!this.treina_padrao_padrao && this.treina_batelada) { //atualizacao em batelada 
-				System.out.println ("Atualizacao em batch"); 
+				//System.out.println ("Atualizacao em batch"); 
 				Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
 				Matrix saida = new Matrix(1, this.saida_desejada_completa.getColumnDimension()); 
 				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
