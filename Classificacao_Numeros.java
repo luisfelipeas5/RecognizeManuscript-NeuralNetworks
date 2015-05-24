@@ -179,28 +179,18 @@ public class Classificacao_Numeros {
 						//Se a classe predita for igual a classe real
 						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
 						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
-						if(k+1<saidas_desejadas_one_one.getRowDimension()){
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) {
-								verdadeiro_positivo+=1;
-							}else {	//Se a classe predita for diferente da classe real
-								falso_negativo+=1;
-							}	
-						}else{
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0)) {
+						if(k<saidas_desejadas_one_one.getRowDimension()){
+							System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
+							System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - 0.5 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + 0.5) {
 								verdadeiro_positivo+=1;
 							}else {	//Se a classe predita for diferente da classe real
 								falso_negativo+=1;
 							}
 						}
 					}else { //Se a classe real for clases[j]
-						if(k+1<saidas_desejadas_one_one.getRowDimension()){
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) { //Se a classe predita for igual a classe real
-								verdadeiro_negativo+=1;
-							}else { //Se a classe predita for diferente da classe real
-								falso_positivo+=1;
-							}
-						}else{
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0)) { //Se a classe predita for igual a classe real
+						if(k<saidas_desejadas_one_one.getRowDimension()){
+							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - 0.5 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + 0.5) { //Se a classe predita for igual a classe real
 								verdadeiro_negativo+=1;
 							}else { //Se a classe predita for diferente da classe real
 								falso_positivo+=1;
