@@ -52,6 +52,17 @@ public class Grava_Resultados {
 		}
 	}
 	
+	public static String[][] toString(Matrix dados){
+		// Matrix dados eh uma matriz linha com a saida da rede para o conjunto de teste
+		String[][] resultado = new String[dados.getRowDimension()][dados.getColumnDimension()];
+		for (int linha = 0; linha< dados.getRowDimension(); linha++) {
+			for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+				resultado[linha][coluna]=(""+dados.get(linha, coluna));
+			}
+		}
+		
+		return resultado;
+	}
 	
 	public static void main(String[] args) {
 		String teste1String= "teste1.txt";
