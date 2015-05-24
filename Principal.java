@@ -3,6 +3,14 @@ import Jama.Matrix;
 
 public class Principal {
 	public static void main(String[] args) {
+		/* args[0] = Nome do arquivo do conjunto de dados de treino
+		 * args[1] = Nome do arquivo do conjunto de dados de validação
+		 * args[2] = Nome do arquivo do conjunto de dados de teste
+		 * args[3] = Taxa de aprendizado inicial
+		 * args[4] = Número de neurônios de camada escondida (MLP)
+		 * args[5] = Número de neurônios para a camada classe (LVQ)
+		 * args[6] = Inicialização de pesos (zero/aleatório)
+		 * */
 		//Parametros que deve ser passados como parametro
 		String nome_arquivo_conjunto_dados; //Nome do conjunto de dados
 		nome_arquivo_conjunto_dados="conjunto_dados.txt";
@@ -17,6 +25,35 @@ public class Principal {
 		int numero_neuronios_classe=3;
 		//Numero maximo de epocas para analise
 		int numero_epocas=10;
+		
+		if(args.length != 7){
+			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
+					+ " \n"
+					+ "Nome do arquivo do conjunto de dados de treino \n"
+					+ "Nome do arquivo do conjunto de dados de validação \n"
+					+ "Nome do arquivo do conjunto de dados de teste \n"
+					+ "Taxa de aprendizado inicial \n"
+					+ "Número de neurônios de camada escondida (MLP) \n"
+					+ "Número de neurônios para a camada classe (LVQ) \n"
+					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
+			System.exit(0);
+		}
+		
+		String nome_arquivo_dados_treinamento = args[0];
+		String nome_arquivo_dados_validacao = args[1];
+		String nome_arquivo_dados_teste = args[2];
+		
+		taxa_aprendizado_inicial = Double.parseDouble(args[3]);
+		numero_neuronios_escondidos = Integer.parseInt(args[4]);
+		numero_neuronios_classe = Integer.parseInt(args[5]);
+		if(args[6].equalsIgnoreCase("z")){
+			pesos_aleatorios = true;
+		}else if(args[6].equalsIgnoreCase("a")){
+			pesos_aleatorios = false;
+		}else{
+			System.out.println("Erro ao inserir dados.");
+			System.exit(0);
+		}
 		
 		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
 		/*
