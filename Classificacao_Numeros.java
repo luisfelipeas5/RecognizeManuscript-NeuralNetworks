@@ -77,7 +77,7 @@ public class Classificacao_Numeros {
 		
 		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
 		
-		/*-----------Testando MLP--------------*/
+		/*-----------Testando MLP--------------
 		Matrix pesos_a= new Matrix( mlp.numero_neuronios, entradas_teste.getColumnDimension()+1 );
 		Matrix pesos_b= new Matrix( saidas_desejadas_teste.getColumnDimension(), mlp.numero_neuronios+1 );
 		Treinamento.gera_pesos_aleatorios(pesos_a);
@@ -98,7 +98,7 @@ public class Classificacao_Numeros {
 		
 		System.out.println("Saida epoca Mlp");
 		saidas_epoca_mlp.print(saidas_epoca_mlp.getColumnDimension(), 3);
-		//-------------------------
+		-------------------------*/
 		/*-----------Testando LVQ--------------
 		pesos_a= new Matrix( lvq.numero_neuronios, entradas_treinamento.getColumnDimension() );
 		pesos_b= new Matrix( saidas_desejadas_treinamento.getColumnDimension(), lvq.numero_neuronios );
@@ -112,8 +112,8 @@ public class Classificacao_Numeros {
 		Matrix saidas_epoca_lvq=lvq.get_saidas();
 		-------------------------------*/
 		
-		mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
-		grafico_erro_epoca(mlp, numero_epocas);
+		//mlp.set_problema(adiciona_bias(entradas_treinamento), saidas_desejadas);
+		//grafico_erro_epoca(mlp, numero_epocas);
 		
 		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
 		//grafico_erro_epoca(lvq, numero_epocas);
@@ -363,7 +363,6 @@ public class Classificacao_Numeros {
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
 				System.out.println("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
-				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
 				 * que so contera entradas que tem saida desejadas os valores classes[i] e classes[j]
@@ -397,16 +396,28 @@ public class Classificacao_Numeros {
 				entradas_teste.print(entradas_teste.getColumnDimension(), 3);
 				System.out.println("Saidas Desejadas Teste");
 				saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
-				System.out.println("Entradas One x One");
-				entradas_one_one.print(entradas_one_one.getColumnDimension(), 3);
-				System.out.println("Saidas One x One");
-				saidas_desejadas_one_one.print(saidas_desejadas_one_one.getColumnDimension(), 3);
 				
 				//Elementos da matriz de confusao
 				int falso_negativo=0;
 				int falso_positivo=0;
 				int verdadeiro_positivo=0;
 				int verdadeiro_negativo=0;
+				
+				try {
+					LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
+				}catch(ClassCastException cce){
+					entradas_one_one=adiciona_bias(entradas_one_one);
+				}
+				System.out.println("Entradas One x One");
+				entradas_one_one.print(entradas_one_one.getColumnDimension(), 3);
+				System.out.println("Saidas One x One");
+				saidas_desejadas_one_one.print(saidas_desejadas_one_one.getColumnDimension(), 3);
+				MLP mlp=(MLP)rede;
+				System.out.println("Pesos A One x One");
+				mlp.pesos_a.print(mlp.pesos_a.getColumnDimension(), 3);
+				System.out.println("Pesos B One x One");
+				mlp.pesos_b.print(mlp.pesos_b.getColumnDimension(), 3);
+				
 				
 				//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
 				rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
