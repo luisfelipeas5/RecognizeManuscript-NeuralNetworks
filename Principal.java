@@ -59,9 +59,9 @@ public class Principal {
 			numero_neuronios_escondidos = Integer.parseInt(args[4]);
 			numero_neuronios_classe = Integer.parseInt(args[5]);
 			if(args[6].equalsIgnoreCase("z")){
-				pesos_aleatorios = true;
-			}else if(args[6].equalsIgnoreCase("a")){
 				pesos_aleatorios = false;
+			}else if(args[6].equalsIgnoreCase("a")){
+				pesos_aleatorios = true;
 			}else{
 				System.out.println("Erro ao inserir dados.");
 				System.exit(0);
@@ -72,9 +72,9 @@ public class Principal {
 			numero_neuronios_escondidos = Integer.parseInt(args[2]);
 			numero_neuronios_classe = Integer.parseInt(args[3]);
 			if(args[4].equalsIgnoreCase("z")){
-				pesos_aleatorios = true;
-			}else if(args[4].equalsIgnoreCase("a")){
 				pesos_aleatorios = false;
+			}else if(args[4].equalsIgnoreCase("a")){
+				pesos_aleatorios = true;
 			}else{
 				System.out.println("Erro ao inserir dados.");
 				System.exit(0);
