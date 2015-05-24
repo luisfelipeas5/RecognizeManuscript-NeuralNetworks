@@ -24,9 +24,6 @@ public class Treinamento {
 	public Matrix treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
 						int numero_limite_epocas, boolean pesos_aleatorios) {
-		System.out.println("\n\n#--------------começo da Fase de Treinamento---------------#");
-		System.out.println("\t\tNumero de limite de epocas="+numero_limite_epocas);
-		
 		/*
 		 * para saber se as linhas dos pesos devem ser multiplcadas pelo numero de classes
 		 * se a rede do treinamento eh uma LVQ. Caso seja uma MLP, o multiplcacao nao eh necessario
@@ -106,7 +103,6 @@ public class Treinamento {
 		}
 		
 		System.out.println("\tTreinameno parou na: epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
-		System.out.println("#---------------------termino da Fase de Treinamento------------------------------#");
 		return erros_epocas;
 	}
 	

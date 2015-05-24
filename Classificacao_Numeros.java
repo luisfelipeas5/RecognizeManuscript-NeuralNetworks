@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.jfree.ui.RefineryUtilities;
+
 import Jama.Matrix;
 
 
@@ -23,14 +25,12 @@ public class Classificacao_Numeros {
 	static boolean pesos_aleatorios;
 	
 	public Classificacao_Numeros(Matrix[][] conjuntos_dados ) {
-		
 		this.entradas_treinamento=conjuntos_dados[0][0];
 		this.entradas_validacao=conjuntos_dados[1][0];
 		this.entradas_teste=conjuntos_dados[2][0];
 		this.saidas_desejadas_treinamento=conjuntos_dados[0][1];
 		this.saidas_desejadas_validacao=conjuntos_dados[1][1];
 		this.saidas_desejadas_teste=conjuntos_dados[2][1];
-	
 	}
 	
 	/* -----------------------MLP----------------------------------------------
@@ -41,23 +41,27 @@ public class Classificacao_Numeros {
 	 * O numero_epocas eh a quantidade de epocas em que a rede será treinada
 	 */
 	public void analisa_mlp(double taxa_aprendizado_inicial, boolean taxa_aprendizado_variavel, boolean pesos_aleatorios,
-							int numero_neuronios_escondidos, int modo_treinamento,
-							int numero_epocas) {
+							int numero_neuronios_escondidos, int modo_treinamento, int numero_epocas) {
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento
 		
+		System.out.println("\t#--------------Inicio da Fase de Treinamento-------#");
 		//Treinar MLP
 		Treinamento treinamento=new Treinamento(mlp);
 		Matrix erros_epocas =treinamento.treina(adiciona_bias(entradas_treinamento), saidas_desejadas_treinamento,
 									adiciona_bias(entradas_validacao), saidas_desejadas_validacao,
 									numero_epocas, pesos_aleatorios);
+		System.out.println("\t#--------------Termino da Fase de Treinamento--------#");
 		
+		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");
 		//Mostrar grafico Epoca X Erro Total
 		grafico_erro_epoca(erros_epocas);
+		System.out.println("\t#----------------Termino da Exibicao do Grafico-----------------#");
 		
+		System.out.println("\t#----------------Inicio da Matriz de Confusao------------------#");
 		//Montar matrz de confusao com MLP treinada na analise
 		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
-		System.out.println("#----------------Termino da Analise da MLP------------------#");
+		System.out.println("\t#----------------Termino da Matriz de Confusao------------------#");
 	}
 	
 	/* -----------------------LVQ----------------------------------------------
@@ -66,11 +70,7 @@ public class Classificacao_Numeros {
 	 * O numero_epocas eh a quantidade de epocas em que a rede será treinada
 	 */
 	public void analisa_lvq(double taxa_aprendizado_inicial, boolean taxa_aprendizado_variavel, boolean pesos_aleatorios,
-							int numero_neuronios_classe,
-							int numero_epocas) {
-		
-		System.out.println("#----------------Inicio da Analise da LVQ------------------#");
-		//Argumentos para a LVQ
+							int numero_neuronios_classe, int numero_epocas) {
 		double[] classes; //array das classes existentes no conjunto de saidas desejadas (rotulos da LVQ)
 		Set<Double> classes_keySet = indices_instancias_classe.keySet();
 		classes=new double[classes_keySet.size()];
@@ -80,17 +80,23 @@ public class Classificacao_Numeros {
 		}
 		Rede lvq=new LVQ(numero_neuronios_classe, taxa_aprendizado_inicial, classes);
 		
+		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
+		System.out.println("\t\tNumero de limite de epocas="+numero_epocas);
 		//Treinar LVQ
 		Treinamento treinamento=new Treinamento(lvq);
 		
 		Matrix erros_epocas =treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
 									entradas_validacao, saidas_desejadas_validacao,
 									numero_epocas, pesos_aleatorios);
+		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
 		
+		System.out.println("\n#----------------Inicio da Exibicao do Grafico------------------#");
 		grafico_erro_epoca(erros_epocas);
+		System.out.println("#----------------Termino da Exibicao do Grafico-----------------#");
 		
-		matriz_confusao(lvq); //Calcula as matries de confusao para a MLP
-		System.out.println("#----------------Termino da Analise da LVQ------------------#");
+		System.out.println("\n#----------------Inicio da Matriz de Confusao------------------#");
+		matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
+		System.out.println("#----------------Termino da Matriz de Confusao------------------#");
 	}
 	
 	/*
@@ -106,16 +112,15 @@ public class Classificacao_Numeros {
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
 	public void matriz_confusao(Rede rede) {
-		System.out.println("#----------------Inicio da Matriz de Confusao------------------#");
 		//Armazena os valores de classes existentes
 		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(this.saidas_desejadas_teste);
 		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
 
-		System.out.println("Classes no conjunto de Treinamento: ");
+		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
 			System.out.print(classes[i]+", ");
 		}
-		System.out.println();
+		System.out.println(".");
 		
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
@@ -250,7 +255,6 @@ public class Classificacao_Numeros {
 				
 			}
 		}
-		System.out.println("#----------------Termino da Matriz de Confusao------------------#");
 	}
 
 	public static Matrix adiciona_bias(Matrix entradas_sem_bias) {

@@ -70,7 +70,7 @@ public class Holdout {
 		 * igualmente no conjunto de treinamento, validacao e teste
 		 */
 		if(estratificado) {
-			System.out.println("#-------------------Inicio da Estratificacao---------------#");
+			System.out.println("\t#----------Inicio da Estratificacao--------#");
 			
 			//Indice da linha onde sera incluida a nova instancia em cada conjunto
 			int linha_vazia_treinamento=0;
@@ -189,7 +189,7 @@ public class Holdout {
 			}
 			System.out.println();
 			
-			System.out.println("------Estratificacao Finalizada-----");
+			System.out.println("\t#------Estratificacao Finalizada-----#");
 		}else { //Caso nao seja estratificado
 			//Definicao do conjunto de dados para treinamento
 			int i_inicio_treinamento=0;
@@ -222,7 +222,6 @@ public class Holdout {
 		conjuntos_dados[1][1]=saidas_desejadas_validacao;
 		conjuntos_dados[2][1]=saidas_desejadas_teste;
 		
-		System.out.println("#----------------Termino da Separacao dos Conjuntos--------------------");
 		return conjuntos_dados;
 	}
 
