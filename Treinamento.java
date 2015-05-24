@@ -69,7 +69,7 @@ public class Treinamento {
 		 * a funcao.
 		 */
 		int epoca_atual=0;
-		//erro_total_treinamento>erro_total_validacao &&
+		//erro_total_treinamento>erro_total_validacao && 
 		while ( epoca_atual<numero_limite_epocas) {
 			System.out.println("epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
 			
@@ -84,6 +84,7 @@ public class Treinamento {
 			erro_total_treinamento=this.rede.get_erro();
 			
 			rede.set_problema(entradas_validacao, saidas_desejadas_validacao);
+			//rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			//erro total para o conjunto de validacao,nao eh feita nenhum tipo de atualizacao de pesos 
 			rede.set_necessidade_atualizacao();
 			erro_total_validacao=this.rede.get_erro();

@@ -65,7 +65,7 @@ public class Classificacao_Numeros {
 			classes[i]=iterator_classes.next();
 		}
 		Rede lvq=new LVQ(numero_neuronios_classe, taxa_aprendizado_inicial, classes);
-		
+
 		/* -----------------------MLP----------------------------------------------
 		 * Uma nova mlp eh criada com numero de neuronios e taxa de aprendizado definidas
 		 * anteriormente. Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
@@ -81,7 +81,6 @@ public class Classificacao_Numeros {
 		
 		grafico_erro_epoca(mlp, numero_epocas);
 		
-		System.exit(0);
 		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
 		//grafico_erro_epoca(lvq, numero_epocas);
 		
@@ -361,7 +360,7 @@ public class Classificacao_Numeros {
 									entradas_validacao_para_rede, saidas_desejadas_validacao,
 									numero_limite_epocas, pesos_aleatorios);
 		
-		final Grafico grafico = new Grafico("Erro x Epoca", erros_epocas);
+		Grafico grafico = new Grafico("Erro x Epoca", erros_epocas.transpose());
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
