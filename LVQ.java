@@ -47,7 +47,7 @@ public class LVQ extends Rede{
 	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
-		this.numero_de_instancias = entrada.getColumnDimension();
+		this.numero_de_instancias = entrada.getRowDimension();
 		this.dimensao = entrada.getColumnDimension();
 		this.classe_alvo = saida_desejada.getRowPackedCopy();		//ver certinho 
 	}
