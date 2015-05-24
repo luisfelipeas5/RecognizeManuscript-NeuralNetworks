@@ -55,8 +55,14 @@ public class Grafico extends ApplicationFrame{
     	final DefaultCategoryDataset dados_dataset = new DefaultCategoryDataset();
         
         for(int linha = 0; linha < dados.getRowDimension(); linha++){
+        	String legenda;
+        	if(linha==0) {
+        		legenda="Treinamento";
+        	}else {
+        		legenda="Validacao";
+        	}
         	for(int coluna = 0; coluna < dados.getColumnDimension(); coluna++){
-        		dados_dataset.addValue(dados.get(linha, coluna), "Serie "+linha, ""+coluna+"");
+        		dados_dataset.addValue(dados.get(linha, coluna), legenda, ""+coluna+"");
         	}
         }
         

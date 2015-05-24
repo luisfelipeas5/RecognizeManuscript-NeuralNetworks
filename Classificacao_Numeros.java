@@ -88,11 +88,7 @@ public class Classificacao_Numeros {
 		Matrix erros_epocas =treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
 									entradas_validacao, saidas_desejadas_validacao,
 									numero_epocas, pesos_aleatorios);
-		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
-		
-		System.out.println("\n#----------------Inicio da Exibicao do Grafico------------------#");
-		grafico_erro_epoca(erros_epocas);
-		System.out.println("#----------------Termino da Exibicao do Grafico-----------------#");
+		System.out.println("\t#--------------Termino da Fase de Treinamento---------------#");
 		
 		System.out.println("\n#----------------Inicio da Matriz de Confusao------------------#");
 		matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
@@ -171,20 +167,7 @@ public class Classificacao_Numeros {
 				}catch(ClassCastException cce){
 					entradas_one_one=adiciona_bias(entradas_one_one);
 				}
-				/*
-				System.out.println("Entradas One x One");
-				entradas_one_one.print(entradas_one_one.getColumnDimension(), 3);
-				System.out.println("Saidas One x One");
-				saidas_desejadas_one_one.print(saidas_desejadas_one_one.getColumnDimension(), 3);
-				*/
-				MLP mlp=(MLP)rede;
 				
-				/*
-				System.out.println("Pesos A One x One");
-				mlp.pesos_a.print(mlp.pesos_a.getColumnDimension(), 3);
-				System.out.println("Pesos B One x One");
-				mlp.pesos_b.print(mlp.pesos_b.getColumnDimension(), 3);
-				*/
 				//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
 				rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
 				Matrix saidas=rede.get_saidas();
@@ -197,6 +180,8 @@ public class Classificacao_Numeros {
 						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
 						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
 						if(k+1<saidas_desejadas_one_one.getRowDimension()){
+							System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
+							System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
 							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) {
 								verdadeiro_positivo+=1;
 							}else {	//Se a classe predita for diferente da classe real

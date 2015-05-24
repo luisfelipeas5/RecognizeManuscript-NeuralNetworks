@@ -16,7 +16,7 @@ public class Principal {
 		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
 		nome_arquivo_conjunto_dados="optdigits.total.txt";
 		double taxa_aprendizado_inicial=0.9;
-		boolean taxa_aprendizado_variavel=true;
+		boolean taxa_aprendizado_variavel=false;
 		boolean pesos_aleatorios=true;
 		//Para MLP
 		int numero_neuronios_escondidos=2;
@@ -24,7 +24,7 @@ public class Principal {
 		//Para LVQ
 		int numero_neuronios_classe=3;
 		//Numero maximo de epocas para analise
-		int numero_epocas=10;
+		int numero_epocas=20;
 		
 		/*
 		if(args.length != 7 && args.length != 5){
@@ -100,10 +100,12 @@ public class Principal {
 		
 		Classificacao_Numeros classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		
+		/*
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
 		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
+		*/
 		
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,

@@ -28,10 +28,11 @@ public class Treinamento {
 		 * para saber se as linhas dos pesos devem ser multiplcadas pelo numero de classes
 		 * se a rede do treinamento eh uma LVQ. Caso seja uma MLP, o multiplcacao nao eh necessario
 		 */
+		boolean eh_mlp=false;
 		int fator_multiplicacao=1;
 		try {
 			MLP mlp=(MLP)rede; //Caso seja uma LVQ, uma excessao que o cast nao eh possivel eh lancada
-			mlp.set_necessidade_atualizacao();
+			eh_mlp=true;
 		}catch(ClassCastException cce){
 			fator_multiplicacao = ((LVQ)rede).numero_de_classes;
 		}
@@ -66,9 +67,12 @@ public class Treinamento {
 		 * a funcao.
 		 */
 		int epoca_atual=0;
-		while (erro_total_treinamento>erro_total_validacao && epoca_atual<numero_limite_epocas) {
-			System.out.println("epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
+		while (epoca_atual<numero_limite_epocas) {
 			
+			//Condicao de parada exclusica para MLP
+			if(eh_mlp) {
+				if(erro_total_treinamento<=erro_total_validacao) break;
+			}
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			
 			//((MLP) rede).entrada_completa.print(((MLP) rede).entrada_completa.getColumnDimension(), 3);
@@ -90,15 +94,11 @@ public class Treinamento {
 			erros_epocas.set(epoca_atual, 0, erro_total_treinamento);
 			erros_epocas.set(epoca_atual, 1, erro_total_validacao);
 			
+			//Status do treinamento:
+			System.out.println("epoca="+(epoca_atual+1)+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
+			
 			//Passou-se uma epoca!
 			epoca_atual+=1;
-			
-			/* Printar os pesos a cada iteracao */
-			int casas_decimais=3;
-			//System.out.println("Pesos A");
-			//pesos_a.print(pesos_a.getColumnDimension(), casas_decimais);
-			//System.out.println("Pesos B");
-			//pesos_b.print(pesos_b.getColumnDimension(), casas_decimais);
 		}
 		
 		System.out.println("\tTreinameno parou na: epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
