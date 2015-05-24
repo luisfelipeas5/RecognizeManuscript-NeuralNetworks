@@ -54,6 +54,8 @@ public class Grava_resultados {
 	
 	
 	public static void main(String[] args) {
+		// Testando a classe:
+		
 		String teste1String= "teste1.txt";
 		
 		double[][] teste1double = new double [50][50];

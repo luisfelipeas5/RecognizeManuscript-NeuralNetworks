@@ -26,6 +26,44 @@ public class Classificacao_Numeros {
 	static boolean pesos_aleatorios;
 	
 	public static void main(String[] args) {
+		/* args[0] = Nome do arquivo do conjunto de dados de treino
+		 * args[1] = Nome do arquivo do conjunto de dados de validação
+		 * args[2] = Nome do arquivo do conjunto de dados de teste
+		 * args[3] = Taxa de aprendizado inicial
+		 * args[4] = Número de neurônios de camada escondida (MLP)
+		 * args[5] = Número de neurônios para a camada classe (LVQ)
+		 * args[6] = Inicialização de pesos (zero/aleatório)
+		 * */
+		/*
+		if(args.length != 7){
+			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
+					+ " \n"
+					+ "Nome do arquivo do conjunto de dados de treino \n"
+					+ "Nome do arquivo do conjunto de dados de validação \n"
+					+ "Nome do arquivo do conjunto de dados de teste \n"
+					+ "Taxa de aprendizado inicial \n"
+					+ "Número de neurônios de camada escondida (MLP) \n"
+					+ "Número de neurônios para a camada classe (LVQ) \n"
+					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
+			System.exit(0);
+		}
+		
+		String nome_arquivo_dados_treinamento = args[0];
+		String nome_arquivo_dados_validacao = args[1];
+		String nome_arquivo_dados_teste = args[2];
+		double taxa_aprendizado_inicial = Double.parseDouble(args[3]);
+		int numero_neuronios_escondidos = Integer.parseInt(args[4]);
+		int numero_neuronios_classe = Integer.parseInt(args[5]);
+		if(args[6].equalsIgnoreCase("z")){
+			pesos_aleatorios = true;
+		}else if(args[6].equalsIgnoreCase("a")){
+			pesos_aleatorios = false
+		}else{
+			System.out.println("Erro ao inserir dados.");
+			System.exit(0);
+		}
+		*/
+		
 		//Estabelece o nome do arquivo que contem o conjunto de dados
 		String nome_arquivo_conjunto_dados;
 		nome_arquivo_conjunto_dados="conjunto_dados.txt";
@@ -74,14 +112,15 @@ public class Classificacao_Numeros {
 		//Argumentos para a MLP
 		int modo_treinamento=1; //modo que treinamento sera feito: a padra a padrao(=1) ou a batelada(=2)
 		int numero_neuronios_escondidos=2; //Numero de neuronios na camada escondida
+		
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento definido a cima		
 		
-		int numero_epocas=10; //numero de epocas para o treinamento de cada uma das redes
+		int numero_epocas=20; //numero de epocas para o treinamento de cada uma das redes
 		
 		grafico_erro_epoca(mlp, numero_epocas);
 		
-		System.exit(0);
+		//System.exit(0);
 		//lvq.set_problema(entradas_treinamento, saidas_desejadas);
 		//grafico_erro_epoca(lvq, numero_epocas);
 		
@@ -454,7 +493,7 @@ public class Classificacao_Numeros {
 						//Se a classe predita for igual a classe real
 						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
 						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
-						if(k<saidas_desejadas_one_one.getRowDimension()){
+						if(k+1<saidas_desejadas_one_one.getRowDimension()){
 							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) {
 								verdadeiro_positivo+=1;
 							}else {	//Se a classe predita for diferente da classe real
@@ -468,7 +507,7 @@ public class Classificacao_Numeros {
 							}
 						}
 					}else { //Se a classe real for clases[j]
-						if(k<saidas_desejadas_one_one.getRowDimension()){
+						if(k+1<saidas_desejadas_one_one.getRowDimension()){
 							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) && saidas.get(k, 0) < saidas_desejadas_one_one.get(k+1, 0)) { //Se a classe predita for igual a classe real
 								verdadeiro_negativo+=1;
 							}else { //Se a classe predita for diferente da classe real
