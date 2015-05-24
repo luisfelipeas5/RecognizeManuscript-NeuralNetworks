@@ -1,0 +1,51 @@
+import Jama.Matrix;
+
+
+public class Principal {
+	public static void main(String[] args) {
+		//Parametros que deve ser passados como parametro
+		String nome_arquivo_conjunto_dados; //Nome do conjunto de dados
+		nome_arquivo_conjunto_dados="conjunto_dados.txt";
+		//nome_arquivo_conjunto_dados="optdigits.total.txt";
+		double taxa_aprendizado_inicial=0.9;
+		boolean taxa_aprendizado_variavel=true;
+		boolean pesos_aleatorios=true;
+		//Para MLP
+		int numero_neuronios_escondidos=2;
+		int modo_treinamento=1; //padrao a padrao=1 e batelada=2
+		//Para LVQ
+		int numero_neuronios_classe=3;
+		//Numero maximo de epocas para analise
+		int numero_epocas=10;
+		
+		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
+		/*
+		 * Le o arquivo do conjunto de dados e separa em:
+		 * 	- Atributos (Entradas); e
+		 *  - Atributos Classe (Saidas Desejadas).
+		 * Colocando-os em matrizes
+		 */
+		Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
+		Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
+		Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
+		System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
+		
+		System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
+		boolean estratificado=true;
+		Holdout holdout=new Holdout();
+		Matrix[][] conjuntos_dados=holdout.separa_conjunto(entradas, saidas_desejadas, estratificado);
+		System.out.println("#-----------Termino da Separacao dos Conjuntos------------------");
+		
+		Classificacao_Numeros classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
+		
+		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
+		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
+										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
+		System.out.println("#----------------Termino da Analise da MLP----------------#");
+		
+		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
+		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
+										numero_neuronios_classe, numero_epocas);
+		System.out.println("#----------------Termino da Analise da LVQ----------------#");
+	}
+}
