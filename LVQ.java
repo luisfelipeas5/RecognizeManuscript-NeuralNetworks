@@ -170,10 +170,12 @@ public class LVQ extends Rede{
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] - (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 
 					}
 				}
-			
-				/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
-				taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);	
 			}
+		}
+		if(necessiadade_atualizar_pesos) {
+			/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
+			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);
+			//System.out.println("Taxa Aprendizado="+taxa_de_aprendizado); 
 		}
 		return contador_de_erros;
 	}
