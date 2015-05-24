@@ -39,7 +39,6 @@ public class MLP extends Rede{
 	public MLP(int numero_neuronios_escondidos, double alpha_inicial, boolean atualiza_alpha) {
 		super(numero_neuronios_escondidos);
 		this.alpha = alpha_inicial; 
-		this.erros = new LinkedList<Matrix>();  
 		this.atualiza_alpha = atualiza_alpha; 
 	}
 	
@@ -93,6 +92,7 @@ public class MLP extends Rede{
 	void set_problema (Matrix entrada, Matrix saida_desejada) {
 		this.entrada_completa = entrada; 
 		this.saida_desejada_completa = saida_desejada; 
+		this.erros = new LinkedList<Matrix>(); 
 		this.EQM = 0.0; 
 		this.saidas_todas_instancias = new LinkedList<Matrix>();  
 	}
@@ -331,19 +331,19 @@ public class MLP extends Rede{
 						for (int i = 0; i < pesos_b.getRowDimension(); i++) {
 							for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
 								if (n == 0) {
-								pesos_b.set(i,j,(pesos_b.get(i,j)-this.alpha*this.dJdB.get(i,j)));  
+								pesos_b.set(i,j,(pesos_b.get(i,j)+this.alpha*this.dJdB.get(i,j)));  
 								} else {
-								pesos_b.set(i,j,(pesos_b.get(i,j)-taxa_aprendizado*this.dJdB.get(i,j)));  	
+								pesos_b.set(i,j,(pesos_b.get(i,j)+taxa_aprendizado*this.dJdB.get(i,j)));  	
 								}
 							}
 						}
 						for (int i = 0; i < pesos_a.getRowDimension(); i++) {
 							for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
 								if (n == 0) {
-								pesos_a.set(i,j,(pesos_a.get(i,j)-this.alpha*this.dJdA.get(i,j)));  
+								pesos_a.set(i,j,(pesos_a.get(i,j)+this.alpha*this.dJdA.get(i,j)));  
 								}
 								else {
-								pesos_a.set(i,j,(pesos_a.get(i,j)-taxa_aprendizado*this.dJdA.get(i,j)));
+								pesos_a.set(i,j,(pesos_a.get(i,j)+taxa_aprendizado*this.dJdA.get(i,j)));
 								}
 							}
 						}
@@ -377,12 +377,12 @@ public class MLP extends Rede{
 				if (super.necessidade_atualizar_pesos) {
 					for (int i = 0; i < pesos_b.getRowDimension(); i++) {
 						for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
-							pesos_b.set(i,j,(pesos_b.get(i,j)-taxa_aprendizado*calcula_gradiente(true,pesos_b,i,j,this.EQM)));  
+							pesos_b.set(i,j,(pesos_b.get(i,j)+taxa_aprendizado*calcula_gradiente(true,pesos_b,i,j,this.EQM)));  
 						}
 					}
 					for (int i = 0; i < pesos_a.getRowDimension(); i++) {
 						for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
-							pesos_a.set(i,j,(pesos_a.get(i,j)-taxa_aprendizado*calcula_gradiente(false,pesos_b,i,j,this.EQM)));  
+							pesos_a.set(i,j,(pesos_a.get(i,j)+taxa_aprendizado*calcula_gradiente(false,pesos_b,i,j,this.EQM)));  
 						}
 					}
 				}
