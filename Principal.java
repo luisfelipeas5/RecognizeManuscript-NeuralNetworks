@@ -26,7 +26,7 @@ public class Principal {
 		//Numero maximo de epocas para analise
 		int numero_epocas=10;
 		
-		if(args.length != 7){
+		if(args.length != 7 && args.length != 5){
 			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
 					+ " \n"
 					+ "Nome do arquivo do conjunto de dados de treino \n"
@@ -36,24 +36,48 @@ public class Principal {
 					+ "Número de neurônios de camada escondida (MLP) \n"
 					+ "Número de neurônios para a camada classe (LVQ) \n"
 					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
+			System.out.println("\n\n OU:"
+					+ " \n"
+					+ "Nome do arquivo com todos os dados \n"
+					+ "Taxa de aprendizado inicial \n"
+					+ "Número de neurônios de camada escondida (MLP) \n"
+					+ "Número de neurônios para a camada classe (LVQ) \n"
+					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
 			System.exit(0);
 		}
 		
-		String nome_arquivo_dados_treinamento = args[0];
-		String nome_arquivo_dados_validacao = args[1];
-		String nome_arquivo_dados_teste = args[2];
-		
-		taxa_aprendizado_inicial = Double.parseDouble(args[3]);
-		numero_neuronios_escondidos = Integer.parseInt(args[4]);
-		numero_neuronios_classe = Integer.parseInt(args[5]);
-		if(args[6].equalsIgnoreCase("z")){
-			pesos_aleatorios = true;
-		}else if(args[6].equalsIgnoreCase("a")){
-			pesos_aleatorios = false;
-		}else{
-			System.out.println("Erro ao inserir dados.");
-			System.exit(0);
+		if(args.length==7){
+			String nome_arquivo_dados_treinamento = args[0];
+			String nome_arquivo_dados_validacao = args[1];
+			String nome_arquivo_dados_teste = args[2];
+			
+			taxa_aprendizado_inicial = Double.parseDouble(args[3]);
+			numero_neuronios_escondidos = Integer.parseInt(args[4]);
+			numero_neuronios_classe = Integer.parseInt(args[5]);
+			if(args[6].equalsIgnoreCase("z")){
+				pesos_aleatorios = true;
+			}else if(args[6].equalsIgnoreCase("a")){
+				pesos_aleatorios = false;
+			}else{
+				System.out.println("Erro ao inserir dados.");
+				System.exit(0);
+			}	
+		}else if(args.length==5){
+			nome_arquivo_conjunto_dados = args[0];
+			
+			taxa_aprendizado_inicial = Double.parseDouble(args[1]);
+			numero_neuronios_escondidos = Integer.parseInt(args[2]);
+			numero_neuronios_classe = Integer.parseInt(args[3]);
+			if(args[4].equalsIgnoreCase("z")){
+				pesos_aleatorios = true;
+			}else if(args[4].equalsIgnoreCase("a")){
+				pesos_aleatorios = false;
+			}else{
+				System.out.println("Erro ao inserir dados.");
+				System.exit(0);
+			}
 		}
+		
 		
 		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
 		/*
