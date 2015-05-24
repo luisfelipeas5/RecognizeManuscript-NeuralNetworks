@@ -93,16 +93,41 @@ public class Principal {
 		Classificacao_Numeros classificacao_numeros = null;
 		if(args.length==7){
 			Situacao_Problema situacao_problema_conjunto_dados_treinamento = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_treinamento);
-			Matrix entradas_treinamento=situacao_problema_conjunto_dados_treinamento.get_entrada();
-			Matrix saidas_desejadas_treinamento=situacao_problema_conjunto_dados_treinamento.get_saida();
 			
+			Matrix entradas_treinamento=situacao_problema_conjunto_dados_treinamento.get_entrada();
+			System.out.println("Antes: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
+			entradas_treinamento = Pre_Processamento.normaliza_sigmoidal(entradas_treinamento);
+			System.out.println("Depois: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
+			
+			Matrix saidas_desejadas_treinamento = situacao_problema_conjunto_dados_treinamento.get_saida();
+			System.out.println("Antes: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
+			saidas_desejadas_treinamento = Pre_Processamento.normaliza_minmax(saidas_desejadas_treinamento);
+			System.out.println("Depois: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
+						
 			Situacao_Problema situacao_problema_conjunto_dados_validacao = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_validacao);
-			Matrix entradas_validacao=situacao_problema_conjunto_dados_validacao.get_entrada();
+			
+			Matrix entradas_validacao = situacao_problema_conjunto_dados_validacao.get_entrada();
+			System.out.println("Antes: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
+			entradas_validacao = Pre_Processamento.normaliza_sigmoidal(entradas_validacao);
+			System.out.println("Depois: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
+			
 			Matrix saidas_desejadas_validacao=situacao_problema_conjunto_dados_validacao.get_saida();
+			System.out.println("Antes: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
+			saidas_desejadas_validacao = Pre_Processamento.normaliza_minmax(saidas_desejadas_validacao);
+			System.out.println("Depois: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
 			
 			Situacao_Problema situacao_problema_conjunto_dados_teste = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_teste);
+
 			Matrix entradas_teste=situacao_problema_conjunto_dados_teste.get_entrada();
+			System.out.println("Antes: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
+			entradas_teste = Pre_Processamento.normaliza_sigmoidal(entradas_teste);
+			System.out.println("Depois: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
+			
 			Matrix saidas_desejadas_teste=situacao_problema_conjunto_dados_teste.get_saida();
+			System.out.println("Antes: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
+			saidas_desejadas_teste = Pre_Processamento.normaliza_minmax(saidas_desejadas_teste);
+			System.out.println("Depois: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
+			
 			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
 			
 			System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
