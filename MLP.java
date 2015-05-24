@@ -26,15 +26,14 @@ public class MLP extends Rede{
 	Matrix saida_desejada_completa; 
 	Matrix entrada_instancia_atual;
 	Matrix saida_instancia_atual; 
-	Matrix saida_rede_instancia; 
 	Matrix pesos_a; 
 	Matrix pesos_b; 
 	Matrix dJdA, dJdB; 
 	double alpha = 0.0; /*Taxa de aprendizado inicial*/  
-	double EQM = 0.0; 
+	double EQM; 
 	boolean atualiza_alpha; 
 	List<Matrix> erros; 
-	List<Matrix> saidas_todas_instancias = new LinkedList<Matrix>(); 
+	List<Matrix> saidas_todas_instancias; 
 	Matrix erro_instancia_atual;
 		
 	public MLP(int numero_neuronios_escondidos, double alpha_inicial, boolean atualiza_alpha) {
@@ -94,6 +93,8 @@ public class MLP extends Rede{
 	void set_problema (Matrix entrada, Matrix saida_desejada) {
 		this.entrada_completa = entrada; 
 		this.saida_desejada_completa = saida_desejada; 
+		this.EQM = 0.0; 
+		this.saidas_todas_instancias = new LinkedList<Matrix>();  
 	}
 		
 	void set_modo_treinamento(int modo_treinamento) {
