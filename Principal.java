@@ -13,8 +13,8 @@ public class Principal {
 		 * */
 		//Parametros que deve ser passados como parametro
 		String nome_arquivo_conjunto_dados; //Nome do conjunto de dados
-		nome_arquivo_conjunto_dados="conjunto_dados.txt";
-		//nome_arquivo_conjunto_dados="optdigits.total.txt";
+		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
+		nome_arquivo_conjunto_dados="optdigits.total.txt";
 		double taxa_aprendizado_inicial=0.9;
 		boolean taxa_aprendizado_variavel=true;
 		boolean pesos_aleatorios=true;
@@ -26,6 +26,7 @@ public class Principal {
 		//Numero maximo de epocas para analise
 		int numero_epocas=10;
 		
+		/*
 		if(args.length != 7 && args.length != 5){
 			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
 					+ " \n"
@@ -77,7 +78,7 @@ public class Principal {
 				System.exit(0);
 			}
 		}
-		
+		*/
 		
 		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
 		/*

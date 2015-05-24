@@ -35,7 +35,13 @@ public class LVQ extends Rede{
 		this.numero_neuronios_saida = numero_neuronios_classe;
 		this.taxa_de_aprendizado = taxa_de_aprendizado;
 		this.numero_de_classes = classes.length;
-		this.rotulo_pesos=classes;
+		
+		this.rotulo_pesos=new double[numero_neuronios_classe*classes.length];
+		for (int i = 0; i < classes.length; i++) {
+			for (int j = 0; j < numero_neuronios_classe; j++) {
+				this.rotulo_pesos[j]=classes[i];
+			}
+		}
 	}
 	
 	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */
@@ -83,9 +89,9 @@ public class LVQ extends Rede{
 	void imprime_matriz_de_pesos(){
 		for(int x=0; x < numero_neuronios_saida*numero_de_classes; x++){    
 			for(int y=0; y < dimensao; y++){
-                System.out.print(pesos[x][y]+"\t");
+                //System.out.print(pesos[x][y]+"\t");
             }
-            System.out.println();
+            //System.out.println();
         }
 	} 
 	
@@ -116,10 +122,10 @@ public class LVQ extends Rede{
 		double contador_de_erros = 0;
 		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo
 
-		imprime_matriz_de_pesos();
-		System.out.println("");
-		System.out.println("Epoca 0");
-		System.out.println("");
+		//imprime_matriz_de_pesos();
+		//System.out.println("");
+		//System.out.println("Epoca 0");
+		//System.out.println("");
 			
 		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
 			
@@ -135,7 +141,7 @@ public class LVQ extends Rede{
 						neuronio_ganhador = i;
 					}
 				}
-				System.out.println(distancia_euclidiana[i] + "	neuronio ganhador:" + neuronio_ganhador);
+				//System.out.println(distancia_euclidiana[i] + "	neuronio ganhador:" + neuronio_ganhador);
 			}
 		
 			/*
@@ -147,14 +153,18 @@ public class LVQ extends Rede{
 				a classificacao sugerida pela LVQ eh correta (o vetor resultante da operação está situado entre o vetor protótipo e o vetor
 				de dados, ou seja, houve a movimentação do vetor protótipo na direção do dado). Já a subtracao ocorre quando a classificacao
 				sugerida eh incorreta (tendo efeito contrario) e o contador de erros eh incrementado */
-			
+				
+				//imprime_rotulos_dos_pesos();
+				//System.out.println("k="+k+" classe_alvo.length="+classe_alvo.length);
+				//System.out.println("neuronio_ganhador="+neuronio_ganhador+ "rotulo_pesos="+rotulo_pesos.length);
+				
 				if(classe_alvo[k] == rotulo_pesos[neuronio_ganhador]){	// Preciso colocar os rotulos dos pesos
-					System.out.println("Acertou!!");
+					//System.out.println("Acertou!!");
 					for(int a = 0; a < dimensao; a++){
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] + (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 
 					}
 				}else{
-					System.out.println("Errou!");
+					//System.out.println("Errou!");
 					contador_de_erros++;
 					for(int a = 0; a < dimensao; a++){
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] - (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 

@@ -2,9 +2,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jfree.ui.RefineryUtilities;
-
 import Jama.Matrix;
 
 
@@ -29,6 +27,8 @@ public class Classificacao_Numeros {
 		this.saidas_desejadas_treinamento=conjuntos_dados[0][1];
 		this.saidas_desejadas_validacao=conjuntos_dados[1][1];
 		this.saidas_desejadas_teste=conjuntos_dados[2][1];
+		
+		indices_instancias_classe=Holdout.contar_numero_de_instancias(saidas_desejadas_treinamento);
 	}
 	
 	/* -----------------------MLP----------------------------------------------
@@ -40,6 +40,7 @@ public class Classificacao_Numeros {
 	 */
 	public void analisa_mlp(double taxa_aprendizado_inicial, boolean taxa_aprendizado_variavel, boolean pesos_aleatorios,
 							int numero_neuronios_escondidos, int modo_treinamento, int numero_epocas) {
+		
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento
 		
@@ -49,6 +50,7 @@ public class Classificacao_Numeros {
 		Matrix erros_epocas =treinamento.treina(adiciona_bias(entradas_treinamento), saidas_desejadas_treinamento,
 									adiciona_bias(entradas_validacao), saidas_desejadas_validacao,
 									numero_epocas, pesos_aleatorios);
+		erros_epocas.print(erros_epocas.getColumnDimension(), 3);
 		System.out.println("\t#--------------Termino da Fase de Treinamento--------#");
 		
 		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");

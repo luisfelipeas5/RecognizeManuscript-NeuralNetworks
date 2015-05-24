@@ -66,8 +66,7 @@ public class Treinamento {
 		 * a funcao.
 		 */
 		int epoca_atual=0;
-		//erro_total_treinamento>erro_total_validacao && 
-		while ( epoca_atual<numero_limite_epocas) {
+		while (erro_total_treinamento>erro_total_validacao && epoca_atual<numero_limite_epocas) {
 			System.out.println("epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
 			
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
