@@ -46,6 +46,7 @@ public class Classificacao_Numeros {
 		
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento
+		String[] confusao = null;
 		
 		System.out.println("\t#--------------Inicio da Fase de Treinamento-------#");
 		//Treinar MLP
@@ -62,8 +63,9 @@ public class Classificacao_Numeros {
 		
 		System.out.println("\t#----------------Inicio da Matriz de Confusao------------------#");
 		//Montar matrz de confusao com MLP treinada na analise
-		matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
+		confusao = matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		System.out.println("\t#----------------Termino da Matriz de Confusao------------------#");
+		Grava_Resultados.grava_arquivo("Resultados_MLP_"+numero_neuronios_escondidos+"neuronios.txt", mlp.get_saidas(), confusao, numero_epocas);
 	}
 	
 	/* -----------------------LVQ----------------------------------------------
@@ -81,6 +83,7 @@ public class Classificacao_Numeros {
 			classes[i]=iterator_classes.next();
 		}
 		Rede lvq=new LVQ(numero_neuronios_classe, taxa_aprendizado_inicial, classes);
+		String[] confusao = null;
 		
 		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
 		System.out.println("\t\tNumero de limite de epocas="+numero_epocas);
@@ -93,8 +96,10 @@ public class Classificacao_Numeros {
 		System.out.println("\t#--------------Termino da Fase de Treinamento---------------#");
 		
 		System.out.println("\n#----------------Inicio da Matriz de Confusao------------------#");
-		matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
+		confusao = matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
 		System.out.println("#----------------Termino da Matriz de Confusao------------------#");
+		
+		Grava_Resultados.grava_arquivo("Resultados_LVQ_"+numero_neuronios_classe+"neuronios.txt", lvq.get_saidas(), confusao, numero_epocas);
 	}
 	
 	/*
@@ -109,12 +114,14 @@ public class Classificacao_Numeros {
 	}
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
-	public void matriz_confusao(Rede rede) {
+	public String[] matriz_confusao(Rede rede) {
 		//Armazena os valores de classes existentes
 		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(this.saidas_desejadas_teste);
 		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
 		Arrays.sort(classes);
 		double intervalo = classes[1] - classes[0];
+		String[] gravar = new String[(classes.length*classes.length/2) - 1];
+		int iteradorGravar = 0;
 		
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
@@ -126,6 +133,8 @@ public class Classificacao_Numeros {
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
 				System.out.println("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
+				gravar[iteradorGravar] = ("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
+				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
 				 * que so contera entradas que tem saida desejadas os valores classes[i] e classes[j]
@@ -208,6 +217,13 @@ public class Classificacao_Numeros {
 				System.out.println("Falso positivo: "+falso_positivo);
 				System.out.println("Verdadeiro negativo: "+verdadeiro_negativo);
 				
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Matriz de confusao" +classes[i]+" X "+classes[j]);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Verdadeiro positivo: " + verdadeiro_positivo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Falso negativo: "+falso_negativo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Falso positivo: "+falso_positivo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Verdadeiro negativo: "+verdadeiro_negativo);
+				
+				
 				/*TODO contabiliza cada um dos elementos da matriz de confusao
 				//Medidas extraidas da matriz de confusao
 				double sensibilidade=verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
@@ -230,8 +246,13 @@ public class Classificacao_Numeros {
 				*/
 				System.out.println("----------Fim One x One: "+classes[i]+"x"+classes[j]+"--------\n");
 				
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("----------Fim One x One: "+classes[i]+"x"+classes[j]+"--------\n");
+				iteradorGravar++;
 			}
+			//System.out.println("Rodou");
 		}
+		//System.out.println("Acabou");
+		return gravar;
 	}
 
 	public static Matrix adiciona_bias(Matrix entradas_sem_bias) {

@@ -30,6 +30,7 @@ public class Grava_Resultados {
 			
 			writer.write("Medidas de avaliacao: "+novaLinha);
 			for (int i = 0; i < medidas_avaliacao.length; i++) {
+				System.out.println(i+"");
 				writer.write(medidas_avaliacao[i]);
 			}
 			
@@ -41,13 +42,10 @@ public class Grava_Resultados {
 			
 			
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

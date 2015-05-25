@@ -170,11 +170,11 @@ public class Principal {
 										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
 		
-		
+		/*
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 										numero_neuronios_classe, numero_epocas);
 		System.out.println("#----------------Termino da Analise da LVQ----------------#");
-		
+		*/
 	}
 }
