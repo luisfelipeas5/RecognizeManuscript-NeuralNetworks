@@ -133,7 +133,7 @@ public class MLP extends Rede{
 		semi_results = new Matrix[2]; 
 		saidas_rede = new Matrix[2];
 		Matrix p = entrada_aux.times(pesos_a.transpose()); 
-		semi_results[0] = p; 
+		semi_results[0] = f(p); 
 		entrada_aux = p; 
 		saidas_rede[0] = entrada_aux; 
 		Matrix aux = entrada_aux; 
