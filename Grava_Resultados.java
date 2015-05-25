@@ -30,7 +30,7 @@ public class Grava_Resultados {
 			
 			writer.write("Medidas de avaliacao: "+novaLinha);
 			for (int i = 0; i < medidas_avaliacao.length; i++) {
-				System.out.println(i+"");
+				if(medidas_avaliacao[i]!=null)
 				writer.write(medidas_avaliacao[i]);
 			}
 			

@@ -71,9 +71,9 @@ public class Treinamento {
 		while (epoca_atual<numero_limite_epocas) {
 			
 			//Condicao de parada exclusica para MLP
-			if(eh_mlp) {
-				if(erro_total_treinamento<=erro_total_validacao) break;
-			}
+			//if(eh_mlp) {
+			//	if(erro_total_treinamento<=erro_total_validacao) break;
+			//}
 			Holdout.embaralhar_conjuntos(entradas_treinamento, saidas_desejadas_treinamento);
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			
