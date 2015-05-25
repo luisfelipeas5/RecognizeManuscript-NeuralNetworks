@@ -1,12 +1,13 @@
 //Pacote Jama: 
 import Jama.Matrix; 
-import java.util.Iterator;
 //Estruturas de armazenamento 
 import java.util.List; 
 import java.util.LinkedList; 
 //Instrumentos matematicos: 
 import java.lang.Math; 
 import java.lang.Double; 
+//Excecoes: 
+import java.lang.ArrayIndexOutOfBoundsException; 
 
 public class MLP extends Rede{
 	/*Durante o processo "propagation", primeiro multiplicamos a matriz de entrada pela primeira matriz
@@ -21,8 +22,8 @@ public class MLP extends Rede{
 	Matrix[] saidas_rede; 
 	boolean treina_padrao_padrao; 
 	boolean treina_batelada; 
-	Matrix entradas; 
-	Matrix saidas_desejadas; 
+	Matrix entrada_completa; 
+	Matrix saida_desejada_completa; 
 	Matrix entrada_instancia_atual;
 	Matrix saida_instancia_atual; 
 	Matrix pesos_a; 
@@ -66,14 +67,14 @@ public class MLP extends Rede{
 	
 	/*Metodo que aplica a funcao de ativacao a cada elemento de uma matriz */
 	public Matrix f(Matrix x) {
-		Matrix x_apf=new Matrix(x.getRowDimension(), x.getColumnDimension());
-		for (int i = 0; i < x.getRowDimension(); i++) {
-			for (int j = 0; j < x.getColumnDimension(); j++) {
-				double novo_valor=sigmoide(x.get(i, j));
-				x_apf.set(i, j, novo_valor);
+		double[][] x_aux = x.getArrayCopy(); 
+		double[][] x_apf = new double[x_aux.length][x_aux[0].length]; 
+		for (int i = 0; i < x_apf.length; i++) {
+			for (int j = 0; j < x_apf[0].length; j++) {
+				x_apf[i][j] = sigmoide(x_aux[i][j]); 
 			}
 		}
-		return x_apf; 
+		return new Matrix(x_apf); 
 	}
 	
 	
@@ -85,16 +86,15 @@ public class MLP extends Rede{
 	}
 	
 	public Matrix get_saidas () {
-		Matrix saidas_mlp=new Matrix(saidas_desejadas.getRowDimension(), saidas_desejadas.getColumnDimension());
-		for (int i = 0; i < saidas_mlp.getRowDimension(); i++) {
-				Matrix entrada=entradas.getMatrix(i, i, 0, entradas.getColumnDimension()-1);
-				Matrix saida_desejada=saidas_desejadas.getMatrix(i, i, 0, saidas_desejadas.getColumnDimension()-1);
-				calcula_saida(entrada, saida_desejada, pesos_a, pesos_b);
-				
-				Matrix saida=saidas_rede[1];
-				saidas_mlp.setMatrix(i, i, 0, saidas_desejadas.getColumnDimension()-1, saida);
+		if (this.saidas_todas_instancias.size() == 0) {
+			treina_uma_epoca (pesos_a, pesos_b); 
 		}
-		return saidas_mlp;
+		Matrix saidas_instancias = new Matrix (this.saidas_todas_instancias.size(), 1); 
+		//System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
+		for (int i = 0; i < this.saidas_todas_instancias.size(); i++) {
+			saidas_instancias.set(i,0,this.saidas_todas_instancias.get(i).get(0,0));
+		}
+		return saidas_instancias;  
 	}
 	
 	//Derivada da funcao de ativacao
@@ -108,8 +108,8 @@ public class MLP extends Rede{
 	}
 	
 	void set_problema (Matrix entrada, Matrix saida_desejada) {
-		this.entradas = entrada; 
-		this.saidas_desejadas = saida_desejada; 
+		this.entrada_completa = entrada; 
+		this.saida_desejada_completa = saida_desejada; 
 		this.erros = new LinkedList<Matrix>(); 
 		this.EQM = 0.0; 
 		this.saidas_todas_instancias = new LinkedList<Matrix>();  
@@ -129,37 +129,29 @@ public class MLP extends Rede{
 	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
 		this.entrada_instancia_atual = entrada;
 		this.saida_instancia_atual = saida_desejada; 
-		semi_results = new Matrix[2];
+		Matrix entrada_aux = entrada;
+		semi_results = new Matrix[2]; 
 		saidas_rede = new Matrix[2];
-		
-		Matrix ZIN = entrada.times(pesos_a.transpose()); 
-		semi_results[0] = ZIN; 
-		//entrada = f(ZIN); 
-		Matrix Z=f(ZIN);
-		saidas_rede[0] = Z; 
-		
-		Matrix Z_bias = new Matrix (Z.getRowDimension(),(Z.getColumnDimension()+1)); 
-		Z_bias.setMatrix(0, Z.getRowDimension()-1, 0, Z.getColumnDimension()-1, Z);
-		for (int i = 0; i < Z_bias.getRowDimension(); i++) {
-			Z_bias.set(i, Z_bias.getColumnDimension()-1, 1);
-		}
-		
-		Matrix YIN=Z_bias.times(pesos_b.transpose());
-		Matrix Y=f(YIN);
-		semi_results[1] = YIN; 
-		saidas_rede[1] = Y;
-		
-		Matrix e = Y.minus(saida_desejada);
-		this.erro_instancia_atual = e;
-		//Elevar erros dessa instancia ao quadrado
-		for (int i = 0; i < e.getRowDimension(); i++) {
-			for (int j = 0; j < e.getColumnDimension(); j++) {
-				double erro=e.get(i, j);
-				e.set(i, j, (erro*erro)/2);
+		Matrix p = entrada_aux.times(pesos_a.transpose()); 
+		semi_results[0] = p; 
+		entrada_aux = p; 
+		saidas_rede[0] = entrada_aux; 
+		Matrix aux = entrada_aux; 
+		entrada_aux = new Matrix (aux.getRowDimension(),(aux.getColumnDimension()+1)); 
+		for (int i = 0; i < aux.getRowDimension(); i++) {
+			for (int j = 0; j < aux.getColumnDimension()-1; j++) {
+				entrada_aux.set(i,j,(aux.get(i,j))); 
 			}
+			entrada_aux.set (i, (aux.getColumnDimension()-1), 1.0); 
 		}
+		p = entrada_aux.times(pesos_b.transpose()); 
+		semi_results[1] = p; 
+		saidas_rede[1] = f(p); 	
+		Matrix e = saida_desejada.minus(saidas_rede[1]); 
+		this.erro_instancia_atual = e;
+		e.set(0,0,(Math.pow(e.get(0,0),2)/2.0)); 
 		erros.add(e);
-		return Y; 
+		return saidas_rede[1]; 
 	}
 	
 	/* 
@@ -301,98 +293,88 @@ public class MLP extends Rede{
 	 * Esse metodo atualiza as matrizes de pesos dado um erro
 	 */
 	void treina_uma_epoca(Matrix pesos_a, Matrix pesos_b) {
-		double taxa_aprendizado; 
-		taxa_aprendizado = this.alpha; 
-		if (this.treina_padrao_padrao) { //atualizacao em padrao a padrao
-			System.out.println ("Atualizacao padrao a padrao"); 
-			for (int n = 0; n < this.entradas.getRowDimension(); n++) {
-				Matrix entrada=entradas.getMatrix(n, n, 0, entradas.getColumnDimension()-1);
-				Matrix saida_desejada=saidas_desejadas.getMatrix(n,n, 0, saidas_desejadas.getColumnDimension()-1);
-				
-				this.entrada_instancia_atual = entrada; 
-				this.saida_instancia_atual = saida_desejada; 
-				
-				if (n==0) {
-					taxa_aprendizado = calcula_taxa_aprendizado (pesos_a, pesos_b, 0.0); 
-				}else {
-					Matrix erro_atual=calcula_saida (entrada, saida_desejada, pesos_a, pesos_b);
-					this.saidas_todas_instancias.add(erro_atual);
-					this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
-					this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
-					calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, erro_atual.get(0,0)); 
+		try {
+			double taxa_aprendizado; 
+			taxa_aprendizado = this.alpha; 
+			if (this.treina_padrao_padrao && !this.treina_batelada) { //atualizacao em padrao a padrao
+				//System.out.println ("Atualizacao padrao a padrao"); 
+				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
+					if (n == 0) { atualiza_alpha = false; }
+					Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
+					for (int j = 0; j < ent.getColumnDimension(); j++) {
+						ent.set(0,j,this.entrada_completa.get(n,j)); 
+					}
+					Matrix saida = new Matrix(1, this.saida_desejada_completa.getColumnDimension()); 
+					for (int j = 0; j < saida.getColumnDimension(); j++) {
+						saida.set(0,j,this.saida_desejada_completa.get(n,j)); 
+					}
+					this.entrada_instancia_atual = ent; 
+					this.saida_instancia_atual = saida; 					
+					if (atualiza_alpha) {
+						taxa_aprendizado = calcula_taxa_aprendizado (pesos_a, pesos_b, 0.0); 
+					}
+					else {
+						this.saidas_todas_instancias.add(calcula_saida (ent, saida, pesos_a, pesos_b));	
+						this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
+						this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
+						calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, this.erro_instancia_atual.get(0,0)); 
+						if (n == 0) { atualiza_alpha = true; }
+					}
+					if (super.necessidade_atualizar_pesos) {
+						for (int i = 0; i < pesos_b.getRowDimension(); i++) {
+							for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
+								pesos_b.set(i,j,(pesos_b.get(i,j)+taxa_aprendizado*this.dJdB.get(i,j)));  									
+							}
+						}
+						for (int i = 0; i < pesos_a.getRowDimension(); i++) {
+							for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
+								pesos_a.set(i,j,(pesos_a.get(i,j)+taxa_aprendizado*this.dJdA.get(i,j)));
+							}
+						}
+					}
 				}
-				
+				double Et = 0.0; 
+				for (int pos = 0; pos < this.erros.size(); pos++) {
+					Et = Et + erros.get(pos).get(0,0); 
+				}
+				this.EQM = new Double(Et/this.entrada_completa.getRowDimension()); 		
+				if (this.atualiza_alpha) { this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); }
+			}
+			else if (!this.treina_padrao_padrao && this.treina_batelada) { //atualizacao em batelada 
+				//System.out.println ("Atualizacao em batch"); 
+				Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
+				Matrix saida = new Matrix(1, this.saida_desejada_completa.getColumnDimension()); 
+				for (int n = 0; n < this.entrada_completa.getRowDimension(); n++) {
+					for (int j = 0; j < ent.getColumnDimension(); j++) {
+						ent.set(0,j,this.entrada_completa.get(n,j)); 
+					}
+					for (int j = 0; j < saida.getColumnDimension(); j++) {
+						saida.set(0,j,this.saida_desejada_completa.get(n,j)); 
+					}
+					this.saidas_todas_instancias.add(calcula_saida (ent, saida, pesos_a, pesos_b)); 
+				}
+				double Et = 0.0; 
+				for (int pos = 0; pos < this.erros.size(); pos++) {
+					Et = Et + erros.get(pos).get(0,0); 
+				}
+				this.EQM = new Double(Et/this.entrada_completa.getRowDimension()); 
 				if (super.necessidade_atualizar_pesos) {
 					for (int i = 0; i < pesos_b.getRowDimension(); i++) {
 						for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
-							double novo_peso=(pesos_b.get(i,j)+taxa_aprendizado*this.dJdB.get(i,j));
-							pesos_b.set(i,j,novo_peso);  									
+							pesos_b.set(i,j,(pesos_b.get(i,j)+taxa_aprendizado*calcula_gradiente(true,pesos_b,i,j,this.EQM)));  
 						}
 					}
 					for (int i = 0; i < pesos_a.getRowDimension(); i++) {
 						for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
-							double novo_peso=(pesos_a.get(i,j)+taxa_aprendizado*this.dJdA.get(i,j));
-							pesos_a.set(i,j,novo_peso);
+							pesos_a.set(i,j,(pesos_a.get(i,j)+taxa_aprendizado*calcula_gradiente(false,pesos_b,i,j,this.EQM)));  
 						}
 					}
 				}
-			}
-			//Soma dos erros por instancia
-			double erro_total_quadratico=0;
-			Iterator<Matrix> iterator_matriz_erros_intancia = erros.iterator();
-			while(iterator_matriz_erros_intancia.hasNext()) {
-				Matrix matriz_erro_instacia = iterator_matriz_erros_intancia.next(); //supondo que é uma matriz linha
-				for (int j = 0; j < matriz_erro_instacia.getColumnDimension(); j++) {
-					erro_total_quadratico=erro_total_quadratico+matriz_erro_instacia.get(0, j);
-				}
-			}
-			//erro quadrado medio= (erro total quadratico) / (numero de instancias)
-			this.EQM = new Double(erro_total_quadratico/this.entradas.getRowDimension());
-			if (this.atualiza_alpha) {
-				this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); 
+				if (this.atualiza_alpha) { this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); }
 			}
 		}
-		else if (this.treina_batelada) { //atualizacao em batelada 
-			System.out.println ("Atualizacao em batch"); 
-			for (int n = 0; n < this.entradas.getRowDimension(); n++) {
-				Matrix entrada=entradas.getMatrix(n, n, 0, entradas.getColumnDimension()-1);
-				Matrix saida_desejada=saidas_desejadas.getMatrix(n,n, 0, saidas_desejadas.getColumnDimension()-1);
-				
-				this.entrada_instancia_atual = entrada; 
-				this.saida_instancia_atual = saida_desejada; 
-				
-				this.saidas_todas_instancias.add(calcula_saida (entrada, saida_desejada, pesos_a, pesos_b)); 
-			}
-			//Soma dos erros por instancia
-			double erro_total_quadratico=0;
-			Iterator<Matrix> iterator_matriz_erros_intancia = erros.iterator();
-			while(iterator_matriz_erros_intancia.hasNext()) {
-				Matrix matriz_erro_instacia = iterator_matriz_erros_intancia.next(); //supondo que é uma matriz linha
-				for (int j = 0; j < matriz_erro_instacia.getColumnDimension(); j++) {
-					erro_total_quadratico=erro_total_quadratico+matriz_erro_instacia.get(0, j);
-				}
-			}
-			//erro quadrado medio= (erro total quadratico) / (numero de instancias) 
-			this.EQM = new Double(erro_total_quadratico/this.entradas.getRowDimension()); 
-			if (super.necessidade_atualizar_pesos) {
-				for (int i = 0; i < pesos_b.getRowDimension(); i++) {
-					for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
-						double gradiente = calcula_gradiente(true,pesos_b,i,j,this.EQM);
-						double novo_peso=(pesos_b.get(i,j)+taxa_aprendizado*gradiente);
-						pesos_b.set(i,j,novo_peso);  
-					}
-				}
-				for (int i = 0; i < pesos_a.getRowDimension(); i++) {
-					for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
-						double gradiente = calcula_gradiente(false,pesos_b,i,j,this.EQM);
-						double novo_peso=(pesos_a.get(i,j)+taxa_aprendizado*gradiente);
-						pesos_a.set(i,j,novo_peso);  
-					}
-				}
-			}
-			if (this.atualiza_alpha) {
-				this.alpha = calcula_taxa_aprendizado (pesos_a, pesos_b, this.EQM); 
-			}
+		catch (ArrayIndexOutOfBoundsException a) {
+			System.out.println ("Erro ao acessar um campo inexistente de uma matriz. Por favor, verifique o arquivo MLP.java"); 
 		}
 	}
 }
