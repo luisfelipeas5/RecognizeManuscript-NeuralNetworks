@@ -90,7 +90,7 @@ public class MLP extends Rede{
 			treina_uma_epoca (pesos_a, pesos_b); 
 		}
 		Matrix saidas_instancias = new Matrix (this.saidas_todas_instancias.size(), 1); 
-		System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
+		//System.out.println (this.saidas_todas_instancias.size() +" " +saidas_instancias.getRowDimension()); 
 		for (int i = 0; i < this.saidas_todas_instancias.size(); i++) {
 			saidas_instancias.set(i,0,this.saidas_todas_instancias.get(i).get(0,0));
 		}
@@ -134,7 +134,7 @@ public class MLP extends Rede{
 		saidas_rede = new Matrix[2];
 		Matrix p = entrada_aux.times(pesos_a.transpose()); 
 		semi_results[0] = p; 
-		entrada_aux = f(p); 
+		entrada_aux = p; 
 		saidas_rede[0] = entrada_aux; 
 		Matrix aux = entrada_aux; 
 		entrada_aux = new Matrix (aux.getRowDimension(),(aux.getColumnDimension()+1)); 
@@ -302,19 +302,18 @@ public class MLP extends Rede{
 					if (n == 0) { atualiza_alpha = false; }
 					Matrix ent = new Matrix(1, this.entrada_completa.getColumnDimension()); 
 					for (int j = 0; j < ent.getColumnDimension(); j++) {
-						ent.set(0,j,this.entrada_completa.get(0,j)); 
+						ent.set(0,j,this.entrada_completa.get(n,j)); 
 					}
 					Matrix saida = new Matrix(1, this.saida_desejada_completa.getColumnDimension()); 
 					for (int j = 0; j < saida.getColumnDimension(); j++) {
-						saida.set(0,j,this.saida_desejada_completa.get(0,j)); 
+						saida.set(0,j,this.saida_desejada_completa.get(n,j)); 
 					}
 					this.entrada_instancia_atual = ent; 
-					this.saida_instancia_atual = saida; 
-					
+					this.saida_instancia_atual = saida; 					
 					if (atualiza_alpha) {
 						taxa_aprendizado = calcula_taxa_aprendizado (pesos_a, pesos_b, 0.0); 
 					}
-					if (!atualiza_alpha) {
+					else {
 						this.saidas_todas_instancias.add(calcula_saida (ent, saida, pesos_a, pesos_b));	
 						this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
 						this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
