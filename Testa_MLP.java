@@ -32,7 +32,7 @@ public class Testa_MLP {
 			Matrix saidas_p12 = mlp3.get_saidas();
 			saidas_p12.print(saidas_p12.getColumnDimension(), 3);
 			
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 200; i++) {
 				double erros = mlp3.get_erro();
 				System.out.println(erros);
 			}
@@ -45,9 +45,8 @@ public class Testa_MLP {
 			double[][] ent = {{1,1,1}};
 			Matrix entrada = new Matrix (ent); 
 			//Matriz de entrada Prova P1 2013
-			double[][] saida = {{0.0}};
+			double[][] saida = {{0.7}};
 			Matrix saida_esperada = new Matrix (saida);
-			long inicio = System.nanoTime(); 
 			//Matrizes de pesos: 
 			Random r = new Random(); 
 			int numero_neuronios_escondidos=3;
@@ -55,27 +54,27 @@ public class Testa_MLP {
 			Matrix B = new Matrix (saida_esperada.getColumnDimension(),numero_neuronios_escondidos+1);
 			for (int i = 0; i < A.getRowDimension(); i++) {
 				for (int j = 0; j < A.getColumnDimension(); j++) {
-					A.set(i,j,(r.nextDouble()-0.5)); 
-					//A.set(i,j,0.1);
+					//A.set(i,j,(r.nextDouble()-0.5)); 
+					A.set(i,j,0.1);
 				}
 			}
 			for (int i = 0; i < B.getRowDimension(); i++) {
 				for (int j = 0; j < B.getColumnDimension(); j++) {
-					B.set(i,j,(r.nextDouble()-0.5)); 
-					//B.set(i,j,0.1);
+					//B.set(i,j,(r.nextDouble()-0.5)); 
+					B.set(i,j,0.1);
 				}
 			}
 			boolean atualiza_alpha=false;
-			double alpha_inicial=0.5;
+			double alpha_inicial=0.1;
 			MLP mlp=new MLP(numero_neuronios_escondidos, alpha_inicial, atualiza_alpha);
 			mlp.set_problema(entrada, saida_esperada);
-			mlp.set_modo_treinamento(1);
+			mlp.set_modo_treinamento(2);
 			mlp.set_pesos(A, B);
 			
 			Matrix saidas_p1 = mlp.get_saidas();
-			saidas_p1.print(saidas_p1.getColumnDimension(), 3);
+			//saidas_p1.print(saidas_p1.getColumnDimension(), 3);
 			
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 1000; i++) {
 				double erros_p1 = mlp.get_erro();
 				System.out.println(erros_p1);
 			}
