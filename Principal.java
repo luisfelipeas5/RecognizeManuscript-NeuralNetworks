@@ -1,4 +1,3 @@
-import edu.umbc.cs.maple.utils.JamaUtils;
 import Jama.Matrix;
 
 
@@ -19,17 +18,16 @@ public class Principal {
 		String nome_arquivo_dados_teste = null;
 		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
 		nome_arquivo_conjunto_dados="optdigits.total.txt";
-		double taxa_aprendizado_inicial=0.9;
-		boolean taxa_aprendizado_variavel=false;
+		double taxa_aprendizado_inicial=0.1;
+		boolean taxa_aprendizado_variavel=true;
 		boolean pesos_aleatorios=true;
 		//Para MLP
-		int numero_neuronios_escondidos=2;
+		int numero_neuronios_escondidos=10;
 		int modo_treinamento=1; //padrao a padrao=1 e batelada=2
 		//Para LVQ
 		int numero_neuronios_classe=3;
 		//Numero maximo de epocas para analise
-		int numero_epocas=20;
-		
+		int numero_epocas=50;
 		
 		if(args.length != 7 && args.length != 5){
 			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
@@ -145,7 +143,10 @@ public class Principal {
 			Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
 			Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
 			//System.out.println("Comeca normalizacao entradas.\n");
-			entradas = Pre_Processamento.normaliza_sigmoidal(entradas);
+			entradas = Pre_Processamento.remove_desvio_baixo(entradas, 2);
+			//entradas.print(10, 5);
+			//System.exit(0);
+			entradas = Pre_Processamento.normaliza_zscore(entradas);
 			//System.out.println("Termina normalizacao entradas.\n");
 
 			Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
@@ -162,7 +163,6 @@ public class Principal {
 			
 			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		}
-		
 		
 		
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");

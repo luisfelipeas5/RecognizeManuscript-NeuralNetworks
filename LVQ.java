@@ -11,6 +11,8 @@
  * */
 
 import Jama.Matrix;
+
+import java.util.Arrays;
 import java.util.Random;
 
 public class LVQ extends Rede{
@@ -36,12 +38,17 @@ public class LVQ extends Rede{
 		this.taxa_de_aprendizado = taxa_de_aprendizado;
 		this.numero_de_classes = classes.length;
 		
+		Arrays.sort(classes);
 		this.rotulo_pesos=new double[numero_neuronios_classe*classes.length];
-		for (int i = 0; i < classes.length; i++) {
-			for (int j = 0; j < numero_neuronios_classe; j++) {
-				this.rotulo_pesos[j]=classes[i];
+		int j=0;
+		for(int i=0; i < classes.length;i++) {
+			for (int k=0; k < numero_neuronios_classe; k++) {
+				this.rotulo_pesos[j]=(double)classes[i];
+				j++;
 			}
 		}
+		//imprime_rotulos_dos_pesos();
+		//System.exit(0);
 	}
 	
 	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */

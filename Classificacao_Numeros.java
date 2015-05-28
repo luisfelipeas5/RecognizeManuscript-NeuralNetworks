@@ -58,14 +58,16 @@ public class Classificacao_Numeros {
 		
 		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");
 		//Mostrar grafico Epoca X Erro Total
-		grafico_erro_epoca(erros_epocas);
+		grafico_erro_epoca(erros_epocas, mlp.numero_neuronios);
 		System.out.println("\t#----------------Termino da Exibicao do Grafico-----------------#");
+		
 		
 		System.out.println("\t#----------------Inicio da Matriz de Confusao------------------#");
 		//Montar matrz de confusao com MLP treinada na analise
 		confusao = matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		System.out.println("\t#----------------Termino da Matriz de Confusao------------------#");
 		Grava_Resultados.grava_arquivo("Resultados_MLP_"+numero_neuronios_escondidos+"neuronios.txt", mlp.get_saidas(), confusao, numero_epocas);
+		
 	}
 	
 	/* -----------------------LVQ----------------------------------------------
@@ -106,8 +108,9 @@ public class Classificacao_Numeros {
 	 * Esse metodo disponibiliza o grafico erro X epocas de uma determinada rede
 	 * 		- O numero de epocas eh passado como parametro;
 	 */
-	public static void grafico_erro_epoca(Matrix erros_epocas) {
-		Grafico grafico = new Grafico("Erro x Epoca", erros_epocas.transpose());
+	public static void grafico_erro_epoca(Matrix erros_epocas, int neuronio_escondidos) {
+		Grafico grafico = new Grafico("Erro x Epoca (max_epocas="+erros_epocas.getRowDimension()+", neuronios_escondidos="+neuronio_escondidos+")"
+									, erros_epocas.transpose());
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
@@ -187,7 +190,9 @@ public class Classificacao_Numeros {
 				
 				//Dadas as saidas da rede, compara-las com as saidas desejadas para montar
 				//a matriz de confusao
+				//for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
 				for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+					System.out.println(saidas_desejadas_one_one.get(k, 0) +" "+saidas.get(k, 0));
 					if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
 						//Se a classe predita for igual a classe real
 						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
@@ -224,16 +229,16 @@ public class Classificacao_Numeros {
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Verdadeiro negativo: "+verdadeiro_negativo);
 				
 				
-				/*TODO contabiliza cada um dos elementos da matriz de confusao
+				//TODO contabiliza cada um dos elementos da matriz de confusao
 				//Medidas extraidas da matriz de confusao
-				double sensibilidade=verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
-				double taxa_falsos_positivos=falso_positivo/(verdadeiro_negativo+falso_positivo);
-				double especificidade=verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
-				double precisao= verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
-				double preditividade_negativa=taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
-				double taxa_falsas_descobertas=falso_positivo/(verdadeiro_positivo+falso_positivo);
-				double taxa_acuracia=(verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
-				double taxa_erro=(falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+				double sensibilidade=(double)(verdadeiro_positivo/(verdadeiro_positivo+falso_negativo)); //taxa de verdadeiros positivos ou revocacao
+				double taxa_falsos_positivos=(double)(falso_positivo/(verdadeiro_negativo+falso_positivo));
+				double especificidade=(double)(verdadeiro_negativo/(falso_positivo+falso_positivo)); //taxa de verdadeiros negativos
+				double precisao= (double)(verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo));
+				double preditividade_negativa=(double)(taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo));
+				double taxa_falsas_descobertas=(double)(falso_positivo/(verdadeiro_positivo+falso_positivo));
+				double taxa_acuracia=(double)((verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo));
+				double taxa_erro=(double)((falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo));
 				
 				System.out.println("\nSensibilidade="+sensibilidade);
 				System.out.println("\nTaxa de falsos positivos="+taxa_falsos_positivos);
@@ -243,7 +248,16 @@ public class Classificacao_Numeros {
 				System.out.println("\nTaxa de falsas descobertas="+taxa_falsas_descobertas);
 				System.out.println("\nTaxa de Acuracidade="+taxa_acuracia);
 				System.out.println("\nTaxa de Erro="+taxa_erro);
-				*/
+				
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nSensibilidade="+sensibilidade);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nTaxa de falsos positivos="+taxa_falsos_positivos);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nEspecificidade="+especificidade);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nPrecisao="+precisao);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nPreditividade Negativa="+preditividade_negativa);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nTaxa de falsas descobertas="+taxa_falsas_descobertas);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nTaxa de Acuracidade="+taxa_acuracia);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("\nTaxa de Erro="+taxa_erro);
+
 				System.out.println("----------Fim One x One: "+classes[i]+"x"+classes[j]+"--------\n");
 				
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("----------Fim One x One: "+classes[i]+"x"+classes[j]+"--------\n");

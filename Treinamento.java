@@ -1,5 +1,8 @@
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
-
 import Jama.Matrix;
 
 public class Treinamento {
@@ -67,13 +70,15 @@ public class Treinamento {
 		 * Se o numero de epocas ultrapassar o numero de epocas limite estabelecido externamente
 		 * a funcao.
 		 */
+		int epoca_ideal=0; //Epoca na qual o erro de treinamento eh igual ou menor do que erro de validacao
 		int epoca_atual=0;
 		while (epoca_atual<numero_limite_epocas) {
-			
 			//Condicao de parada exclusica para MLP
-			//if(eh_mlp) {
-			//	if(erro_total_treinamento<=erro_total_validacao) break;
-			//}
+			if(eh_mlp) {
+				if(erro_total_treinamento<=erro_total_validacao) {
+					epoca_ideal=epoca_atual;
+				}
+			}
 			Holdout.embaralhar_conjuntos(entradas_treinamento, saidas_desejadas_treinamento);
 			rede.set_problema(entradas_treinamento, saidas_desejadas_treinamento);
 			
@@ -94,11 +99,35 @@ public class Treinamento {
 			
 			//Status do treinamento:
 			System.out.println("epoca="+(epoca_atual+1)+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
-			
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 		}
 		
+		//Corte da LVQ
+		if(!eh_mlp) {
+			LVQ lvq=(LVQ)rede;
+			
+			//Classes existentes no conjunto de treinamento
+			Map<Double, List<Integer>> indices_instancias_classe_treinamento = Holdout.contar_numero_de_instancias(saidas_desejadas_treinamento);
+			Double[] classes=indices_instancias_classe_treinamento.keySet().toArray( new Double[0]);
+			Arrays.sort(classes);
+			
+			for (int i = 0; i < classes.length ; i++) {
+				//Matrix que guarda somente instancias da classe i
+				int numero_instancias_classe_i=indices_instancias_classe_treinamento.get(classes[i]).size(); //numero de instancias da classe[i]
+				Matrix entradas_classe=new Matrix(numero_instancias_classe_i, entradas_treinamento.getColumnDimension());
+				//Lista do indice da linha em que a instancia de uma determinada classe esta no conjunto de treinamento
+				List<Integer> indices_classe=indices_instancias_classe_treinamento.get(classes[i]);
+				Iterator<Integer> iterator_indices_classe = indices_classe.iterator();
+				while(iterator_indices_classe.hasNext()) {
+					Integer indice = iterator_indices_classe.next();
+					Matrix entrada=entradas_treinamento.getMatrix(indice, indice, 0, entradas_treinamento.getColumnDimension()-1);
+					entradas_classe.setMatrix(indice, indice, 0, entradas_treinamento.getColumnDimension()-1, entrada);
+				}
+				//lvq.corte_de_neuronios(2, classes[i], entradas_classe);
+			}
+		}
+		System.out.println("\tEpoca ideal="+epoca_ideal);
 		System.out.println("\tTreinameno parou na: epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
 		return erros_epocas;
 	}
@@ -112,12 +141,7 @@ public class Treinamento {
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
 			for(int j=0; j<pesos.getColumnDimension();j++) {
-				if(i%2==0) {
-					pesos.set(i, j, random.nextDouble());
-				}else {
-					pesos.set(i, j, -random.nextDouble());
-				}
-				
+					pesos.set(i, j, random.nextDouble()-0.5);
 			}
 		}
 	}
