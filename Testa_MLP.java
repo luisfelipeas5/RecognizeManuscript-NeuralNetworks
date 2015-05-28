@@ -119,17 +119,19 @@ public class Testa_MLP {
 			Matrix B2 = new Matrix (saida_esperada2.getColumnDimension(),numero_neuronios_escondidos2+1);
 			for (int i = 0; i < A2.getRowDimension(); i++) {
 				for (int j = 0; j < A2.getColumnDimension(); j++) {
-					A2.set(i,j,(r2.nextDouble()-0.5)); 
+					A2.set(i,j,(r2.nextDouble()-0.5));
+					//A2.set(i,j,0.1);
 				}
 			}
 			for (int i = 0; i < B2.getRowDimension(); i++) {
 				for (int j = 0; j < B2.getColumnDimension(); j++) {
 					B2.set(i,j,(r2.nextDouble()-0.5)); 
+					//B2.set(i,j,0.1);
 				}
 			}
 			
-			A2 = Pre_Processamento.normaliza_zscore(A2);
-			B2 = Pre_Processamento.normaliza_zscore(B2);
+			//A2 = Pre_Processamento.normaliza_zscore(A2);
+			//B2 = Pre_Processamento.normaliza_zscore(B2);
 			
 			boolean atualiza_alpha2=false;
 			double alpha_inicial2=0.2;
@@ -141,7 +143,7 @@ public class Testa_MLP {
 			System.out.println("Saida antes do treinamento=");
 			Matrix saidas_p2 = mlp2.get_saidas();
 			saidas_p2.print(saidas_p2.getColumnDimension(), 3);
-			for (int i = 0; i < 1000; i++) {
+			for (int i = 0; i < 2000; i++) {
 				//System.out.println("Erro epoca: "+i);
 				double erros_p2 = mlp2.get_erro();
 				//System.out.println(erros_p2);

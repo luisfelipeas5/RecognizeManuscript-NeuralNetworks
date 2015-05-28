@@ -162,7 +162,7 @@ public class MLP extends Rede{
 		for (int i = 0; i < e.getRowDimension(); i++) {
 			for (int j = 0; j < e.getColumnDimension(); j++) {
 				double erro=e.get(i, j);
-				erro_quadrado.set(i, j, (erro*erro)/2);
+				erro_quadrado.set(i, j, (erro*erro));
 			}
 		}
 		erros.add(erro_quadrado);

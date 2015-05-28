@@ -18,7 +18,7 @@ import org.jfree.ui.RefineryUtilities;
 import Jama.Matrix;
 
 public class Grafico extends ApplicationFrame{
-    
+    String titulo;
     public Grafico(final String titulo, Matrix dados) {
     	/* Basta chamar esse construtor passando o Titulo do grafico
     	 e matriz de dado que se deseja usar para se desenhar o grafico.
@@ -30,6 +30,7 @@ public class Grafico extends ApplicationFrame{
     	 dados.get(1, 1) e dados.get(1, 2). */	
         //TESTE
     	super(titulo);
+    	this.titulo=titulo;
         final JFreeChart grafico = criaGrafico(setDados(dados));
         final ChartPanel painel = new ChartPanel(grafico);
         painel.setPreferredSize(new Dimension(800, 600));
@@ -73,7 +74,7 @@ public class Grafico extends ApplicationFrame{
     private JFreeChart criaGrafico(final CategoryDataset dados) {
         
         final JFreeChart grafico = ChartFactory.createLineChart(
-            "Erro X Epocas", "Epoca", "Erro", dados, PlotOrientation.VERTICAL, true, true, false                      // urls
+            this.titulo, "Epoca", "Erro", dados, PlotOrientation.VERTICAL, true, true, false                      // urls
         );
 
         
