@@ -74,9 +74,9 @@ public class MLP extends Rede{
 	}
 	
 	//Derivada da funcao sigmoide
-		public double sigmoide_linha (double x) { 
-			return sigmoide(x)*(1.0-sigmoide(x)); 
-		}
+	public double sigmoide_linha (double x) { 
+		return sigmoide(x)*(1.0-sigmoide(x)); 
+	}
 	
 	/*Metodo que aplica a funcao de ativacao a cada elemento de uma matriz */
 	public Matrix g(Matrix x) {
@@ -220,7 +220,7 @@ public class MLP extends Rede{
 			YINs.setMatrix(indice_instancia, indice_instancia, 0, YINs.getColumnDimension()-1, semi_results[1]);
 			Ys.setMatrix(indice_instancia, indice_instancia, 0, Ys.getColumnDimension()-1, saida);
 			
-			Matrix erro=saida_desejada.minus(saida);
+			Matrix erro=saida.minus(saida_desejada);
 			
 			saidas.setMatrix(indice_instancia, indice_instancia, 0, saidas.getColumnDimension()-1, saida);
 			erros.setMatrix(indice_instancia, indice_instancia, 0, erros.getColumnDimension()-1, erro);
@@ -232,14 +232,15 @@ public class MLP extends Rede{
 				}
 				*/
 				this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
-				this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
-				calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, saida.get(0,0), indice_instancia);
+				this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());
+				
+				calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, erro.get(0,0), indice_instancia);
 				
 				Matrix gradiente_B=this.dJdB.times(taxa_aprendizado);
-				Matrix novos_pesos_b=pesos_b.minus(gradiente_B);
+				Matrix novos_pesos_b=pesos_b.plus(gradiente_B);
 				
 				Matrix gradiente_A=this.dJdA.times(taxa_aprendizado);
-				Matrix novos_pesos_a=pesos_a.minus(gradiente_A);
+				Matrix novos_pesos_a=pesos_a.plus(gradiente_A);
 				
 				pesos_a=novos_pesos_a;
 				pesos_b=novos_pesos_b;
@@ -303,7 +304,10 @@ public class MLP extends Rede{
 			this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
 			calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, erro_quadrado_medio, indice_instancia);
 			
+			
+			
 			Matrix gradiente_B=this.dJdB.times(taxa_aprendizado);
+			
 			Matrix novos_pesos_b=pesos_b.minus(gradiente_B);
 			
 			Matrix gradiente_A=this.dJdA.times(taxa_aprendizado);
@@ -432,9 +436,7 @@ public class MLP extends Rede{
 		return hl; 
 	}
 	
-	double calcula_taxa_aprendizado (Matrix A, Matrix B, double erro_medio) {
-		//TODO
-		/*
+	double calcula_taxa_aprendizado (Matrix A, Matrix B, double erro_medio, int indice_instancia) {
 		double alfa = 0.0; 
 		double alfa_inferior = 0.0; 
 		double alfa_superior = this.alpha; //alpha_inicial 
@@ -497,7 +499,5 @@ public class MLP extends Rede{
 			alfa = alfa_medio;
 		}
 		return alfa; 
-		 */
-		return alpha_inicial;
 	}
 }
