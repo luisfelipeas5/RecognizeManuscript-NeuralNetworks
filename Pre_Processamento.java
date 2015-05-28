@@ -187,8 +187,8 @@ public class Pre_Processamento{
 		/* Cria uma matriz de dimensoes reduzidas, ja que colunas serao removidas as ultimas
 		X colunas. */
 		if(removeColunas >= dados.getColumnDimension()){
-			System.out.println("Todas as colunas seriam removidas se esse limiar for utilizado. Retornando matriz sem alteracoes.");
-			return dados;
+			System.out.println("Todas as colunas seriam removidas se esse limiar for utilizado. Favor fornecer outro limiar.");
+			System.exit(0);
 		}
 		resultado = new Matrix(dados.getRowDimension(), dados.getColumnDimension()-removeColunas);
 		

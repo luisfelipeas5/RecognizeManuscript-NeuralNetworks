@@ -12,60 +12,80 @@ public class Principal {
 		 * args[6] = Inicialização de pesos (zero/aleatório)
 		 * */
 		//Parametros que deve ser passados como parametro
-		String nome_arquivo_conjunto_dados; //Nome do conjunto de dados
+		String nome_arquivo_conjunto_dados = null; //Nome do conjunto de dados
 		String nome_arquivo_dados_treinamento = null;
 		String nome_arquivo_dados_validacao = null;
 		String nome_arquivo_dados_teste = null;
-		//nome_arquivo_conjunto_dados="conjunto_dados.txt";
-		nome_arquivo_conjunto_dados="optdigits.total.txt";
-		double taxa_aprendizado_inicial=0.1;
-		boolean taxa_aprendizado_variavel=true;
-		boolean pesos_aleatorios=true;
+		String tipo_normalizacao = "nenhum";
+		String tipo_remocao = "nenhum";
+		int valor_remocao = 0;
+		double taxa_aprendizado_inicial = 0.1;
+		boolean taxa_aprendizado_variavel = true;
+		boolean pesos_aleatorios = false;
+		double intervalo_pesos_aleatorios = 0.5;		
+		//Numero maximo de epocas e erro maximo para analise
+		int numero_epocas = 100;
+		double limiar_erro = 0.05;
+
 		//Para MLP
-		int numero_neuronios_escondidos=10;
-		int modo_treinamento=1; //padrao a padrao=1 e batelada=2
-		//Para LVQ
-		int numero_neuronios_classe=3;
-		//Numero maximo de epocas para analise
-		int numero_epocas=50;
+		int numero_neuronios_escondidos = 5;
+		int modo_treinamento = 1; //padrao a padrao=1 e batelada=2
 		
-		if(args.length != 7 && args.length != 5){
-			System.out.println("Favor inserir os seguintes dados ao chamar o programa, na ordem especifica listada a seguir:"
-					+ " \n"
-					+ "Nome do arquivo do conjunto de dados de treino \n"
-					+ "Nome do arquivo do conjunto de dados de validação \n"
-					+ "Nome do arquivo do conjunto de dados de teste \n"
-					+ "Taxa de aprendizado inicial \n"
-					+ "Número de neurônios de camada escondida (MLP) \n"
-					+ "Número de neurônios para a camada classe (LVQ) \n"
-					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
-			System.out.println("\n\n OU:"
-					+ " \n"
-					+ "Nome do arquivo com todos os dados \n"
-					+ "Taxa de aprendizado inicial \n"
-					+ "Número de neurônios de camada escondida (MLP) \n"
-					+ "Número de neurônios para a camada classe (LVQ) \n"
-					+ "Inicialização de pesos (zero/aleatório) (inserir z ou a) \n");
+		//Para LVQ
+		int numero_neuronios_classe = 3;
+		
+		
+		if(args.length != 5 && args.length != 7 && args.length != 11){
+			System.out.println("Favor utilizar um dos seguintes padrões de passagem de parâmetros ao executar esse programa:"
+					+ "\n\n"
+					+ "Entrada padrão: \n\n"
+					+ "1. Nome do arquivo do conjunto de dados de treino. \n\n"
+					+ "2. Nome do arquivo do conjunto de dados de validação. \n\n"
+					+ "3. Nome do arquivo do conjunto de dados de teste. \n\n"
+					+ "4. Taxa de aprendizado inicial. \n\n"
+					+ "5. Número de neurônios de camada escondida (MLP). \n\n"
+					+ "6. Número de neurônios para a camada classe (LVQ). \n\n"
+					+ "7. Inicialização de pesos:\n"
+					+ "  -> Inserir 'z' para matriz de pesos 0 ou 'a' para matriz de pesos aleatórios.) \n\n"
+					+ "OU:\n\n"
+					+ "Entrada padrão modificada: \n"
+					+ "1. Nome do arquivo com todos os dados \n\n"
+					+ "2. Taxa de aprendizado inicial \n\n"
+					+ "3. Número de neurônios de camada escondida (MLP) \n\n"
+					+ "4. Número de neurônios para a camada classe (LVQ) \n\n"
+					+ "5. Inicialização de pesos:\n"
+					+ "  -> Inserir 'z' para matriz de pesos 0 ou 'a' para matriz de pesos aleatórios.\n\n"
+					+ "OU:\n\n"
+					+ "Entrada extendida: \n"
+					+ "1. Nome do arquivo com todos os dados. \n\n"
+					+ "  -> Inserir: 'nenhum' ou 'max' ou 'minmax' ou 'zscore' ou 'sigmoidal'. \n\n"
+					+ "2. Tipo de redução de dados: remover colunas preenchidas com zeros ou colunas com baixo desvio padrão: \n"
+					+ "  -> Inserir: 'nenhum' ou 'zeros' ou 'desvio'. \n\n"
+					+ "3. Valor de corte: \n"
+					+ "  3.1. Em caso de eleminação de colunas por atributos com zeros: \n"
+					+ "  -> Inserir valor entre 0 e 100, correspondente à porcentagem de zeros que um atributo "
+					+ "deve ter para ser eliminado. \n"
+					+ "  3.2. Em caso de eliminação de colunas por atributos com baixo desvio padrão: \n"
+					+ "  -> Inserir valor mínimo de desvio padrão desejado para as colunas. "
+					+ "Colunas que com desvio padrão menor ou igual ao inserido serão eliminadas. \n"
+					+ "  3.3. Em caso do parâmtro 3 = 'nenhum': \n"
+					+ "  -> Inserir: 0. \n\n"
+					+ "4. Tipo de normalizacao: \n "
+					+ "5. Taxa de aprendizado inicial. \n\n"
+					+ "6. Número de neurônios de camada escondida (MLP) \n\n"
+					+ "7. Tipo de treinamento da MLP: \n"
+					+ "  -> Inserir: 'batelada' para treinamento em batelada ou 'padrao' para treinamento padrao a padrao. \n\n"
+					+ "8. Número de neurônios para a camada classe (LVQ) \n\n"
+					+ "9. Inicialização de pesos:\n"
+					+ "  -> Inserir 0 para se utilizar uma matriz de pesos 0 ou "
+					+ "inserir qualquer outro número para criar uma matriz de pesos aleatórios "
+					+ "com valores variando -x e x, sendo x o valor passado via este parâmetro. \n\n"
+					+ "10. Limiar de erro. Ao atingir esse valor a rede irá encerrar seu treinamento. \n\n"
+					+ "11 . Número máximo de épocas. Ao atingir esse valor a rece irá encerrar seu treinamento.\n");
 			System.exit(0);
 		}
 		
-		if(args.length==7){
-			nome_arquivo_dados_treinamento = args[0];
-			nome_arquivo_dados_validacao = args[1];
-			nome_arquivo_dados_teste = args[2];
-			
-			taxa_aprendizado_inicial = Double.parseDouble(args[3]);
-			numero_neuronios_escondidos = Integer.parseInt(args[4]);
-			numero_neuronios_classe = Integer.parseInt(args[5]);
-			if(args[6].equalsIgnoreCase("z")){
-				pesos_aleatorios = false;
-			}else if(args[6].equalsIgnoreCase("a")){
-				pesos_aleatorios = true;
-			}else{
-				System.out.println("Erro ao inserir dados.");
-				System.exit(0);
-			}	
-		}else if(args.length==5){
+		if(args.length==5){			
 			nome_arquivo_conjunto_dados = args[0];
 			taxa_aprendizado_inicial = Double.parseDouble(args[1]);
 			numero_neuronios_escondidos = Integer.parseInt(args[2]);
@@ -75,9 +95,77 @@ public class Principal {
 			}else if(args[4].equalsIgnoreCase("a")){
 				pesos_aleatorios = true;
 			}else{
-				System.out.println("Erro ao inserir dados.");
+				System.out.println("Erro nos parâmetros de entrada.");
 				System.exit(0);
 			}
+		}else if(args.length==7){
+			nome_arquivo_dados_treinamento = args[0];
+			nome_arquivo_dados_validacao = args[1];
+			nome_arquivo_dados_teste = args[2];
+
+			taxa_aprendizado_inicial = Double.parseDouble(args[3]);
+			numero_neuronios_escondidos = Integer.parseInt(args[4]);
+			numero_neuronios_classe = Integer.parseInt(args[5]);
+			if(args[6].equalsIgnoreCase("z")){
+				pesos_aleatorios = false;
+			}else if(args[6].equalsIgnoreCase("a")){
+				pesos_aleatorios = true;
+			}else{
+				System.out.println("Erro nos parâmetros de entrada.");
+				System.exit(0);
+			}
+		}else if(args.length==11){
+			
+			nome_arquivo_conjunto_dados = args[0];
+			
+			if(args[1].equalsIgnoreCase("zeros")
+					|| args[1].equalsIgnoreCase("desvio")
+					|| args[1].equalsIgnoreCase("nenhum")){
+				tipo_remocao = args[1];
+				valor_remocao = Integer.parseInt(args[2]);
+			}else{
+				System.out.println("Erro nos parametros de entrada.");
+				System.exit(0);
+			}
+			
+			if(args[3].equalsIgnoreCase("max") 
+					|| args[3].equalsIgnoreCase("minmax")
+					|| args[3].equalsIgnoreCase("zscore") 
+					|| args[3].equalsIgnoreCase("sigmoidal")
+					|| args[3].equalsIgnoreCase("nenhum")){
+				tipo_normalizacao = args[3];
+			}else{
+				System.out.println("Erro nos parametros de entrada.");
+				System.exit(0);
+			}
+			
+			taxa_aprendizado_inicial = Double.parseDouble(args[4]);
+			numero_neuronios_escondidos = Integer.parseInt(args[5]);
+			
+			if(args[6].equalsIgnoreCase("padrao")){
+				modo_treinamento = 1;
+			}else if(args[6].equalsIgnoreCase("batelada")){
+				modo_treinamento = 2;
+			}else{
+				System.out.println("Erro nos parametros de entrada.");
+				System.exit(0);
+			}
+			
+			numero_neuronios_classe = Integer.parseInt(args[7]);
+			
+			if(Double.parseDouble(args[8])==0){
+				pesos_aleatorios = false;
+				intervalo_pesos_aleatorios = 0;
+			}else if(Double.parseDouble(args[8])>=0){
+				pesos_aleatorios = true;
+				intervalo_pesos_aleatorios = Double.parseDouble(args[8]);
+			}else{
+				System.out.println("Erro nos parametros de entrada.");
+				System.exit(0);
+			}
+			
+			limiar_erro = Double.parseDouble(args[9]);
+			numero_epocas = Integer.parseInt(args[10]);
 		}
 		
 		System.out.println("\n#-----------Lendo Arquivo de Entrada------------------#");
@@ -92,38 +180,23 @@ public class Principal {
 			Situacao_Problema situacao_problema_conjunto_dados_treinamento = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_treinamento);
 			
 			Matrix entradas_treinamento=situacao_problema_conjunto_dados_treinamento.get_entrada();
-			//System.out.println("Antes: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
-			entradas_treinamento = Pre_Processamento.normaliza_sigmoidal(entradas_treinamento);
-			//System.out.println("Depois: "+entradas_treinamento.getColumnDimension()+" X "+entradas_treinamento.getRowDimension());
 			
 			Matrix saidas_desejadas_treinamento = situacao_problema_conjunto_dados_treinamento.get_saida();
-			//System.out.println("Antes: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
 			saidas_desejadas_treinamento = Pre_Processamento.normaliza_minmax(saidas_desejadas_treinamento);
-			//System.out.println("Depois: "+saidas_desejadas_treinamento.getColumnDimension()+" X "+saidas_desejadas_treinamento.getRowDimension());
 						
 			Situacao_Problema situacao_problema_conjunto_dados_validacao = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_validacao);
 			
 			Matrix entradas_validacao = situacao_problema_conjunto_dados_validacao.get_entrada();
-			//System.out.println("Antes: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
-			entradas_validacao = Pre_Processamento.normaliza_sigmoidal(entradas_validacao);
-			//System.out.println("Depois: "+entradas_validacao.getColumnDimension()+" X "+entradas_validacao.getRowDimension());
 			
 			Matrix saidas_desejadas_validacao=situacao_problema_conjunto_dados_validacao.get_saida();
-			//System.out.println("Antes: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
 			saidas_desejadas_validacao = Pre_Processamento.normaliza_minmax(saidas_desejadas_validacao);
-			//System.out.println("Depois: "+saidas_desejadas_validacao.getColumnDimension()+" X "+saidas_desejadas_validacao.getRowDimension());
 			
 			Situacao_Problema situacao_problema_conjunto_dados_teste = Leitura_Arquivo.obtem_dados(nome_arquivo_dados_teste);
 
 			Matrix entradas_teste=situacao_problema_conjunto_dados_teste.get_entrada();
-			//System.out.println("Antes: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
-			entradas_teste = Pre_Processamento.normaliza_sigmoidal(entradas_teste);
-			//System.out.println("Depois: "+entradas_teste.getColumnDimension()+" X "+entradas_teste.getRowDimension());
 			
 			Matrix saidas_desejadas_teste=situacao_problema_conjunto_dados_teste.get_saida();
-			//System.out.println("Antes: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
 			saidas_desejadas_teste = Pre_Processamento.normaliza_minmax(saidas_desejadas_teste);
-			//System.out.println("Depois: "+saidas_desejadas_teste.getColumnDimension()+" X "+saidas_desejadas_teste.getRowDimension());
 			
 			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
 			
@@ -139,20 +212,29 @@ public class Principal {
 			System.out.println("#-----------Termino da Separacao dos Conjuntos------------------");
 			
 			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
-		}else if(args.length==5){
+		}else if(args.length==11 || args.length==5){
 			Situacao_Problema situacao_problema_conjunto_dados = Leitura_Arquivo.obtem_dados(nome_arquivo_conjunto_dados);
 			Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
-			//System.out.println("Comeca normalizacao entradas.\n");
-			entradas = Pre_Processamento.remove_desvio_baixo(entradas, 2);
-			//entradas.print(10, 5);
-			//System.exit(0);
-			entradas = Pre_Processamento.normaliza_zscore(entradas);
-			//System.out.println("Termina normalizacao entradas.\n");
-
+			
+			if(tipo_remocao.equalsIgnoreCase("zeros")){
+				entradas = Pre_Processamento.remove_zeros(entradas, valor_remocao);	
+			}else if(tipo_remocao.equalsIgnoreCase("desvio")){
+				entradas = Pre_Processamento.remove_zeros(entradas, valor_remocao);
+			}
+			
+			if(tipo_normalizacao.equalsIgnoreCase("max")){
+				entradas = Pre_Processamento.normaliza_max(entradas);
+			}else if(tipo_normalizacao.equalsIgnoreCase("minmax")){
+				entradas = Pre_Processamento.normaliza_minmax(entradas);
+			}else if(tipo_normalizacao.equalsIgnoreCase("zscore")){
+				entradas = Pre_Processamento.normaliza_zscore(entradas);
+			}else if(tipo_normalizacao.equalsIgnoreCase("sigmoidal")){
+				entradas = Pre_Processamento.normaliza_sigmoidal(entradas);
+			}
+			
 			Matrix saidas_desejadas=situacao_problema_conjunto_dados.get_saida();
-			//System.out.println("Comeca normalizacao saida.\n");
 			saidas_desejadas = Pre_Processamento.normaliza_minmax(saidas_desejadas);
-			//System.out.println("Termina normalizacao saidas.\n");
+			
 			System.out.println("#-----------Termino da Leitura Arquivo de Entrada-----#");
 			
 			System.out.println("\n#-----------Inicio da Separacao dos Conjuntos--------------#");
@@ -163,7 +245,6 @@ public class Principal {
 			
 			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		}
-		
 		
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
 		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
