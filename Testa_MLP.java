@@ -1,5 +1,7 @@
 import java.lang.NullPointerException; 
+
 import Jama.Matrix; 
+
 import java.util.Random; 
 
 //Classe auxiliar usada apenas para teste da rede neural MLP
@@ -125,8 +127,12 @@ public class Testa_MLP {
 					B2.set(i,j,(r2.nextDouble()-0.5)); 
 				}
 			}
+			
+			A2 = Pre_Processamento.normaliza_zscore(A2);
+			B2 = Pre_Processamento.normaliza_zscore(B2);
+			
 			boolean atualiza_alpha2=false;
-			double alpha_inicial2=0.1;
+			double alpha_inicial2=0.2;
 			MLP mlp2=new MLP(numero_neuronios_escondidos2, alpha_inicial2, atualiza_alpha2);
 			mlp2.set_problema(entrada2, saida_esperada2);
 			mlp2.set_modo_treinamento(1);
@@ -135,10 +141,10 @@ public class Testa_MLP {
 			System.out.println("Saida antes do treinamento=");
 			Matrix saidas_p2 = mlp2.get_saidas();
 			saidas_p2.print(saidas_p2.getColumnDimension(), 3);
-			for (int i = 0; i < 2; i++) {
-				System.out.println("Erro epoca: "+i);
+			for (int i = 0; i < 1000; i++) {
+				//System.out.println("Erro epoca: "+i);
 				double erros_p2 = mlp2.get_erro();
-				System.out.println(erros_p2);
+				//System.out.println(erros_p2);
 			}
 			System.out.println("Saida apos treinamento=");
 			saidas_p2 = mlp2.get_saidas();

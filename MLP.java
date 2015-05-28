@@ -155,7 +155,7 @@ public class MLP extends Rede{
 		saidas_rede[1] = Y;
 		
 		
-		Matrix e = Y.minus(saida_desejada);
+		Matrix e = saida_desejada.minus(Y);
 		
 		Matrix erro_quadrado=new Matrix(e.getRowDimension(), e.getColumnDimension());
 		//Elevar erros dessa instancia ao quadrado
@@ -237,10 +237,10 @@ public class MLP extends Rede{
 				calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, erro.get(0,0), indice_instancia);
 				
 				Matrix gradiente_B=this.dJdB.times(taxa_aprendizado);
-				Matrix novos_pesos_b=pesos_b.plus(gradiente_B);
+				Matrix novos_pesos_b=pesos_b.minus(gradiente_B);
 				
 				Matrix gradiente_A=this.dJdA.times(taxa_aprendizado);
-				Matrix novos_pesos_a=pesos_a.plus(gradiente_A);
+				Matrix novos_pesos_a=pesos_a.minus(gradiente_A);
 				
 				pesos_a=novos_pesos_a;
 				pesos_b=novos_pesos_b;
