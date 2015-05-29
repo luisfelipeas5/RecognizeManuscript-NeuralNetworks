@@ -220,7 +220,7 @@ public class LVQ extends Rede{
 		
 		List<Integer> indice_neuronios_classe=new ArrayList<Integer>();
 		//Seleciona os indices na matriz de pesos que sao de pesos da determinada classe passada para corte
-		for (int indice_peso = 0; indice_peso < pesos[0].length; indice_peso++) {
+		for (int indice_peso = 0; indice_peso < pesos.length; indice_peso++) {
 			if(rotulo_pesos[indice_peso]==classe) {
 				indice_neuronios_classe.add(indice_peso);
 			}
