@@ -11,27 +11,27 @@ import Jama.Matrix;
 
 public class Grava_Resultados {
 	
-	public static void grava_arquivo(String nome_arquivo, Matrix resposta_rede, String[] medidas_avaliacao, int epoca_parada){
+	public static void grava_arquivo(String nome_arquivo, Matrix resposta_rede, String[][] medidas_avaliacao, int epoca_parada){
 		String novaLinha = System.getProperty("line.separator");
 		
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-	              new FileOutputStream(nome_arquivo), "utf-8"))) {
+	              new FileOutputStream(nome_arquivo+".txt"), "utf-8"))) {
 
 			writer.write("Resultados da rede: "+novaLinha+novaLinha);
 			// Imprime por linha
 			for (int linha = 0; linha < resposta_rede.getRowDimension(); linha++) {
 				for (int coluna = 0; coluna < resposta_rede.getColumnDimension(); coluna++) {
-					writer.write(String.format("%.2f", resposta_rede.get(linha, coluna)));
+					writer.write(String.format("%.3f", resposta_rede.get(linha, coluna)));
 				}
-				writer.write(""+novaLinha+novaLinha);
+				writer.write(""+novaLinha);
 			}
 			
 			writer.write(""+novaLinha+novaLinha);
 			
 			writer.write("Medidas de avaliacao: "+novaLinha);
 			for (int i = 0; i < medidas_avaliacao.length; i++) {
-				if(medidas_avaliacao[i]!=null)
-				writer.write(medidas_avaliacao[i]);
+				if(medidas_avaliacao[0][i]!=null)
+				writer.write(medidas_avaliacao[0][i]);
 			}
 			
 			writer.write(""+novaLinha+novaLinha);
@@ -40,6 +40,22 @@ public class Grava_Resultados {
 			
 			writer.write(""+novaLinha+novaLinha);
 			
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+	              new FileOutputStream(nome_arquivo+".csv"), "utf-8"))) {
+			
+			for (int i = 0; i < medidas_avaliacao[1].length; i++) {
+				if(medidas_avaliacao[1][i]!=null)
+				writer.write(medidas_avaliacao[1][i]);
+			}
 			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -80,7 +96,7 @@ public class Grava_Resultados {
 		}
 		
 		int epoca = 69;
-		grava_arquivo(teste1String, teste1Matriz, teste1Medidas, epoca);
+		//grava_arquivo(teste1String, teste1Matriz, teste1Medidas, epoca);
 
 	}
 

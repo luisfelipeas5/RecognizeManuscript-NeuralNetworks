@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class Classificacao_Numeros {
 		
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento
-		String[] confusao = null;
+		String[][] confusao = null;
 		
 		System.out.println("\t#--------------Inicio da Fase de Treinamento-------#");
 		//Treinar MLP
@@ -67,7 +68,7 @@ public class Classificacao_Numeros {
 		//Montar matrz de confusao com MLP treinada na analise
 		confusao = matriz_confusao(mlp); //Calcula as matries de confusao para a MLP
 		System.out.println("\t#----------------Termino da Matriz de Confusao------------------#");
-		Grava_Resultados.grava_arquivo("Resultados_MLP_"+numero_neuronios_escondidos+"neuronios.txt", mlp.get_saidas(), confusao, numero_epocas);
+		Grava_Resultados.grava_arquivo("MLP_"+numero_neuronios_escondidos+"_neuronios_"+numero_epocas+"_epocas", mlp.get_saidas(), confusao, numero_epocas);
 		
 	}
 	
@@ -86,7 +87,7 @@ public class Classificacao_Numeros {
 			classes[i]=iterator_classes.next();
 		}
 		Rede lvq=new LVQ(numero_neuronios_classe, taxa_aprendizado_inicial, classes);
-		String[] confusao = null;
+		String[][] confusao = null;
 		
 		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
 		System.out.println("\t\tNumero de limite de epocas = "+numero_epocas);
@@ -119,13 +120,13 @@ public class Classificacao_Numeros {
 	}
 	
 	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
-	public String[] matriz_confusao(Rede rede) {
+	public String[][] matriz_confusao(Rede rede) {
 		//Armazena os valores de classes existentes
 		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(this.saidas_desejadas_teste);
 		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
 		Arrays.sort(classes);
 		double intervalo = classes[1] - classes[0];
-		String[] gravar = new String[(classes.length*classes.length/2) - 1];
+		String[][] gravar = new String[2][(classes.length*classes.length/2) - 1];
 		int iteradorGravar = 0;
 		
 		System.out.println("Classes no conjunto de Teste: ");
@@ -138,7 +139,7 @@ public class Classificacao_Numeros {
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
 				System.out.format("\n-----------One x One: %.2f x %.2f------", classes[i], classes[j]);
-				gravar[iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
+				gravar[0][iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
 				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
@@ -224,12 +225,11 @@ public class Classificacao_Numeros {
 				System.out.format("\nFalso positivo = %.2f", falso_positivo);
 				System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
-				
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
 				
 				//TODO contabiliza cada um dos elementos da matriz de confusao
 				//Medidas extraidas da matriz de confusao
@@ -253,19 +253,30 @@ public class Classificacao_Numeros {
 				System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
 				System.out.format("\n\nF_Score = %.2f",f_score);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Precisao = %.2f", precisao);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Preditividade Negativa = %.2f", preditividade_negativa);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Precisao = %.2f", precisao);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Preditividade Negativa = %.2f", preditividade_negativa);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
+				
+				// Para o arquivo .csv:
+				gravar[1][iteradorGravar] = "\n";
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"Matriz %.2f x %.2f", classes[i], classes[j]);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",%.2f,%.2f,,Sensibilidade:,%.2f,Taxa Falsos Positivos:,%.2f", classes[i], classes[j], sensibilidade, taxa_falsos_positivos);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Especificidade:,%.2f,Precisao:,%.2f", classes[i], verdadeiro_positivo, falso_negativo, especificidade, precisao);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Preditividade Negativa:,%.2f,Taxas Falsas Descobertas:,%.2f", classes[j], falso_positivo, verdadeiro_negativo, preditividade_negativa, taxa_falsas_descobertas);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Acuracia:,%.2f,Taxa de Erro:,%.2f", taxa_acuracia, taxa_erro);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score:,%.2f", f_score);
+				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n,\n,";
+				
 				
 				System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
+				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 				iteradorGravar++;
 			}
 			//System.out.println("Rodou");
