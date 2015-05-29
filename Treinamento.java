@@ -145,7 +145,7 @@ public class Treinamento {
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
 			for(int j=0; j<pesos.getColumnDimension();j++) {
-				double peso=random.nextDouble()*(-intervalo_pesos_aleatorios);	
+				double peso=random.nextDouble()-intervalo_pesos_aleatorios;	
 				pesos.set(i, j, peso);
 			}
 		}
