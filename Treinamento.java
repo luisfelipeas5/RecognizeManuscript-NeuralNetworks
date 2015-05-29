@@ -3,6 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import Jama.Matrix;
 
 public class Treinamento {
@@ -26,7 +27,8 @@ public class Treinamento {
 	 */
 	public Matrix treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
-						int numero_limite_epocas, boolean pesos_aleatorios) {
+						int numero_limite_epocas, boolean pesos_aleatorios,
+						double intervalo_pesos_aleatorios, double limiar_erro) {
 		/*
 		 * Define se as linhas dos pesos devem ser multiplcadas pelo numero de classes
 		 * Multiplcacao pelo numero de neuronios por classe caso a rede seja uma LVQ.
@@ -35,6 +37,7 @@ public class Treinamento {
 		boolean eh_mlp=false;
 		int fator_multiplicacao=1;
 		try {
+			@SuppressWarnings("unused")
 			MLP mlp=(MLP)rede; //Caso seja uma LVQ, uma excessao que o cast nao eh possivel eh lancada
 			eh_mlp=true;
 		}catch(ClassCastException cce){
@@ -46,8 +49,8 @@ public class Treinamento {
 		
 		if(pesos_aleatorios) {
 			//Para a primeira epoca, os pesos devem ser gerados de forma randomica
-			this.gera_pesos_aleatorios(pesos_a);
-			this.gera_pesos_aleatorios(pesos_b);
+			gera_pesos_aleatorios(pesos_a, intervalo_pesos_aleatorios);
+			gera_pesos_aleatorios(pesos_b, intervalo_pesos_aleatorios);
 		}
 		
 		//a rede recebe pesos definidos aqui. Se a Rede for LVQ, ela tratará os pesos b como null internamente
@@ -105,6 +108,7 @@ public class Treinamento {
 		
 		//Corte da LVQ
 		if(!eh_mlp) {
+			@SuppressWarnings("unused")
 			LVQ lvq=(LVQ)rede;
 			
 			//Classes existentes no conjunto de treinamento
@@ -136,12 +140,13 @@ public class Treinamento {
 	 * Esse metodo, dado uma matriz pesos de dimensoes quaisquer, preenche pesos com valores aleatorios
 	 * entre -1.0 e 1.0 
 	 */
-	public void gera_pesos_aleatorios(Matrix pesos) {
+	public static void gera_pesos_aleatorios(Matrix pesos, double intervalo_pesos_aleatorios) {
 		//TODO escolher o intervalo de valores dos pesos
 		Random random=new Random();
 		for(int i=0; i< pesos.getRowDimension(); i++) {
 			for(int j=0; j<pesos.getColumnDimension();j++) {
-					pesos.set(i, j, random.nextDouble()-0.5);
+				double peso=random.nextDouble()*(-intervalo_pesos_aleatorios);	
+				pesos.set(i, j, peso);
 			}
 		}
 	}
