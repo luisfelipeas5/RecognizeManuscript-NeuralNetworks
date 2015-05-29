@@ -18,7 +18,7 @@ public class Principal {
 		String nome_arquivo_dados_teste = null;
 		String tipo_normalizacao = "nenhum";
 		String tipo_remocao = "nenhum";
-		int valor_remocao = 0;
+		double valor_remocao = 0.0;
 		double taxa_aprendizado_inicial = 0.1;
 		boolean taxa_aprendizado_variavel = true;
 		boolean pesos_aleatorios = false;
@@ -118,12 +118,17 @@ public class Principal {
 			
 			nome_arquivo_conjunto_dados = args[0];
 			
-			if(args[1].equalsIgnoreCase("zeros")
-					|| args[1].equalsIgnoreCase("desvio")
-					|| args[1].equalsIgnoreCase("nenhum")){
+			if(args[1].equalsIgnoreCase("zeros")){
 				tipo_remocao = args[1];
-				valor_remocao = Integer.parseInt(args[2]);
-			}else{
+				valor_remocao = (int)(Integer.parseInt(args[2]));
+			}else if(args[1].equalsIgnoreCase("desvio")){
+				tipo_remocao = args[1];
+				valor_remocao = Double.parseDouble(args[2]);
+			}else if(args[1].equalsIgnoreCase("nenhum")){
+				tipo_remocao = args[1];
+				valor_remocao = Double.parseDouble(args[2]);
+			}
+			else{
 				System.out.println("Erro nos parametros de entrada.");
 				System.exit(0);
 			}
@@ -217,9 +222,9 @@ public class Principal {
 			Matrix entradas=situacao_problema_conjunto_dados.get_entrada();
 			
 			if(tipo_remocao.equalsIgnoreCase("zeros")){
-				entradas = Pre_Processamento.remove_zeros(entradas, valor_remocao);	
+				entradas = Pre_Processamento.remove_zeros(entradas, (int)(valor_remocao));	
 			}else if(tipo_remocao.equalsIgnoreCase("desvio")){
-				entradas = Pre_Processamento.remove_zeros(entradas, valor_remocao);
+				entradas = Pre_Processamento.remove_desvio_baixo(entradas, valor_remocao);
 			}
 			
 			if(tipo_normalizacao.equalsIgnoreCase("max")){
