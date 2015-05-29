@@ -135,8 +135,8 @@ public class Classificacao_Numeros {
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
-				System.out.println("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
-				gravar[iteradorGravar] = ("\n-----------One x One: "+classes[i]+"x"+classes[j]+"------");
+				System.out.format("\n----------- One x One: %.2f x %.2f ------", classes[i], classes[j]);
+				gravar[iteradorGravar] = String.format("\n----------- One x One: %.2f x %.2f ------", classes[i],classes[j]);
 				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
@@ -173,10 +173,10 @@ public class Classificacao_Numeros {
 				//saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
 				
 				//Elementos da matriz de confusao
-				int falso_negativo=0;
-				int falso_positivo=0;
-				int verdadeiro_positivo=0;
-				int verdadeiro_negativo=0;
+				double falso_negativo=0;
+				double falso_positivo=0;
+				double verdadeiro_positivo=0;
+				double verdadeiro_negativo=0;
 				
 				try {
 					LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
@@ -216,11 +216,11 @@ public class Classificacao_Numeros {
 						}
 					}
 				}
-				System.out.println("Matriz de confusao" +classes[i]+" X "+classes[j]);
-				System.out.println("Verdadeiro positivo: " + verdadeiro_positivo);
-				System.out.println("Falso negativo: "+falso_negativo);
-				System.out.println("Falso positivo: "+falso_positivo);
-				System.out.println("Verdadeiro negativo: "+verdadeiro_negativo);
+				System.out.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				System.out.format("Verdadeiro positivo: ", verdadeiro_positivo);
+				System.out.format("Falso negativo: %.2f", falso_negativo);
+				System.out.format("Falso positivo: %.2f", falso_positivo);
+				System.out.format("Verdadeiro negativo: %.2f", verdadeiro_negativo);
 				
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Matriz de confusao" +classes[i]+" X "+classes[j]);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + ("Verdadeiro positivo: " + verdadeiro_positivo);
