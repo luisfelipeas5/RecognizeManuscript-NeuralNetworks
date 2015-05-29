@@ -149,8 +149,5 @@ public class Treinamento {
 				pesos.set(i, j, peso);
 			}
 		}
-		System.out.println("intervalo pesos:"+intervalo_pesos_aleatorios);
-		pesos.print(pesos.getColumnDimension(), 3);
-		System.exit(0);
 	}
 }
