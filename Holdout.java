@@ -159,10 +159,10 @@ public class Holdout {
 			indices_instancias_classe_treinamento=contar_numero_de_instancias(saidas_desejadas_treinamento);
 			Set<Double> classes_treinamento = indices_instancias_classe_treinamento.keySet();
 			Iterator<Double> iterator_classes_treinamento = classes_treinamento.iterator();
-			System.out.println("Teinamento Classe->N_INSTANCIAS");
+			System.out.println("Classes de Treinamento -> Numero de Instancias");
 			while(iterator_classes_treinamento.hasNext()) {
 				Double valor=iterator_classes_treinamento.next();
-				System.out.print(valor+"->"+indices_instancias_classe_treinamento.get(valor).size()+" ");
+				System.out.format("%.2f -> %d",valor , indices_instancias_classe_treinamento.get(valor).size());
 			}
 	 		System.out.println();
 			
@@ -171,10 +171,10 @@ public class Holdout {
 			indices_instancias_classe_validacao=contar_numero_de_instancias(saidas_desejadas_validacao);
 			Set<Double> classes_validacao = indices_instancias_classe_validacao.keySet();
 			Iterator<Double> iterator_classes_validacao = classes_validacao.iterator();
-			System.out.println("Validacao Classe->N_INSTANCIAS");
+			System.out.println("Classes de Validacao -> Numero de Instancias");
 			while(iterator_classes_validacao.hasNext()) {
 				Double valor=iterator_classes_validacao.next();
-				System.out.print(valor+"->"+indices_instancias_classe_validacao.get(valor).size()+" ");
+				System.out.format("%.2f -> %d", valor,indices_instancias_classe_validacao.get(valor).size());
 			}
 			System.out.println();
 	 		
@@ -182,10 +182,10 @@ public class Holdout {
 			indices_instancias_classe_teste=contar_numero_de_instancias(saidas_desejadas_teste);
 			Set<Double> classes_teste = indices_instancias_classe_teste.keySet();
 			Iterator<Double> iterator_classes_teste = classes_teste.iterator();
-			System.out.println("Teste Classe->N_INSTANCIAS");
+			System.out.println("Classes de teste -> Numero de Instancias");
 			while(iterator_classes_teste.hasNext()) {
 				Double valor=iterator_classes_teste.next();
-				System.out.print(valor+"->"+indices_instancias_classe_teste.get(valor).size()+" ");
+				System.out.format("%.2f -> %d", valor, indices_instancias_classe_teste.get(valor).size());
 			}
 			System.out.println();
 			

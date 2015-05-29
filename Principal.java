@@ -129,7 +129,7 @@ public class Principal {
 				valor_remocao = Double.parseDouble(args[2]);
 			}
 			else{
-				System.out.println("Erro nos parametros de entrada.");
+				System.out.println("Erro no primeiro parametro de entrada.");
 				System.exit(0);
 			}
 			
@@ -140,19 +140,19 @@ public class Principal {
 					|| args[3].equalsIgnoreCase("nenhum")){
 				tipo_normalizacao = args[3];
 			}else{
-				System.out.println("Erro nos parametros de entrada.");
+				System.out.println("Erro no quarto parametro de entrada.");
 				System.exit(0);
 			}
 			
 			taxa_aprendizado_inicial = Double.parseDouble(args[4]);
 			numero_neuronios_escondidos = Integer.parseInt(args[5]);
-			
+				
 			if(args[6].equalsIgnoreCase("padrao")){
 				modo_treinamento = 1;
 			}else if(args[6].equalsIgnoreCase("batelada")){
 				modo_treinamento = 2;
 			}else{
-				System.out.println("Erro nos parametros de entrada.");
+				System.out.println("Erro no setimo parametro de entrada.");
 				System.exit(0);
 			}
 			
@@ -165,7 +165,7 @@ public class Principal {
 				pesos_aleatorios = true;
 				intervalo_pesos_aleatorios = Double.parseDouble(args[8]);
 			}else{
-				System.out.println("Erro nos parametros de entrada.");
+				System.out.println("Erro no nono parametro de entrada.");
 				System.exit(0);
 			}
 			

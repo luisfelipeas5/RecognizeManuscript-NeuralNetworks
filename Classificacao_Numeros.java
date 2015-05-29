@@ -89,7 +89,7 @@ public class Classificacao_Numeros {
 		String[] confusao = null;
 		
 		System.out.println("\t#--------------Inicio da Fase de Treinamento---------------#");
-		System.out.println("\t\tNumero de limite de epocas="+numero_epocas);
+		System.out.println("\t\tNumero de limite de epocas = "+numero_epocas);
 		//Treinar LVQ
 		Treinamento treinamento=new Treinamento(lvq);
 		
@@ -218,7 +218,7 @@ public class Classificacao_Numeros {
 						}
 					}
 				}
-				System.out.format("\n\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				System.out.format("\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
 				System.out.format("\nVerdadeiro positivo = %.2f ", verdadeiro_positivo);
 				System.out.format("\nFalso negativo = %.2f", falso_negativo);
 				System.out.format("\nFalso positivo = %.2f", falso_positivo);
@@ -251,7 +251,7 @@ public class Classificacao_Numeros {
 				System.out.format("\nTaxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
 				System.out.format("\nTaxa de Acuracidade = %.2f", taxa_acuracia);
 				System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
-				System.out.format("\nF_Score = %.2f\n",f_score);
+				System.out.format("\n\nF_Score = %.2f",f_score);
 				
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
@@ -261,7 +261,7 @@ public class Classificacao_Numeros {
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nF_Score = %.2f\n", f_score);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
 				
 				System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 				

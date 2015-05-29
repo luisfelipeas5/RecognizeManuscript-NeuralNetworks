@@ -101,7 +101,7 @@ public class Treinamento {
 			erros_epocas.set(epoca_atual, 1, erro_total_validacao);
 			
 			//Status do treinamento:
-			System.out.println("epoca="+(epoca_atual+1)+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
+			System.out.format("\nEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f", (epoca_atual+1), erro_total_treinamento, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 		}
@@ -131,8 +131,8 @@ public class Treinamento {
 				//lvq.corte_de_neuronios(2, classes[i], entradas_classe);
 			}
 		}
-		System.out.println("\tEpoca ideal="+epoca_ideal);
-		System.out.println("\tTreinameno parou na: epoca="+epoca_atual+"-> e(treinamento)="+erro_total_treinamento+" e(validacao)="+erro_total_validacao);
+		System.out.println("\tEpoca ideal = "+epoca_ideal);
+		System.out.format("\tEpoca = %d: Erro do treinamento = %.2f ; Erro da validacao = %.2f", epoca_atual, erro_total_treinamento, erro_total_validacao);
 		return erros_epocas;
 	}
 	
