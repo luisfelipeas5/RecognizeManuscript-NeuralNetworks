@@ -21,7 +21,7 @@ public class Grava_Resultados {
 			// Imprime por linha
 			for (int linha = 0; linha < resposta_rede.getRowDimension(); linha++) {
 				for (int coluna = 0; coluna < resposta_rede.getColumnDimension(); coluna++) {
-					writer.write(resposta_rede.get(linha, coluna)+" ");
+					writer.write(String.format("%.2f", resposta_rede.get(linha, coluna)));
 				}
 				writer.write(""+novaLinha+novaLinha);
 			}

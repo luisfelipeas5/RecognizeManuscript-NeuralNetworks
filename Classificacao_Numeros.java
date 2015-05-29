@@ -130,7 +130,7 @@ public class Classificacao_Numeros {
 		
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
-			System.out.print(classes[i]+", ");
+			System.out.format("%.2f;\n", classes[i]);
 		}
 		System.out.println(".");
 		
@@ -224,11 +224,11 @@ public class Classificacao_Numeros {
 				System.out.format("\nFalso positivo = %.2f", falso_positivo);
 				System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
 				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f", verdadeiro_negativo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
 				
 				
 				//TODO contabiliza cada um dos elementos da matriz de confusao

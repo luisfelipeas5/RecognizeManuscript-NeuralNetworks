@@ -134,7 +134,7 @@ LVQ lvq=(LVQ)rede;
 			}
 		}
 		System.out.println("\tEpoca ideal = "+epoca_ideal);
-		System.out.format("\tEpoca = %d: Erro do treinamento = %.2f ; Erro da validacao = %.2f", epoca_atual, erro_total_treinamento, erro_total_validacao);
+		System.out.format("\tEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f\n", epoca_atual, erro_total_treinamento, erro_total_validacao);
 		return erros_epocas;
 	}
 	
