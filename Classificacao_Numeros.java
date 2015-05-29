@@ -137,8 +137,8 @@ public class Classificacao_Numeros {
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
 			for (int j = i+1; j < classes.length; j++) {
-				System.out.format("\n----------- One x One: %.2f x %.2f ------", classes[i], classes[j]);
-				gravar[iteradorGravar] = String.format("\n----------- One x One: %.2f x %.2f ------", classes[i],classes[j]);
+				System.out.format("\n-----------One x One: %.2f x %.2f------", classes[i], classes[j]);
+				gravar[iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
 				
 				/*
 				 * Define as entradas para o One X One: uma nova matriz 
@@ -218,32 +218,32 @@ public class Classificacao_Numeros {
 						}
 					}
 				}
-				System.out.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
-				System.out.format("Verdadeiro positivo: ", verdadeiro_positivo);
-				System.out.format("Falso negativo: %.2f", falso_negativo);
-				System.out.format("Falso positivo: %.2f", falso_positivo);
-				System.out.format("Verdadeiro negativo: %.2f", verdadeiro_negativo);
+				System.out.format("\n\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				System.out.format("\nVerdadeiro positivo = %.2f ", verdadeiro_positivo);
+				System.out.format("\nFalso negativo = %.2f", falso_negativo);
+				System.out.format("\nFalso positivo = %.2f", falso_positivo);
+				System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro positivo: ", verdadeiro_positivo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso negativo: %.2f", falso_negativo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso positivo: %.2f", falso_positivo);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro negativo: %.2f", verdadeiro_negativo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f", verdadeiro_negativo);
 				
 				
 				//TODO contabiliza cada um dos elementos da matriz de confusao
 				//Medidas extraidas da matriz de confusao
-				double sensibilidade=(double)(verdadeiro_positivo/(verdadeiro_positivo+falso_negativo)); //taxa de verdadeiros positivos ou revocacao
-				double taxa_falsos_positivos=(double)(falso_positivo/(verdadeiro_negativo+falso_positivo));
-				double especificidade=(double)(verdadeiro_negativo/(falso_positivo+falso_positivo)); //taxa de verdadeiros negativos
-				double precisao= (double)(verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo));
-				double preditividade_negativa=(double)(taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo));
-				double taxa_falsas_descobertas=(double)(falso_positivo/(verdadeiro_positivo+falso_positivo));
-				double taxa_acuracia=(double)((verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo));
-				double taxa_erro=(double)((falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo));
-				//double f_score = sensibilidade
+				double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
+				double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
+				double especificidade = verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
+				double precisao = verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
+				double preditividade_negativa = taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
+				double taxa_falsas_descobertas = falso_positivo/(verdadeiro_positivo+falso_positivo);
+				double taxa_acuracia = (verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+				double taxa_erro = (falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+				double f_score = (sensibilidade*precisao)/((sensibilidade+precisao)/2);
 				
-				System.out.format("\nSensibilidade = %.2f", sensibilidade);
+				System.out.format("\n\nSensibilidade = %.2f", sensibilidade);
 				System.out.format("\nTaxa de falsos positivos = %.2f", taxa_falsos_positivos);
 				System.out.format("\nEspecificidade = %.2f", especificidade);
 				System.out.format("\nPrecisao = %.2f", precisao);
@@ -251,19 +251,21 @@ public class Classificacao_Numeros {
 				System.out.format("\nTaxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
 				System.out.format("\nTaxa de Acuracidade = %.2f", taxa_acuracia);
 				System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
+				System.out.format("\nF_Score = %.2f\n",f_score);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nSensibilidade = %.2f", sensibilidade);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nTaxa de falsos positivos = %.2f", taxa_falsos_positivos);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nEspecificidade = %.2f", especificidade);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nPrecisao = %.2f", precisao);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nPreditividade Negativa = %.2f", preditividade_negativa);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nTaxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nTaxa de Acuracidade = %.2f", taxa_acuracia);
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nTaxa de Erro = %.2f",taxa_erro);
-
-				System.out.format("\n----------Fim One x One: %.2f x %.2f  --------\n", classes[i], classes[j]);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Precisao = %.2f", precisao);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Preditividade Negativa = %.2f", preditividade_negativa);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("\nF_Score = %.2f\n", f_score);
 				
-				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("---------- Fim One x One: %.2f x %.2f  --------\n", classes[i], classes[j]);
+				System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
+				
+				gravar[iteradorGravar] = gravar[iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 				iteradorGravar++;
 			}
 			//System.out.println("Rodou");
