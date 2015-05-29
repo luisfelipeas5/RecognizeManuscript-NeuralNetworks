@@ -12,7 +12,9 @@
 
 import Jama.Matrix;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class LVQ extends Rede{
@@ -212,6 +214,70 @@ public class LVQ extends Rede{
 		Matrix saidas = new Matrix(saidas_da_rede, numero_de_instancias);
 
 		return saidas;
+	}
+
+	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe, Matrix saidas_desejadas_classe) {
+		
+		List<Integer> indice_neuronios_classe=new ArrayList<Integer>();
+		//Seleciona os indices na matriz de pesos que sao de pesos da determinada classe passada para corte
+		for (int indice_peso = 0; indice_peso < pesos[0].length; indice_peso++) {
+			if(rotulo_pesos[indice_peso]==classe) {
+				indice_neuronios_classe.add(indice_peso);
+			}
+		}
+		
+		int[] vezes_ganhador=new int[numero_de_classes];
+		for(int indice_instancia=0; indice_instancia<entradas_classe.getRowDimension(); indice_instancia++) {
+			int neuronio_ganhador=0;
+			//Calcula o neuronio ganhador dessa instancia
+			double[] distancia_euclidiana=new double[numero_de_classes];
+			for(int i=0; i< indice_neuronios_classe.size(); i++){ 
+				int indice_peso=indice_neuronios_classe.get(i);
+				double distancia = distancia_euclidiana(pesos[indice_peso] ,entradas_classe.getArray()[indice_instancia]);;
+				distancia_euclidiana[i]=distancia;
+				if(i!= 0){
+					if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
+						neuronio_ganhador = i;
+					}
+				}
+			}
+			
+			//Acrescentar o numero de vitorias do neuronio ganhador
+			vezes_ganhador[neuronio_ganhador]+=1;
+		}
+		
+		List<Integer> indice_neuronios_classe_exluidos=new ArrayList<Integer>();
+		//Seleciona os indices na matriz de pesos dos pesos que serao excluidos
+		for (int indice_peso_exluido = 0; indice_peso_exluido < vezes_ganhador.length; indice_peso_exluido++) {
+			int numero_neuronios_mais_vencedores=0; //numero de neuronio com mais vitorias do que esse neuronio
+			for (int j = indice_peso_exluido; j < vezes_ganhador.length; j++) {
+				if(vezes_ganhador[indice_peso_exluido]<vezes_ganhador[j]) {
+					numero_neuronios_mais_vencedores+=1;
+				}
+			}
+			//Se o numero de neuronios mais vencedores que ele for maior do que a quantidade
+			//ideal de neuronios, esse peso eh classificado como exlcluido
+			if(numero_neuronios_mais_vencedores > numero_neuronio_ideal ) {
+				indice_neuronios_classe_exluidos.add( indice_neuronios_classe.get(indice_peso_exluido) );
+			}
+		}
+		
+		int numero_linhas_novos_pesos=pesos.length - ( indice_neuronios_classe_exluidos.size());
+		double[][] pesos_apos_corte=new double[numero_linhas_novos_pesos][pesos[0].length];
+		double[] roulo_apos_corte=new double[numero_linhas_novos_pesos];
+		int linha_vazia_novos_pesos=0;
+		for (int i = 0; i < pesos.length; i++) {
+			//Se o indice nao estiver na lista de excluidos
+			if( ! indice_neuronios_classe_exluidos.contains(i) ) {
+				//adiciona esse pesos a matriz nova de pesos
+				roulo_apos_corte[i]=rotulo_pesos[i];
+				for (int j = 0; j < pesos[0].length; j++) {
+					pesos_apos_corte[linha_vazia_novos_pesos][j]=pesos[i][j];
+				}
+				linha_vazia_novos_pesos+=1;
+			}
+		}
+		pesos=pesos_apos_corte;
 	}
 	
 }
