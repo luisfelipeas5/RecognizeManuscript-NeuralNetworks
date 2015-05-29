@@ -42,7 +42,8 @@ public class Classificacao_Numeros {
 	 * O numero_epocas eh a quantidade de epocas em que a rede será treinada
 	 */
 	public void analisa_mlp(double taxa_aprendizado_inicial, boolean taxa_aprendizado_variavel, boolean pesos_aleatorios,
-							int numero_neuronios_escondidos, int modo_treinamento, int numero_epocas) {
+							int numero_neuronios_escondidos, int modo_treinamento, int numero_epocas, 
+							double intervalo_pesos_aleatorios, double limiar_pesos) {
 		
 		Rede mlp=new MLP(numero_neuronios_escondidos, taxa_aprendizado_inicial, taxa_aprendizado_variavel);
 		mlp.set_modo_treinamento(modo_treinamento); //Configura a rede para fazer o treinamento
@@ -53,7 +54,7 @@ public class Classificacao_Numeros {
 		Treinamento treinamento=new Treinamento(mlp);
 		Matrix erros_epocas =treinamento.treina(adiciona_bias(entradas_treinamento), saidas_desejadas_treinamento,
 									adiciona_bias(entradas_validacao), saidas_desejadas_validacao,
-									numero_epocas, pesos_aleatorios);
+									numero_epocas, pesos_aleatorios, intervalo_pesos_aleatorios, limiar_pesos);
 		System.out.println("\t#--------------Termino da Fase de Treinamento--------#");
 		
 		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");
@@ -76,7 +77,7 @@ public class Classificacao_Numeros {
 	 * O numero_epocas eh a quantidade de epocas em que a rede será treinada
 	 */
 	public void analisa_lvq(double taxa_aprendizado_inicial, boolean taxa_aprendizado_variavel, boolean pesos_aleatorios,
-							int numero_neuronios_classe, int numero_epocas) {
+							int numero_neuronios_classe, int numero_epocas, double intervalo_pesos_aleatorios, double limiar_erro) {
 		double[] classes; //array das classes existentes no conjunto de saidas desejadas (rotulos da LVQ)
 		Set<Double> classes_keySet = indices_instancias_classe.keySet();
 		classes=new double[classes_keySet.size()];
@@ -94,7 +95,8 @@ public class Classificacao_Numeros {
 		
 		Matrix erros_epocas =treinamento.treina(entradas_treinamento, saidas_desejadas_treinamento,
 									entradas_validacao, saidas_desejadas_validacao,
-									numero_epocas, pesos_aleatorios);
+									numero_epocas, pesos_aleatorios,
+									intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("\t#--------------Termino da Fase de Treinamento---------------#");
 		
 		System.out.println("\n#----------------Inicio da Matriz de Confusao------------------#");
