@@ -247,13 +247,13 @@ public class Principal {
 		}
 		
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
-		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
-										numero_neuronios_escondidos, modo_treinamento, numero_epocas);
+		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios, intervalo_pesos_aleatorios,
+										numero_neuronios_escondidos, modo_treinamento, numero_epocas, limiar_erro);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
 		
 		/*
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
-		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
+		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios, intervalo_pesos_aleatorios
 										numero_neuronios_classe, numero_epocas);
 		System.out.println("#----------------Termino da Analise da LVQ----------------#");
 		*/
