@@ -108,8 +108,7 @@ public class Treinamento {
 		
 		//Corte da LVQ
 		if(!eh_mlp) {
-			@SuppressWarnings("unused")
-			LVQ lvq=(LVQ)rede;
+LVQ lvq=(LVQ)rede;
 			
 			//Classes existentes no conjunto de treinamento
 			Map<Double, List<Integer>> indices_instancias_classe_treinamento = Holdout.contar_numero_de_instancias(saidas_desejadas_treinamento);
@@ -120,15 +119,18 @@ public class Treinamento {
 				//Matrix que guarda somente instancias da classe i
 				int numero_instancias_classe_i=indices_instancias_classe_treinamento.get(classes[i]).size(); //numero de instancias da classe[i]
 				Matrix entradas_classe=new Matrix(numero_instancias_classe_i, entradas_treinamento.getColumnDimension());
+				Matrix saidas_desejadas_classe=new Matrix(numero_instancias_classe_i, saidas_desejadas_treinamento.getColumnDimension());
 				//Lista do indice da linha em que a instancia de uma determinada classe esta no conjunto de treinamento
 				List<Integer> indices_classe=indices_instancias_classe_treinamento.get(classes[i]);
 				Iterator<Integer> iterator_indices_classe = indices_classe.iterator();
+				int linha_vazia=0;
 				while(iterator_indices_classe.hasNext()) {
 					Integer indice = iterator_indices_classe.next();
 					Matrix entrada=entradas_treinamento.getMatrix(indice, indice, 0, entradas_treinamento.getColumnDimension()-1);
-					entradas_classe.setMatrix(indice, indice, 0, entradas_treinamento.getColumnDimension()-1, entrada);
+					entradas_classe.setMatrix(linha_vazia, linha_vazia, 0, entradas_treinamento.getColumnDimension()-1, entrada);
+					linha_vazia+=1;
 				}
-				//lvq.corte_de_neuronios(2, classes[i], entradas_classe);
+				lvq.corte_de_neuronios(2, classes[i], entradas_classe, saidas_desejadas_classe);
 			}
 		}
 		System.out.println("\tEpoca ideal = "+epoca_ideal);
