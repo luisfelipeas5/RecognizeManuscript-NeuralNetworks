@@ -1,6 +1,5 @@
 import Jama.Matrix;
 
-
 public class Principal {
 	public static void main(String[] args) {
 		/* args[0] = Nome do arquivo do conjunto de dados de treino
@@ -24,12 +23,12 @@ public class Principal {
 		boolean pesos_aleatorios = false;
 		double intervalo_pesos_aleatorios = 0.5;		
 		//Numero maximo de epocas e erro maximo para analise
-		int numero_epocas = 100;
+		int numero_epocas = 3000;
 		double limiar_erro = 0.05;
 
 		//Para MLP
 		int numero_neuronios_escondidos = 5;
-		int modo_treinamento = 1; //padrao a padrao=1 e batelada=2
+		int modo_treinamento = 2; //padrao a padrao=1 e batelada=2
 		
 		//Para LVQ
 		int numero_neuronios_classe = 3;

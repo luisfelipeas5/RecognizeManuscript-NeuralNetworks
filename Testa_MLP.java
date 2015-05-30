@@ -33,7 +33,7 @@ public class Testa_MLP {
 			double alpha_inicial3=0.5;
 			MLP mlp3=new MLP(numero_neuronios_escondidos3, alpha_inicial3, atualiza_alpha3);
 			mlp3.set_problema(entrada3, saida_esperada3);
-			mlp3.set_modo_treinamento(1);
+			mlp3.set_modo_treinamento(2);
 			mlp3.set_pesos(A3, B3);
 			
 			System.out.println("Saida antes do treinamento P1 2013=");
@@ -137,16 +137,16 @@ public class Testa_MLP {
 			double alpha_inicial2=0.2;
 			MLP mlp2=new MLP(numero_neuronios_escondidos2, alpha_inicial2, atualiza_alpha2);
 			mlp2.set_problema(entrada2, saida_esperada2);
-			mlp2.set_modo_treinamento(1);
+			mlp2.set_modo_treinamento(2);
 			mlp2.set_pesos(A2, B2);
 			
 			System.out.println("Saida antes do treinamento=");
 			Matrix saidas_p2 = mlp2.get_saidas();
 			saidas_p2.print(saidas_p2.getColumnDimension(), 3);
-			for (int i = 0; i < 2000; i++) {
-				//System.out.println("Erro epoca: "+i);
+			for (int i = 0; i < 1000; i++) {
+				System.out.println("Erro epoca: "+i);
 				double erros_p2 = mlp2.get_erro();
-				//System.out.println(erros_p2);
+				System.out.println(erros_p2);
 			}
 			System.out.println("Saida apos treinamento=");
 			saidas_p2 = mlp2.get_saidas();
