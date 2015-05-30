@@ -201,6 +201,15 @@ public class MLP extends Rede{
 		else { return novos_pesos_b; }
 	}
 	
+	Matrix calcula_vetor (Matrix A, Matrix B) {
+		Matrix a = new Matrix (A.getRowPackedCopy(), A.getRowPackedCopy().length);
+		Matrix b = new Matrix (B.getRowPackedCopy(), B.getRowPackedCopy().length); 
+		Matrix vetor = new Matrix ((a.getRowDimension()+b.getRowDimension()),1);
+		vetor.setMatrix(0,(a.getRowDimension()-1),0,(vetor.getColumnDimension()-1),a);
+		vetor.setMatrix(a.getRowDimension(),(vetor.getRowDimension()-1),0,(vetor.getColumnDimension()-1),b);
+		return vetor; 
+	}
+	
 	/**/
 	public double get_erro() {
 		double taxa_aprendizado = this.alpha;
@@ -246,6 +255,23 @@ public class MLP extends Rede{
 				*/
 				pesos_a = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erro.get(0,0), taxa_aprendizado, true);
 				pesos_b = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erro.get(0,0), taxa_aprendizado, false);
+				/*if(atualiza_alpha) {
+					double taxa_inferior = 0.0; 
+					double taxa_superior = 1.0; 
+					Matrix d = calcula_vetor(this.dJdA, this.dJdB);
+					Matrix A_novo = pesos_a.minus(this.dJdA.times(taxa_superior));
+					Matrix B_novo = pesos_b.minus(this.dJdB.times(taxa_superior));
+					Matrix dJdA_novo = new Matrix(A_novo.getRowDimension(), A_novo.getColumnDimension());
+					Matrix dJdB_novo = new Matrix(B_novo.getRowDimension(), B_novo.getColumnDimension());
+					calcula_gradientes_A_B (A_novo, B_novo, dJdA_novo, dJdB_novo, erros.get(indice_instancia, 0), indice_instancia); 
+					Matrix g = calcula_vetor(dJdA_novo, dJdB_novo);
+					double hl = (g.transpose().times(d)).get(0,0); 
+					if (hl > 0) { System.out.println ("taxa de aprendizado superior com hl positivo -> Perfeito");}
+					else if (hl == 0) { System.out.println ("taxa de aprendizado superior com hl nulo -> Eita porra");} 
+					else {System.out.println ("taxa de aprendizado superior com hl negativo -> Eita porra");} 
+					System.exit(1); 
+				
+				}*/
 				/*this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
 				this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());
 				
@@ -315,8 +341,8 @@ public class MLP extends Rede{
 				taxa_aprendizado = calcula_taxa_aprendizado(pesos_a, pesos_b, erro.get(0, 0));
 			}
 			*/
-			pesos_a = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erro_quadrado_medio, taxa_aprendizado, true); 
-			pesos_b = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erro_quadrado_medio, taxa_aprendizado, false); 
+			pesos_a = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erros.get(indice_instancia,0), taxa_aprendizado, true); 
+			pesos_b = atualiza_pesos (pesos_a, pesos_b, indice_instancia, erros.get(indice_instancia,0), taxa_aprendizado, false); 
 			/*this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
 			this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());  
 			calcula_gradientes_A_B (pesos_a, pesos_b, this.dJdA, this.dJdB, erro_quadrado_medio, indice_instancia);
@@ -339,13 +365,13 @@ public class MLP extends Rede{
 		return erro_quadrado_medio;
 	}
 	
-	void calcula_gradientes_A_B (Matrix A, Matrix B, Matrix dJdA, Matrix dJdB, double erro, int indice_instacia) {
-		Matrix f_linha_YIN = f_linha(YINs.getMatrix(indice_instacia, indice_instacia, 0, YINs.getColumnDimension()-1));
+	void calcula_gradientes_A_B (Matrix A, Matrix B, Matrix dJdA, Matrix dJdB, double erro, int indice_instancia) {
+		Matrix f_linha_YIN = f_linha(YINs.getMatrix(indice_instancia, indice_instancia, 0, YINs.getColumnDimension()-1));
 		//Calculo de dJdB
 		for (int i = 0; i < pesos_b.getRowDimension(); i++) {
 			double f_linha_YIN_k=f_linha_YIN.get(0,i);
 			for (int j = 0; j < pesos_b.getColumnDimension(); j++) {
-				double Zi=Zs.get(indice_instacia, j);
+				double Zi=Zs.get(indice_instancia, j);
 				
 				double gradiente_ponto = (f_linha_YIN_k*(erro)*(Zi));
 				dJdB.set(i, j, gradiente_ponto);
@@ -372,7 +398,7 @@ public class MLP extends Rede{
 		}
 		//Calculo de dJdA
 		for (int i = 0; i < pesos_a.getRowDimension(); i++) {
-			Matrix ZIN_i=ZINs.getMatrix(indice_instacia, indice_instacia,0, ZINs.getColumnDimension()-1);
+			Matrix ZIN_i=ZINs.getMatrix(indice_instancia, indice_instancia,0, ZINs.getColumnDimension()-1);
 			double f_linha_ZIN_k=g_linha(ZIN_i).get(0, i);
 			
 			for (int j = 0; j < pesos_a.getColumnDimension(); j++) {
@@ -437,23 +463,7 @@ public class MLP extends Rede{
 			this.treina_padrao_padrao = false; 
 		}
 	}
-	
-	Matrix calcula_vetor (Matrix dJdA, Matrix dJdB) {
-		double[] da = dJdA.getColumnPackedCopy();
-		double[] db = dJdB.getColumnPackedCopy();
-		Matrix vetor = new Matrix ((da.length + db.length), 1);
-		int i = 0; 
-		while (i < vetor.getRowDimension()) {
-			if (i < da.length) {
-				vetor.set(i,0,da[i]); 
-			}
-			else {
-				vetor.set(i,0,db[vetor.getRowDimension()-da.length]);  
-			}
-			i++; 
-		}
-		return vetor; 
-	}
+		
 	/*
 	double calcula_taxa_aprendizado (Matrix A, Matrix B, Matrix dJdA, Matrix dJdB) {
 		double alfa = 0.0; 
