@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jfree.ui.RefineryUtilities;
 
 import Jama.Matrix;
+import edu.umbc.cs.maple.utils.JamaUtils;
 
 
 public class Classificacao_Numeros {
@@ -126,217 +127,358 @@ public class Classificacao_Numeros {
 		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
 		Arrays.sort(classes);
 		double intervalo = classes[1] - classes[0];
-		String[][] gravar = new String[2][(classes.length*classes.length/2) - 1];
+		// String[][]. Em [0][i] salva o que sera gravado no arquivo .txt e em [1][i] salva o que sera gravado no arquivo .csv
+		String[][] gravar = new String[2][(classes.length*classes.length) + classes.length];
 		int iteradorGravar = 0;
-		//Matrix estatisticas = new Matrix(, )
-		
+
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
 			System.out.format("%.2f;\n", classes[i]);
 		}
 		System.out.println(".");
 		
-		Matrix media_falso_negativo = new Matrix(classes.length, 1);
-		Matrix media_falso_positivo = new Matrix(classes.length, 1);
-		Matrix media_verdadeiro_positivo = new Matrix(classes.length, 1);
-		Matrix media_verdadeiro_negativo = new Matrix(classes.length, 1);
+		Matrix media_falso_negativo = new Matrix(classes.length, classes.length);
+		Matrix media_falso_positivo = new Matrix(classes.length, classes.length);
+		Matrix media_verdadeiro_positivo = new Matrix(classes.length, classes.length);
+		Matrix media_verdadeiro_negativo = new Matrix(classes.length, classes.length);
 		
-		Matrix media_sensibilidade = new Matrix(classes.length, 1);
-		Matrix media_taxa_falsos_positivos = new Matrix(classes.length, 1);
-		Matrix media_especificidade = new Matrix(classes.length, 1);
-		Matrix media_precisao = new Matrix(classes.length, 1);
-		Matrix media_preditividade_negativa = new Matrix(classes.length, 1);
-		Matrix media_taxa_falsas_descobertas = new Matrix(classes.length, 1);
-		Matrix media_taxa_acuracia = new Matrix(classes.length, 1);
-		Matrix media_taxa_erro = new Matrix(classes.length, 1);
-		Matrix media_f_score = new Matrix(classes.length, 1);
+		Matrix media_sensibilidade = new Matrix(classes.length, classes.length);
+		Matrix media_taxa_falsos_positivos = new Matrix(classes.length, classes.length);
+		Matrix media_especificidade = new Matrix(classes.length, classes.length);
+		Matrix media_precisao = new Matrix(classes.length, classes.length);
+		Matrix media_preditividade_negativa = new Matrix(classes.length, classes.length);
+		Matrix media_taxa_falsas_descobertas = new Matrix(classes.length, classes.length);
+		Matrix media_taxa_acuracia = new Matrix(classes.length, classes.length);
+		Matrix media_taxa_erro = new Matrix(classes.length, classes.length);
+		Matrix media_f_score = new Matrix(classes.length, classes.length);
 		
 		
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
-			for (int j = i+1; j < classes.length; j++) {
-				System.out.format("\n-----------One x One: %.2f x %.2f------", classes[i], classes[j]);
-				gravar[0][iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
-				
-				/*
-				 * Define as entradas para o One X One: uma nova matriz 
-				 * que so contera entradas que tem saida desejadas os valores classes[i] e classes[j]
-				 */
-				int numero_instancias_classe_i=indices_instancias_classe_teste.get(classes[i]).size(); //numero de instancias da classe[i]
-				int numero_instancias_classe_j=indices_instancias_classe_teste.get(classes[j]).size(); //numero de instancias da classe[j]
-				int num_linhas_entradas=numero_instancias_classe_i+numero_instancias_classe_j;
-
-				Matrix entradas_one_one=new Matrix(num_linhas_entradas, entradas_teste.getColumnDimension()); //matrix com as instancias da classe[i] e classe[j]
-				Matrix saidas_desejadas_one_one=new Matrix(num_linhas_entradas, 1); //matrix com as saidas desejadas das instancias da classe[i] e classe[j]
-				int indice_proxima_linha_vazia=0; //indice auxiliar a insercao na matriz de entradas das classes[i] e classes[j]
-				
-				//inclui as instancias com saidas desejada classe[i] e classe[j] da matriz de entradas separada para teste
-				//na matriz destinada para o One x One
-				for (int indice_instancia_entradas = 0; indice_instancia_entradas < entradas_teste.getRowDimension(); indice_instancia_entradas++) {
+			//for (int j = i+1; j < classes.length; j++) {
+			for (int j = 0; j < classes.length; j++) {	
+				if(j > i){
 					
-					double saida_desejada_instancia=saidas_desejadas_teste.get(indice_instancia_entradas, 0); //saida desejada da instancia do teste
-					if( saida_desejada_instancia==classes[i] ||	saida_desejada_instancia==classes[j]) {
-						Matrix entrada_instancia=entradas_teste.getMatrix(indice_instancia_entradas, indice_instancia_entradas, 0, entradas_teste.getColumnDimension()-1);
-						entradas_one_one.setMatrix(indice_proxima_linha_vazia, indice_proxima_linha_vazia,
-													0, entradas_one_one.getColumnDimension()-1,
-													entrada_instancia);
-						saidas_desejadas_one_one.set(indice_proxima_linha_vazia,0,saida_desejada_instancia);		
-						indice_proxima_linha_vazia+=1;
-					}
-				}
-				
-				//System.out.println("Entradas Teste");
-				//entradas_teste.print(entradas_teste.getColumnDimension(), 3);
-				//System.out.println("Saidas Desejadas Teste");
-				//saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
-				
-				//Elementos da matriz de confusao
-				double falso_negativo=0;
-				double falso_positivo=0;
-				double verdadeiro_positivo=0;
-				double verdadeiro_negativo=0;
-				
-				try {
-					LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
-				}catch(ClassCastException cce){
-					entradas_one_one=adiciona_bias(entradas_one_one);
-				}
-				
-				//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
-				rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
-				Matrix saidas=rede.get_saidas();
-				
-				//Dadas as saidas da rede, compara-las com as saidas desejadas para montar
-				//a matriz de confusao
-				//for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
-				for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
-					//System.out.println(saidas_desejadas_one_one.get(k, 0) +" "+saidas.get(k, 0));
-					if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
-						//Se a classe predita for igual a classe real
-						//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
-						//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
-						if(k<saidas_desejadas_one_one.getRowDimension()){
-							//System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
-							//System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) {
-								verdadeiro_positivo+=1;
-							}else {	//Se a classe predita for diferente da classe real
-								falso_negativo+=1;
-							}
-						}
-					}else { //Se a classe real for clases[j]
-						if(k<saidas_desejadas_one_one.getRowDimension()){
-							if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) { //Se a classe predita for igual a classe real
-								verdadeiro_negativo+=1;
-							}else { //Se a classe predita for diferente da classe real
-								falso_positivo+=1;
-							}
+					System.out.format("\n-----------One x One: %.2f x %.2f------", classes[i], classes[j]);
+					gravar[0][iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
+					
+					/*
+					 * Define as entradas para o One X One: uma nova matriz 
+					 * que so contera entradas que tem saida desejadas os valores classes[i] e classes[j]
+					 */
+					int numero_instancias_classe_i=indices_instancias_classe_teste.get(classes[i]).size(); //numero de instancias da classe[i]
+					int numero_instancias_classe_j=indices_instancias_classe_teste.get(classes[j]).size(); //numero de instancias da classe[j]
+					int num_linhas_entradas=numero_instancias_classe_i+numero_instancias_classe_j;
+
+					Matrix entradas_one_one=new Matrix(num_linhas_entradas, entradas_teste.getColumnDimension()); //matrix com as instancias da classe[i] e classe[j]
+					Matrix saidas_desejadas_one_one=new Matrix(num_linhas_entradas, 1); //matrix com as saidas desejadas das instancias da classe[i] e classe[j]
+					int indice_proxima_linha_vazia=0; //indice auxiliar a insercao na matriz de entradas das classes[i] e classes[j]
+					
+					//inclui as instancias com saidas desejada classe[i] e classe[j] da matriz de entradas separada para teste
+					//na matriz destinada para o One x One
+					for (int indice_instancia_entradas = 0; indice_instancia_entradas < entradas_teste.getRowDimension(); indice_instancia_entradas++) {
+						double saida_desejada_instancia=saidas_desejadas_teste.get(indice_instancia_entradas, 0); //saida desejada da instancia do teste
+						if( saida_desejada_instancia==classes[i] ||	saida_desejada_instancia==classes[j]) {
+							Matrix entrada_instancia=entradas_teste.getMatrix(indice_instancia_entradas, indice_instancia_entradas, 
+																					0, entradas_teste.getColumnDimension()-1);
+							entradas_one_one.setMatrix(indice_proxima_linha_vazia, indice_proxima_linha_vazia,
+														0, entradas_one_one.getColumnDimension()-1,
+														entrada_instancia);
+							saidas_desejadas_one_one.set(indice_proxima_linha_vazia,0,saida_desejada_instancia);		
+							indice_proxima_linha_vazia+=1;
 						}
 					}
+					
+					//System.out.println("Entradas Teste");
+					//entradas_teste.print(entradas_teste.getColumnDimension(), 3);
+					//System.out.println("Saidas Desejadas Teste");
+					//saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
+					
+					//Elementos da matriz de confusao
+					double falso_negativo=0;
+					double falso_positivo=0;
+					double verdadeiro_positivo=0;
+					double verdadeiro_negativo=0;
+					
+					try {
+						LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
+					}catch(ClassCastException cce){
+						entradas_one_one=adiciona_bias(entradas_one_one);
+					}
+					
+					//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
+					rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
+					Matrix saidas=rede.get_saidas();
+					
+					//Dadas as saidas da rede, compara-las com as saidas desejadas para montar
+					//a matriz de confusao
+					//for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+					for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+						//System.out.println(saidas_desejadas_one_one.get(k, 0) +" "+saidas.get(k, 0));
+						if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
+							//Se a classe predita for igual a classe real
+							//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
+							//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
+							if(k<saidas_desejadas_one_one.getRowDimension()){
+								//System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
+								//System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
+								if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) {
+									verdadeiro_positivo+=1;
+								}else {	//Se a classe predita for diferente da classe real
+									falso_negativo+=1;
+								}
+							}
+						}else if ( saidas_desejadas_one_one.get(k, 0)==classes[j] ) { //Se a classe real for clases[j]
+							if(k<saidas_desejadas_one_one.getRowDimension()){
+								if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) { //Se a classe predita for igual a classe real
+									verdadeiro_negativo+=1;
+								}else { //Se a classe predita for diferente da classe real
+									falso_positivo+=1;
+								}
+							}
+						}
+					}
+					System.out.format("\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+					System.out.format("\nVerdadeiro positivo = %.2f ", verdadeiro_positivo);
+					System.out.format("\nFalso negativo = %.2f", falso_negativo);
+					System.out.format("\nFalso positivo = %.2f", falso_positivo);
+					System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
+					
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
+					
+					//Medidas extraidas da matriz de confusao
+					double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
+					double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
+					double especificidade = verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
+					double precisao = verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
+					double preditividade_negativa = taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
+					double taxa_falsas_descobertas = falso_positivo/(verdadeiro_positivo+falso_positivo);
+					double taxa_acuracia = (verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+					double taxa_erro = (falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+					double f_score = (sensibilidade*precisao)/((sensibilidade+precisao)/2);
+					
+					System.out.format("\n\nSensibilidade = %.2f", sensibilidade);
+					System.out.format("\nTaxa de falsos positivos = %.2f", taxa_falsos_positivos);
+					System.out.format("\nEspecificidade = %.2f", especificidade);
+					System.out.format("\nPrecisao = %.2f", precisao);
+					System.out.format("\nPreditividade Negativa = %.2f", preditividade_negativa);
+					System.out.format("\nTaxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
+					System.out.format("\nTaxa de Acuracidade = %.2f", taxa_acuracia);
+					System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
+					System.out.format("\n\nF_Score = %.2f",f_score);
+					
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Precisao = %.2f", precisao);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Preditividade Negativa = %.2f", preditividade_negativa);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
+					
+					// Para o arquivo .csv:
+					gravar[1][iteradorGravar] = "";
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"Matriz %.2f x %.2f", classes[i], classes[j]);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",%.2f,%.2f,,Sensibilidade,%.2f,Taxa Falsos Positivos,%.2f", classes[i], classes[j], sensibilidade, taxa_falsos_positivos);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Especificidade,%.2f,Precisao,%.2f", classes[i], verdadeiro_positivo, falso_negativo, especificidade, precisao);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Preditividade Negativa,%.2f,Taxas Falsas Descobertas,%.2f", classes[j], falso_positivo, verdadeiro_negativo, preditividade_negativa, taxa_falsas_descobertas);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Acuracia,%.2f,Taxa de Erro,%.2f", taxa_acuracia, taxa_erro);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score,%.2f", f_score);
+					gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n,\n,";
+					
+					media_falso_negativo.set(j, i, falso_negativo);
+					media_falso_positivo.set(j, i, falso_positivo);
+					media_verdadeiro_positivo.set(j, i, verdadeiro_positivo);
+					media_verdadeiro_negativo.set(j, i, verdadeiro_negativo);
+					
+					media_sensibilidade.set(j, i, sensibilidade);
+					media_taxa_falsos_positivos.set(j, i, taxa_falsos_positivos);
+					media_especificidade.set(j, i, especificidade);
+					media_precisao.set(j, i, precisao);
+					media_preditividade_negativa.set(j, i, preditividade_negativa);
+					media_taxa_falsas_descobertas.set(j, i, taxa_falsas_descobertas);
+					media_taxa_acuracia.set(j, i, taxa_acuracia);
+					media_taxa_erro.set(j, i, taxa_erro);
+					media_f_score.set(j, i, f_score);
+					
+					System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
+					
+					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
+					iteradorGravar++;	
+					
+				}else if(j < i){
+					
+					// Nao imprime na tela ou salva nos arquivos comparacoes ja feitas no if acima.
+					// Caso else necessario apenas para calculo de medias e variancias.
+					int numero_instancias_classe_i=indices_instancias_classe_teste.get(classes[i]).size(); //numero de instancias da classe[i]
+					int numero_instancias_classe_j=indices_instancias_classe_teste.get(classes[j]).size(); //numero de instancias da classe[j]
+					int num_linhas_entradas=numero_instancias_classe_i+numero_instancias_classe_j;
+
+					Matrix entradas_one_one=new Matrix(num_linhas_entradas, entradas_teste.getColumnDimension()); //matrix com as instancias da classe[i] e classe[j]
+					Matrix saidas_desejadas_one_one=new Matrix(num_linhas_entradas, 1); //matrix com as saidas desejadas das instancias da classe[i] e classe[j]
+					int indice_proxima_linha_vazia=0; //indice auxiliar a insercao na matriz de entradas das classes[i] e classes[j]
+					
+					//inclui as instancias com saidas desejada classe[i] e classe[j] da matriz de entradas separada para teste
+					//na matriz destinada para o One x One
+					for (int indice_instancia_entradas = 0; indice_instancia_entradas < entradas_teste.getRowDimension(); indice_instancia_entradas++) {
+						double saida_desejada_instancia=saidas_desejadas_teste.get(indice_instancia_entradas, 0); //saida desejada da instancia do teste
+						if( saida_desejada_instancia==classes[i] ||	saida_desejada_instancia==classes[j]) {
+							Matrix entrada_instancia=entradas_teste.getMatrix(indice_instancia_entradas, indice_instancia_entradas, 
+																					0, entradas_teste.getColumnDimension()-1);
+							entradas_one_one.setMatrix(indice_proxima_linha_vazia, indice_proxima_linha_vazia,
+														0, entradas_one_one.getColumnDimension()-1,
+														entrada_instancia);
+							saidas_desejadas_one_one.set(indice_proxima_linha_vazia,0,saida_desejada_instancia);		
+							indice_proxima_linha_vazia+=1;
+						}
+					}
+					
+					//System.out.println("Entradas Teste");
+					//entradas_teste.print(entradas_teste.getColumnDimension(), 3);
+					//System.out.println("Saidas Desejadas Teste");
+					//saidas_desejadas_teste.print(saidas_desejadas_teste.getColumnDimension(), 3);
+					
+					//Elementos da matriz de confusao
+					double falso_negativo=0;
+					double falso_positivo=0;
+					double verdadeiro_positivo=0;
+					double verdadeiro_negativo=0;
+					
+					try {
+						LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
+					}catch(ClassCastException cce){
+						entradas_one_one=adiciona_bias(entradas_one_one);
+					}
+					
+					//Rodar rede com as entradas referentes ao One X One e armazenar as saidas
+					rede.set_problema(entradas_one_one, saidas_desejadas_one_one);
+					Matrix saidas=rede.get_saidas();
+					
+					//Dadas as saidas da rede, compara-las com as saidas desejadas para montar
+					//a matriz de confusao
+					//for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+					for (int k = 0; k < saidas_desejadas_one_one.getRowDimension(); k++) {
+						//System.out.println(saidas_desejadas_one_one.get(k, 0) +" "+saidas.get(k, 0));
+						if( saidas_desejadas_one_one.get(k, 0)==classes[i] ) { //Se a classe real for classes[i]
+							//Se a classe predita for igual a classe real
+							//Eh necessario fazer a quantizacao para realizar a comparacao, dado que o resultado nunca sera exato.
+							//Eh preciso tomar cuidado com os indices do array, por isso os ifs aninhados.
+							if(k<saidas_desejadas_one_one.getRowDimension()){
+								//System.out.println("k="+k+" saidas desejadas one one="+saidas_desejadas_one_one.getRowDimension());
+								//System.out.println("k="+k+" saidas desejadas="+saidas.getRowDimension());
+								if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) {
+									verdadeiro_positivo+=1;
+								}else {	//Se a classe predita for diferente da classe real
+									falso_negativo+=1;
+								}
+							}
+						}else if ( saidas_desejadas_one_one.get(k, 0)==classes[j] ) { //Se a classe real for clases[j]
+							if(k<saidas_desejadas_one_one.getRowDimension()){
+								if(saidas.get(k, 0) >= saidas_desejadas_one_one.get(k, 0) - intervalo/2 && saidas.get(k, 0) < saidas_desejadas_one_one.get(k, 0) + intervalo/2) { //Se a classe predita for igual a classe real
+									verdadeiro_negativo+=1;
+								}else { //Se a classe predita for diferente da classe real
+									falso_positivo+=1;
+								}
+							}
+						}
+					}
+					
+					//Medidas extraidas da matriz de confusao
+					double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
+					double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
+					double especificidade = verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
+					double precisao = verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
+					double preditividade_negativa = taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
+					double taxa_falsas_descobertas = falso_positivo/(verdadeiro_positivo+falso_positivo);
+					double taxa_acuracia = (verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+					double taxa_erro = (falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
+					double f_score = (sensibilidade*precisao)/((sensibilidade+precisao)/2);
+					
+					media_falso_negativo.set(j, i, falso_negativo);
+					media_falso_positivo.set(j, i, falso_positivo);
+					media_verdadeiro_positivo.set(j, i, verdadeiro_positivo);
+					media_verdadeiro_negativo.set(j, i, verdadeiro_negativo);
+					
+					media_sensibilidade.set(j, i, sensibilidade);
+					media_taxa_falsos_positivos.set(j, i, taxa_falsos_positivos);
+					media_especificidade.set(j, i, especificidade);
+					media_precisao.set(j, i, precisao);
+					media_preditividade_negativa.set(j, i, preditividade_negativa);
+					media_taxa_falsas_descobertas.set(j, i, taxa_falsas_descobertas);
+					media_taxa_acuracia.set(j, i, taxa_acuracia);
+					media_taxa_erro.set(j, i, taxa_erro);
+					media_f_score.set(j, i, f_score);
+					
+					iteradorGravar++;	
 				}
-				System.out.format("\nMatriz de confusao %.2f X %.2f ", classes[i],classes[j]);
-				System.out.format("\nVerdadeiro positivo = %.2f ", verdadeiro_positivo);
-				System.out.format("\nFalso negativo = %.2f", falso_negativo);
-				System.out.format("\nFalso positivo = %.2f", falso_positivo);
-				System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
-				
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
-				
-				//Medidas extraidas da matriz de confusao
-				double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
-				double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
-				double especificidade = verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
-				double precisao = verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
-				double preditividade_negativa = taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
-				double taxa_falsas_descobertas = falso_positivo/(verdadeiro_positivo+falso_positivo);
-				double taxa_acuracia = (verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
-				double taxa_erro = (falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
-				double f_score = (sensibilidade*precisao)/((sensibilidade+precisao)/2);
-				
-				System.out.format("\n\nSensibilidade = %.2f", sensibilidade);
-				System.out.format("\nTaxa de falsos positivos = %.2f", taxa_falsos_positivos);
-				System.out.format("\nEspecificidade = %.2f", especificidade);
-				System.out.format("\nPrecisao = %.2f", precisao);
-				System.out.format("\nPreditividade Negativa = %.2f", preditividade_negativa);
-				System.out.format("\nTaxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
-				System.out.format("\nTaxa de Acuracidade = %.2f", taxa_acuracia);
-				System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
-				System.out.format("\n\nF_Score = %.2f",f_score);
-				
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Precisao = %.2f", precisao);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Preditividade Negativa = %.2f", preditividade_negativa);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsas descobertas = %.2f", taxa_falsas_descobertas);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
-				
-				// Para o arquivo .csv:
-				gravar[1][iteradorGravar] = "\n";
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"Matriz %.2f x %.2f", classes[i], classes[j]);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",%.2f,%.2f,,Sensibilidade:,%.2f,Taxa Falsos Positivos:,%.2f", classes[i], classes[j], sensibilidade, taxa_falsos_positivos);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Especificidade:,%.2f,Precisao:,%.2f", classes[i], verdadeiro_positivo, falso_negativo, especificidade, precisao);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Preditividade Negativa:,%.2f,Taxas Falsas Descobertas:,%.2f", classes[j], falso_positivo, verdadeiro_negativo, preditividade_negativa, taxa_falsas_descobertas);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Acuracia:,%.2f,Taxa de Erro:,%.2f", taxa_acuracia, taxa_erro);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score:,%.2f", f_score);
-				gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n,\n,";
-				
-				
-				System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
-				
-				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
-				iteradorGravar++;
-				
-				media_falso_negativo.set(i, 0, (media_falso_negativo.get(i, 0) + falso_negativo));
-				media_falso_positivo.set(i, 0, (media_falso_positivo.get(i, 0) + falso_positivo));
-				media_verdadeiro_positivo.set(i, 0, (media_verdadeiro_positivo.get(i, 0) + verdadeiro_positivo));
-				media_verdadeiro_negativo.set(i, 0, (media_verdadeiro_negativo.get(i, 0) + verdadeiro_negativo));
-				
-				media_sensibilidade.set(i, 0, (media_sensibilidade.get(i, 0) + sensibilidade));
-				media_taxa_falsos_positivos.set(i, 0, (media_taxa_falsos_positivos.get(i, 0) + taxa_falsos_positivos));
-				media_especificidade.set(i, 0, (media_especificidade.get(i, 0) + especificidade));
-				media_precisao.set(i, 0, (media_precisao.get(i, 0) + precisao));
-				media_preditividade_negativa.set(i, 0, (media_preditividade_negativa.get(i, 0) + preditividade_negativa));
-				media_taxa_falsas_descobertas.set(i, 0, (media_taxa_falsas_descobertas.get(i, 0) + taxa_falsas_descobertas));
-				media_taxa_acuracia.set(i, 0, (media_taxa_acuracia.get(i, 0) + taxa_acuracia));
-				media_taxa_erro.set(i, 0, (media_taxa_erro.get(i, 0) + taxa_erro));;
-				media_f_score.set(i, 0, (media_f_score.get(i, 0) + f_score));
-			}
-			//System.out.println("Rodou");
-		}
-		for (int k = 0; k < classes.length; k++) {
-			media_falso_negativo.set(k, 0, (media_falso_negativo.get(k, 0))/classes.length);
-			media_falso_positivo.set(k, 0, (media_falso_positivo.get(k, 0))/classes.length);
-			media_verdadeiro_positivo.set(k, 0, (media_verdadeiro_positivo.get(k, 0))/classes.length);
-			media_verdadeiro_negativo.set(k, 0, (media_verdadeiro_negativo.get(k, 0))/classes.length);
+								
+			}	
 			
-			media_sensibilidade.set(k, 0, (media_sensibilidade.get(k, 0))/classes.length);
-			media_taxa_falsos_positivos.set(k, 0, (media_taxa_falsos_positivos.get(k, 0))/classes.length);
-			media_especificidade.set(k, 0, (media_especificidade.get(k, 0))/classes.length);
-			media_precisao.set(k, 0, (media_precisao.get(k, 0))/classes.length);
-			media_preditividade_negativa.set(k, 0, (media_preditividade_negativa.get(k, 0))/classes.length);
-			media_taxa_falsas_descobertas.set(k, 0, (media_taxa_falsas_descobertas.get(k, 0))/classes.length);
-			media_taxa_acuracia.set(k, 0, (media_taxa_acuracia.get(k, 0))/classes.length);
-			media_taxa_erro.set(k, 0, (media_taxa_erro.get(k, 0))/classes.length);;
-			media_f_score.set(k, 0, (media_f_score.get(k, 0))/classes.length);	
-			
-			/*
 			// Para o arquivo .csv:
 			gravar[1][iteradorGravar] = "\n";
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"Medias das medidas para classe %.2f", classes[i], classes[j]);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",%.2f,%.2f,,Sensibilidade:,%.2f,Taxa Falsos Positivos:,%.2f", classes[i], classes[j], sensibilidade, taxa_falsos_positivos);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Especificidade:,%.2f,Precisao:,%.2f", classes[i], verdadeiro_positivo, falso_negativo, especificidade, precisao);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Preditividade Negativa:,%.2f,Taxas Falsas Descobertas:,%.2f", classes[j], falso_positivo, verdadeiro_negativo, preditividade_negativa, taxa_falsas_descobertas);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Acuracia:,%.2f,Taxa de Erro:,%.2f", taxa_acuracia, taxa_erro);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score:,%.2f", f_score);
-			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n,\n,";
-			*/
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media das medidas da classe, %.2f\n", classes[i]);
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros positivos");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_verdadeiro_positivo, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_verdadeiro_positivo, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos positivos");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_falso_positivo, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_falso_positivo, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros negativos");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_verdadeiro_negativo, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_verdadeiro_negativo, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos negativos");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_falso_negativo, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_falso_negativo, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de erro");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_taxa_erro, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_taxa_erro, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Precisao");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_precisao, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_precisao, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Sensibilidade");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_sensibilidade, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_sensibilidade, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxa de falsos positivos");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_taxa_falsos_positivos, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_taxa_falsos_positivos, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Especificidade");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_especificidade, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_especificidade, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Preditividade negativa");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_preditividade_negativa, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_preditividade_negativa, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de falsas descobertas");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_taxa_falsas_descobertas, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_taxa_falsas_descobertas, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de acuracia");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_taxa_acuracia, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_taxa_acuracia, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score");
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+					Pre_Processamento.media_coluna(JamaUtils.getcol(media_f_score, i))[0], Math.sqrt(Pre_Processamento.variancia_coluna(JamaUtils.getcol(media_f_score, i))[0]));
+			
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n\n";
+			
+			iteradorGravar++;
+			//System.out.println("Rodou");
 		}
 		
 		//System.out.println("Acabou");
