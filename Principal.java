@@ -36,15 +36,15 @@ public class Principal {
 		
 		
 		if(args.length != 5 && args.length != 7 && args.length != 11){
-			System.out.println("Favor utilizar um dos seguintes padrões de passagem de parâmetros ao executar esse programa:"
+			System.out.println("Por favor utilizar um dos seguintes padroes de passagem de parametros ao executar esse programa:"
 					+ "\n\n"
-					+ "Entrada padrão: \n\n"
+					+ "Entrada padrao: \n\n"
 					+ "1. Nome do arquivo do conjunto de dados de treino. \n\n"
 					+ "2. Nome do arquivo do conjunto de dados de validacao. \n\n"
 					+ "3. Nome do arquivo do conjunto de dados de teste. \n\n"
 					+ "4. Taxa de aprendizado inicial. \n\n"
-					+ "5. Número de neuronios de camada escondida (MLP). \n\n"
-					+ "6. Número de neuronios para a camada classe (LVQ). \n\n"
+					+ "5. Numero de neuronios de camada escondida (MLP). \n\n"
+					+ "6. Numero de neuronios para a camada classe (LVQ). \n\n"
 					+ "7. Inicializacao de pesos:\n"
 					+ "  -> Inserir 'z' para matriz de pesos 0 ou 'a' para matriz de pesos aleatorios. \n\n"
 					+ "OU:\n\n"
