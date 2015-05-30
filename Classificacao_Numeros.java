@@ -128,12 +128,29 @@ public class Classificacao_Numeros {
 		double intervalo = classes[1] - classes[0];
 		String[][] gravar = new String[2][(classes.length*classes.length/2) - 1];
 		int iteradorGravar = 0;
+		//Matrix estatisticas = new Matrix(, )
 		
 		System.out.println("Classes no conjunto de Teste: ");
 		for (int i = 0; i < classes.length; i++) {
 			System.out.format("%.2f;\n", classes[i]);
 		}
 		System.out.println(".");
+		
+		Matrix media_falso_negativo = new Matrix(classes.length, 1);
+		Matrix media_falso_positivo = new Matrix(classes.length, 1);
+		Matrix media_verdadeiro_positivo = new Matrix(classes.length, 1);
+		Matrix media_verdadeiro_negativo = new Matrix(classes.length, 1);
+		
+		Matrix media_sensibilidade = new Matrix(classes.length, 1);
+		Matrix media_taxa_falsos_positivos = new Matrix(classes.length, 1);
+		Matrix media_especificidade = new Matrix(classes.length, 1);
+		Matrix media_precisao = new Matrix(classes.length, 1);
+		Matrix media_preditividade_negativa = new Matrix(classes.length, 1);
+		Matrix media_taxa_falsas_descobertas = new Matrix(classes.length, 1);
+		Matrix media_taxa_acuracia = new Matrix(classes.length, 1);
+		Matrix media_taxa_erro = new Matrix(classes.length, 1);
+		Matrix media_f_score = new Matrix(classes.length, 1);
+		
 		
 		//Estrategia: One X One
 		for (int i = 0; i < classes.length; i++) {
@@ -158,14 +175,12 @@ public class Classificacao_Numeros {
 				for (int indice_instancia_entradas = 0; indice_instancia_entradas < entradas_teste.getRowDimension(); indice_instancia_entradas++) {
 					
 					double saida_desejada_instancia=saidas_desejadas_teste.get(indice_instancia_entradas, 0); //saida desejada da instancia do teste
-					//a saida desejada eh aquela desejada para o One x One?
 					if( saida_desejada_instancia==classes[i] ||	saida_desejada_instancia==classes[j]) {
 						Matrix entrada_instancia=entradas_teste.getMatrix(indice_instancia_entradas, indice_instancia_entradas, 0, entradas_teste.getColumnDimension()-1);
 						entradas_one_one.setMatrix(indice_proxima_linha_vazia, indice_proxima_linha_vazia,
 													0, entradas_one_one.getColumnDimension()-1,
 													entrada_instancia);
-						saidas_desejadas_one_one.set(indice_proxima_linha_vazia,0,saida_desejada_instancia);
-						
+						saidas_desejadas_one_one.set(indice_proxima_linha_vazia,0,saida_desejada_instancia);		
 						indice_proxima_linha_vazia+=1;
 					}
 				}
@@ -231,7 +246,6 @@ public class Classificacao_Numeros {
 				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
 				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
 				
-				//TODO contabiliza cada um dos elementos da matriz de confusao
 				//Medidas extraidas da matriz de confusao
 				double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
 				double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
@@ -278,9 +292,53 @@ public class Classificacao_Numeros {
 				
 				gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 				iteradorGravar++;
+				
+				media_falso_negativo.set(i, 0, (media_falso_negativo.get(i, 0) + falso_negativo));
+				media_falso_positivo.set(i, 0, (media_falso_positivo.get(i, 0) + falso_positivo));
+				media_verdadeiro_positivo.set(i, 0, (media_verdadeiro_positivo.get(i, 0) + verdadeiro_positivo));
+				media_verdadeiro_negativo.set(i, 0, (media_verdadeiro_negativo.get(i, 0) + verdadeiro_negativo));
+				
+				media_sensibilidade.set(i, 0, (media_sensibilidade.get(i, 0) + sensibilidade));
+				media_taxa_falsos_positivos.set(i, 0, (media_taxa_falsos_positivos.get(i, 0) + taxa_falsos_positivos));
+				media_especificidade.set(i, 0, (media_especificidade.get(i, 0) + especificidade));
+				media_precisao.set(i, 0, (media_precisao.get(i, 0) + precisao));
+				media_preditividade_negativa.set(i, 0, (media_preditividade_negativa.get(i, 0) + preditividade_negativa));
+				media_taxa_falsas_descobertas.set(i, 0, (media_taxa_falsas_descobertas.get(i, 0) + taxa_falsas_descobertas));
+				media_taxa_acuracia.set(i, 0, (media_taxa_acuracia.get(i, 0) + taxa_acuracia));
+				media_taxa_erro.set(i, 0, (media_taxa_erro.get(i, 0) + taxa_erro));;
+				media_f_score.set(i, 0, (media_f_score.get(i, 0) + f_score));
 			}
 			//System.out.println("Rodou");
 		}
+		for (int k = 0; k < classes.length; k++) {
+			media_falso_negativo.set(k, 0, (media_falso_negativo.get(k, 0))/classes.length);
+			media_falso_positivo.set(k, 0, (media_falso_positivo.get(k, 0))/classes.length);
+			media_verdadeiro_positivo.set(k, 0, (media_verdadeiro_positivo.get(k, 0))/classes.length);
+			media_verdadeiro_negativo.set(k, 0, (media_verdadeiro_negativo.get(k, 0))/classes.length);
+			
+			media_sensibilidade.set(k, 0, (media_sensibilidade.get(k, 0))/classes.length);
+			media_taxa_falsos_positivos.set(k, 0, (media_taxa_falsos_positivos.get(k, 0))/classes.length);
+			media_especificidade.set(k, 0, (media_especificidade.get(k, 0))/classes.length);
+			media_precisao.set(k, 0, (media_precisao.get(k, 0))/classes.length);
+			media_preditividade_negativa.set(k, 0, (media_preditividade_negativa.get(k, 0))/classes.length);
+			media_taxa_falsas_descobertas.set(k, 0, (media_taxa_falsas_descobertas.get(k, 0))/classes.length);
+			media_taxa_acuracia.set(k, 0, (media_taxa_acuracia.get(k, 0))/classes.length);
+			media_taxa_erro.set(k, 0, (media_taxa_erro.get(k, 0))/classes.length);;
+			media_f_score.set(k, 0, (media_f_score.get(k, 0))/classes.length);	
+			
+			/*
+			// Para o arquivo .csv:
+			gravar[1][iteradorGravar] = "\n";
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"Medias das medidas para classe %.2f", classes[i], classes[j]);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",%.2f,%.2f,,Sensibilidade:,%.2f,Taxa Falsos Positivos:,%.2f", classes[i], classes[j], sensibilidade, taxa_falsos_positivos);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Especificidade:,%.2f,Precisao:,%.2f", classes[i], verdadeiro_positivo, falso_negativo, especificidade, precisao);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,"%.2f,%.2f,%.2f,,Preditividade Negativa:,%.2f,Taxas Falsas Descobertas:,%.2f", classes[j], falso_positivo, verdadeiro_negativo, preditividade_negativa, taxa_falsas_descobertas);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Acuracia:,%.2f,Taxa de Erro:,%.2f", taxa_acuracia, taxa_erro);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score:,%.2f", f_score);
+			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n,\n,";
+			*/
+		}
+		
 		//System.out.println("Acabou");
 		return gravar;
 	}
