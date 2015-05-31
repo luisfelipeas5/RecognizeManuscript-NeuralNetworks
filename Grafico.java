@@ -17,7 +17,8 @@ import org.jfree.ui.RefineryUtilities;
 import Jama.Matrix;
 
 public class Grafico extends ApplicationFrame{
-    String titulo;
+	private static final long serialVersionUID = 1L;
+	String titulo;
     public Grafico(final String titulo, Matrix dados) {
     	/* Basta chamar esse construtor passando o Titulo do grafico
     	 e matriz de dado que se deseja usar para se desenhar o grafico.
@@ -109,7 +110,8 @@ public class Grafico extends ApplicationFrame{
     		}	
 		}
         
-        Matrix demo = new Matrix(demo_d);
+        @SuppressWarnings("unused")
+		Matrix demo = new Matrix(demo_d);
         Matrix demo2 = new Matrix(5, 50);
         
         for (int i = 0; i < demo2.getRowDimension(); i++) {

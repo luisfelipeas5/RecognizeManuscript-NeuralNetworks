@@ -79,7 +79,7 @@ public class Grava_Resultados {
 	}
 	
 	public static void main(String[] args) {
-		String teste1String= "teste1.txt";
+		//String teste1String= "teste1.txt";
 		
 		double[][] teste1double = new double [50][50];
 		for (int i = 0; i < teste1double.length; i++) {
@@ -88,14 +88,14 @@ public class Grava_Resultados {
 			}
 		}
 		
-		Matrix teste1Matriz = new Matrix(teste1double);
+		//Matrix teste1Matriz = new Matrix(teste1double);
 		
 		String[] teste1Medidas = new String[10];
 		for (int i = 0; i < teste1Medidas.length; i++) {
 			teste1Medidas[i] = ("Teste "+i+"\n");
 		}
 		
-		int epoca = 69;
+		//int epoca = 69;
 		//grava_arquivo(teste1String, teste1Matriz, teste1Medidas, epoca);
 
 	}
