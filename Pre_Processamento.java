@@ -4,6 +4,42 @@ import edu.umbc.cs.maple.utils.*;
 // http://www.seas.upenn.edu/~eeaton/software.html
 public class Pre_Processamento{
 	
+	public static Matrix codifica_minmax(Matrix dados){
+		// Pressupoe classes discretas que variam em intervalos unitarios = 1; ex: 1, 2, 3...
+		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
+		Matrix aux;
+		
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
+				if((JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna)))!=0.0){
+					resultado.set(linha, coluna, 
+							(((dados.get(linha, coluna) - 
+									JamaUtils.getMin(JamaUtils.getcol(dados, coluna)))
+									/
+									((JamaUtils.getMax(JamaUtils.getcol(dados, coluna)) - JamaUtils.getMin(JamaUtils.getcol(dados, coluna))))))); 
+				}
+				else{
+					resultado.set(linha, coluna, 0);
+				}
+			}
+		}
+		
+		aux = (Matrix)resultado.clone();
+		
+		for (int coluna = 0; coluna < dados.getColumnDimension(); coluna++) {
+			for (int linha = 0; linha < dados.getRowDimension(); linha++) {
+				if(linha+1<dados.getRowDimension()){
+					resultado.set(linha, coluna, (aux.get(linha, coluna)+aux.get(linha+1, coluna))/2);	
+				}
+				else{
+					//resultado.set(linha, coluna, );
+				}
+			}
+		}
+		
+		return resultado;
+	}
+	
 	public static Matrix normaliza_max(Matrix dados){
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 	

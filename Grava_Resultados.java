@@ -15,7 +15,7 @@ public class Grava_Resultados {
 		String novaLinha = System.getProperty("line.separator");
 		
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-	              new FileOutputStream(nome_arquivo+"_resultados_rede.txt"), "utf-8"))) {
+	              new FileOutputStream(nome_arquivo+"_resultados.txt"), "utf-8"))) {
 
 			writer.write("Resultados da rede: "+novaLinha+novaLinha);
 			// Imprime por linha

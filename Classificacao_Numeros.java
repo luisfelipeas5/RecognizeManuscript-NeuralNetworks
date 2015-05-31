@@ -327,9 +327,9 @@ public class Classificacao_Numeros {
 					//Medidas extraidas da matriz de confusao
 					double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
 					double taxa_falsos_positivos = falso_positivo/(verdadeiro_negativo+falso_positivo);
-					double especificidade = verdadeiro_negativo/(falso_positivo+falso_positivo); //taxa de verdadeiros negativos
-					double precisao = verdadeiro_positivo/(verdadeiro_positivo+verdadeiro_negativo);
-					double preditividade_negativa = taxa_falsos_positivos/(taxa_falsos_positivos+falso_negativo);
+					double especificidade = verdadeiro_negativo/(falso_positivo+verdadeiro_negativo); //taxa de verdadeiros negativos
+					double precisao = verdadeiro_positivo/(verdadeiro_positivo+falso_positivo);
+					double preditividade_negativa = verdadeiro_negativo/(verdadeiro_negativo+falso_negativo);
 					double taxa_falsas_descobertas = falso_positivo/(verdadeiro_positivo+falso_positivo);
 					double taxa_acuracia = (verdadeiro_negativo+verdadeiro_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
 					double taxa_erro = (falso_negativo+falso_positivo)/(falso_negativo+falso_positivo+verdadeiro_negativo+verdadeiro_positivo);
