@@ -15,7 +15,7 @@ public class Grava_Resultados {
 		String novaLinha = System.getProperty("line.separator");
 		
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-	              new FileOutputStream(nome_arquivo+".txt"), "utf-8"))) {
+	              new FileOutputStream(nome_arquivo+"_resultados_rede.txt"), "utf-8"))) {
 
 			writer.write("Resultados da rede: "+novaLinha+novaLinha);
 			// Imprime por linha
@@ -28,6 +28,8 @@ public class Grava_Resultados {
 			
 			writer.write(""+novaLinha+novaLinha);
 			
+			// Medidas de avaliacao agora somente no arquivo .csv
+			/*
 			writer.write("Medidas de avaliacao: "+novaLinha);
 			for (int i = 0; i < medidas_avaliacao.length; i++) {
 				if(medidas_avaliacao[0][i]!=null)
@@ -35,6 +37,7 @@ public class Grava_Resultados {
 			}
 			
 			writer.write(""+novaLinha+novaLinha);
+			*/
 			
 			writer.write("Epoca de parada: "+epoca_parada);
 			
@@ -50,7 +53,7 @@ public class Grava_Resultados {
 		}
 		
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-	              new FileOutputStream(nome_arquivo+".csv"), "utf-8"))) {
+	              new FileOutputStream(nome_arquivo+"_medidas_avaliacao.csv"), "utf-8"))) {
 			
 			for (int i = 0; i < medidas_avaliacao[1].length; i++) {
 				if(medidas_avaliacao[1][i]!=null)
