@@ -221,8 +221,11 @@ public class LVQ extends Rede{
 	 * definido como parametro. Os neuronios retirados sao aqueles que sao menos ativados dentre os
 	 * que sao daquela classe em questa passada como parametro.
 	 */
-	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe, Matrix saidas_desejadas_classe) {
+	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe) {
 		
+		System.out.println("Classe="+classe);
+		System.out.println("Numero de instancias="+entradas_classe.getRowDimension());
+		System.exit(0);
 		//Obtem-se os indices dos pesos que sao referentes a classe que sera efetuado o corte
 		List<Integer> indice_neuronios_classe=new ArrayList<Integer>();
 		for (int indice_peso = 0; indice_peso < pesos.length; indice_peso++) {

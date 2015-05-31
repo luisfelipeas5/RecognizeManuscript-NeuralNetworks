@@ -137,7 +137,6 @@ public class Treinamento {
 				//Matrix que guarda somente instancias da classe i
 				int numero_instancias_classe_i=indices_instancias_classe_treinamento.get(classes[i]).size(); //numero de instancias da classe[i]
 				Matrix entradas_classe=new Matrix(numero_instancias_classe_i, entradas_treinamento.getColumnDimension());
-				Matrix saidas_desejadas_classe=new Matrix(numero_instancias_classe_i, saidas_desejadas_treinamento.getColumnDimension());
 				
 				//Lista de indices da instancia de entrada do treinamento que corresponde aquela classe i
 				List<Integer> indices_classe=indices_instancias_classe_treinamento.get(classes[i]);
@@ -154,14 +153,10 @@ public class Treinamento {
 					Matrix entrada=entradas_treinamento.getMatrix(indice, indice, 0, entradas_treinamento.getColumnDimension()-1);
 					entradas_classe.setMatrix(linha_vazia, linha_vazia, 0, entradas_treinamento.getColumnDimension()-1, entrada);
 					
-					Matrix saida=new Matrix(1, 1);
-					saida.set(0,0,classes[i]);
-					saidas_desejadas_classe.setMatrix(linha_vazia, linha_vazia, 0, saidas_desejadas_classe.getColumnDimension()-1, saida);
-					
 					linha_vazia+=1;
 				}
 				int numero_ideal_de_neuronios=2;
-				lvq.corte_de_neuronios(numero_ideal_de_neuronios, classes[i], entradas_classe, saidas_desejadas_classe);
+				lvq.corte_de_neuronios(numero_ideal_de_neuronios, classes[i], entradas_classe);
 			}
 		}
 		System.out.println("\tEpoca ideal = "+epoca_ideal);
