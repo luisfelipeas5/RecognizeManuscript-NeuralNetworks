@@ -1,6 +1,6 @@
 /*
  *  Observacoes para o Senhor Marcelo
- *  Sobre os rotulos, decidi passar no construtor, então se vc reparar, eu mudei um pouco o construtor!
+ *  Sobre os rotulos, decidi passar no construtor, entÃ£o se vc reparar, eu mudei um pouco o construtor!
  */
 
 /* 
@@ -53,7 +53,7 @@ public class LVQ extends Rede{
 		//System.exit(0);
 	}
 	
-	/* As matrizes de entrada e saida desejada são transformadas em matrizes "normais" do java */
+	/* As matrizes de entrada e saida desejada sÃ£o transformadas em matrizes "normais" do java */
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getRowDimension();
@@ -120,7 +120,7 @@ public class LVQ extends Rede{
 	 * Funcoes tambem podem ser utilizadas para o decrescimento da taxa */
 	public double diminui_taxa_de_aprendizado(double taxa_de_aprendizado_atual){
 		double taxa_atualizada;
-		taxa_atualizada = taxa_de_aprendizado_atual*0.9;
+		taxa_atualizada = taxa_de_aprendizado_atual*0.99999;
 		return taxa_atualizada;
 	}
 
@@ -160,8 +160,8 @@ public class LVQ extends Rede{
 			 */
 			if(necessiadade_atualizar_pesos) {
 				/* Passo 3 - Alterando os pesos analisando a classe definida. Sao aplicados as regras de aprendizado. A soma ocorre quando 
-				a classificacao sugerida pela LVQ eh correta (o vetor resultante da operação está situado entre o vetor protótipo e o vetor
-				de dados, ou seja, houve a movimentação do vetor protótipo na direção do dado). Já a subtracao ocorre quando a classificacao
+				a classificacao sugerida pela LVQ eh correta (o vetor resultante da operaÃ§Ã£o estÃ¡ situado entre o vetor protÃ³tipo e o vetor
+				de dados, ou seja, houve a movimentaÃ§Ã£o do vetor protÃ³tipo na direÃ§Ã£o do dado). JÃ¡ a subtracao ocorre quando a classificacao
 				sugerida eh incorreta (tendo efeito contrario) e o contador de erros eh incrementado */
 				
 				//imprime_rotulos_dos_pesos();
