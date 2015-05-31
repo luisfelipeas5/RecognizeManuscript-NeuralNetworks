@@ -23,12 +23,12 @@ public class Principal {
 		boolean pesos_aleatorios = false;
 		double intervalo_pesos_aleatorios = 0.5;		
 		//Numero maximo de epocas e erro maximo para analise
-		int numero_epocas = 800;
-		double limiar_erro = 0.05;
+		int numero_epocas = 500;
+		double limiar_erro = 0.00;
 
 		//Para MLP
 		int numero_neuronios_escondidos = 5;
-		int modo_treinamento = 2; //padrao a padrao=1 e batelada=2
+		int modo_treinamento = 1; //padrao a padrao=1 e batelada=2
 		
 		//Para LVQ
 		int numero_neuronios_classe = 3;
@@ -255,11 +255,10 @@ public class Principal {
 				numero_neuronios_escondidos, modo_treinamento, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
 		
-		/*
+		
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
-		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios, intervalo_pesos_aleatorios
-										numero_neuronios_classe, numero_epocas);
+		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
+				numero_neuronios_classe, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("#----------------Termino da Analise da LVQ----------------#");
-		*/
 	}
 }

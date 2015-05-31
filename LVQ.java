@@ -124,7 +124,8 @@ public class LVQ extends Rede{
 		return taxa_atualizada;
 	}
 
-	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador nao era da mesma classe que a instancia
+	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador 
+	 * nao era da mesma classe que a instancia dividido pelo numero de instancias
 	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
 	double get_erro(){	
 	
@@ -186,7 +187,7 @@ public class LVQ extends Rede{
 			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);
 			//System.out.println("Taxa Aprendizado="+taxa_de_aprendizado); 
 		}
-		return contador_de_erros;
+		return contador_de_erros/((double)vetores_de_entrada.length) ;
 	}
 	
 	/* Metodo que gera uma Matrix com as saidas da rede para uma sequencia de entradas */

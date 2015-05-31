@@ -101,6 +101,11 @@ public class Classificacao_Numeros {
 									intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("\t#--------------Termino da Fase de Treinamento---------------#");
 		
+		System.out.println("\t#----------------Inicio da Exibicao do Grafico------------------#");
+		//Mostrar grafico Epoca X Erro Total
+		grafico_erro_epoca(erros_epocas, lvq.numero_neuronios);
+		System.out.println("\t#----------------Termino da Exibicao do Grafico-----------------#");
+		
 		System.out.println("\n#----------------Inicio da Matriz de Confusao------------------#");
 		confusao = matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
 		System.out.println("#----------------Termino da Matriz de Confusao------------------#");
@@ -234,6 +239,7 @@ public class Classificacao_Numeros {
 					double verdadeiro_negativo=0;
 					
 					try {
+						@SuppressWarnings("unused")
 						LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
 					}catch(ClassCastException cce){
 						entradas_one_one=adiciona_bias(entradas_one_one);
@@ -383,6 +389,7 @@ public class Classificacao_Numeros {
 					double verdadeiro_negativo=0;
 					
 					try {
+						@SuppressWarnings("unused")
 						LVQ lvq=(LVQ)rede; //Caso a rede seja uma MLP, uma excessao que o cast nao eh possivel eh lancada
 					}catch(ClassCastException cce){
 						entradas_one_one=adiciona_bias(entradas_one_one);
