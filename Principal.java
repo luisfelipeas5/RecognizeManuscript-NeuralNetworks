@@ -23,7 +23,7 @@ public class Principal {
 		boolean pesos_aleatorios = false;
 		double intervalo_pesos_aleatorios = 0.5;		
 		//Numero maximo de epocas e erro maximo para analise
-		int numero_epocas = 3000;
+		int numero_epocas = 800;
 		double limiar_erro = 0.05;
 
 		//Para MLP

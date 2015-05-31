@@ -1,6 +1,5 @@
 //Pacote Jama: 
 import Jama.Matrix; 
-import java.util.Iterator;
 //Estruturas de armazenamento 
 import java.util.List; 
 import java.util.LinkedList; 
@@ -165,26 +164,6 @@ public class MLP extends Rede{
 			}
 		}
 		erros.add(erro_quadrado);
-		/*
-		System.out.println("Entrada:");
-		entrada.print(entrada.getColumnDimension(), 3);
-		System.out.println("Pesos A");
-		pesos_a.print(pesos_a.getColumnDimension(), 3);
-		System.out.println("ZIN:");
-		ZIN.print(ZIN.getColumnDimension(), 3);
-		System.out.println("Z:");
-		Z.print(Z.getColumnDimension(), 3);
-		System.out.println("Z BIAS:");
-		Z_bias.print(Z.getColumnDimension(), 3);
-		System.out.println("pesos B:");
-		pesos_b.print(pesos_b.getColumnDimension(), 3);
-		System.out.println("YIN:");
-		YIN.print(YIN.getColumnDimension(), 3);
-		System.out.println("Y:");
-		Y.print(Y.getColumnDimension(), 3);
-		System.out.println("erro:");
-		e.print(e.getColumnDimension(), 3);
-		*/
 		return Y; 
 	}
 	
@@ -228,12 +207,6 @@ public class MLP extends Rede{
 			Matrix entrada=entradas.getMatrix(indice_instancia, indice_instancia, 0, entradas.getColumnDimension()-1);
 			Matrix saida_desejada=saidas_desejadas.getMatrix(indice_instancia,indice_instancia, 0, saidas_desejadas.getColumnDimension()-1);
 			
-			/*
-			System.out.println("Entrada:");
-			entrada.print(entrada.getColumnDimension(), 3);
-			System.out.println("Saida Desejada:");
-			saida_desejada.print(saida_desejada.getColumnDimension(), 3);
-			*/
 			Matrix saida=calcula_saida (entrada, saida_desejada, pesos_a, pesos_b);
 			
 			ZINs.setMatrix(indice_instancia, indice_instancia, 0, ZINs.getColumnDimension()-1, semi_results[0]);
@@ -255,16 +228,6 @@ public class MLP extends Rede{
 				atualiza_pesos ( indice_instancia, erro.get(0,0), taxa_aprendizado);
 			}
 		}
-		/*
-		System.out.println("ZINs");
-		ZINs.print(ZINs.getColumnDimension(), 3);
-		System.out.println("Zs");
-		Zs.print(Zs.getColumnDimension(), 3);
-		System.out.println("YINs");
-		YINs.print(YINs.getColumnDimension(), 3);
-		System.out.println("Ys");
-		Ys.print(Ys.getColumnDimension(), 3);
-		*/
 		//Soma dos erros
 		double erro_total_quadratico=0;
 		for (int indice_erro = 0; indice_erro < erros.getRowDimension(); indice_erro++) {
@@ -321,13 +284,6 @@ public class MLP extends Rede{
 				double gradiente_ponto = (f_linha_YIN_k*(erro)*(Zi));
 				dJdB.set(i, j, gradiente_ponto);
 				
-				/*
-				System.out.println("f_linha="+f_linha_YIN_k);
-				System.out.println("Zi="+Zi);
-				System.out.println("erro="+erro);
-				System.out.println("Gradiente no ponto b("+i+","+j+")="+gradiente_ponto);
-				System.out.println();
-				*/
 			}
 		}
 				
@@ -352,23 +308,8 @@ public class MLP extends Rede{
 				double gradiente_ij=erro_propagado_intermediario*f_linha_ZIN_k*entrada_instancia_atual.get(0,j);
 				dJdA.set(i, j, gradiente_ij);
 				
-				/*
-				System.out.println("erro_propagado_intermediario="+erro_propagado_intermediario);
-				System.out.println("f_linha_ZIN_k="+f_linha_ZIN_k);
-				System.out.println("entrada_instancia_atual.get(0,j);"+entrada_instancia_atual.get(0,j));
-				System.out.println("gradiente_ij="+gradiente_ij);
-				System.out.println();
-				*/
 			}
 		}
-		/*
-		System.out.println("Erro="+erro);
-		System.out.println("dJdA");
-		dJdA.print(dJdA.getColumnDimension(),5);
-		System.out.println("dJdB");
-		dJdB.print(dJdB.getColumnDimension(),5);
-		System.exit(0);
-		*/
 	}
 	
 	public Matrix get_saidas () {
