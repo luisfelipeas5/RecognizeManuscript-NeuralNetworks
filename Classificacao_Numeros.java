@@ -188,7 +188,40 @@ public class Classificacao_Numeros {
 		double media_geral_taxa_erro = 0.0;
 		double media_geral_f_score = 0.0;
 		
+		/*
+		double[] maior_falso_negativo = 0.0;
+		double[] maior_falso_positivo = 0.0;
+		double[] maior_verdadeiro_positivo = 0.0;
+		double[] maior_verdadeiro_negativo = 0.0;
 		
+		double[] maior_sensibilidade = 0.0;
+		double[] maior_taxa_falsos_positivos = 0.0;
+		double[] maior_especificidade = 0.0;
+		double[] maior_precisao = 0.0;
+		double[] maior_preditividade_negativa = 0.0;
+		double[] maior_taxa_falsas_descobertas = 0.0;
+		double[] maior_taxa_acuracia = 0.0;
+		double[] maior_taxa_erro = 0.0;
+		double[] maior_f_score = 0.0;
+		
+		double[] menor_falso_negativo = 0.0;
+		double[] menor_falso_positivo = 0.0;
+		double[] menor_verdadeiro_positivo = 0.0;
+		double[] menor_verdadeiro_negativo = 0.0;
+		
+		double[] menor_sensibilidade = 0.0;
+		double[] menor_taxa_falsos_positivos = 0.0;
+		double[] menor_especificidade = 0.0;
+		double[] menor_precisao = 0.0;
+		double[] menor_preditividade_negativa = 0.0;
+		double[] menor_taxa_falsas_descobertas = 0.0;
+		double[] menor_taxa_acuracia = 0.0;
+		double[] menor_taxa_erro = 0.0;
+		double[] menor_f_score = 0.0;
+		
+		*JamaUtils.getMax(m);
+		
+		*/
 		
 		
 		//Estrategia: One X One
@@ -198,7 +231,7 @@ public class Classificacao_Numeros {
 				if(j > i){
 					
 					System.out.format("\n-----------One x One: %.2f x %.2f------", classes[i], classes[j]);
-					gravar[0][iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
+					//gravar[0][iteradorGravar] = String.format("\n-----------One x One: %.2f x %.2f------", classes[i],classes[j]);
 					
 					/*
 					 * Define as entradas para o One X One: uma nova matriz 
@@ -283,11 +316,13 @@ public class Classificacao_Numeros {
 					System.out.format("\nFalso positivo = %.2f", falso_positivo);
 					System.out.format("\nVerdadeiro negativo = %.2f", verdadeiro_negativo);
 					
+					/*
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Matriz de confusao %.2f X %.2f ", classes[i],classes[j]);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro positivo = ", verdadeiro_positivo);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso negativo = %.2f", falso_negativo);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Falso positivo = %.2f", falso_positivo);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Verdadeiro negativo = %.2f\n", verdadeiro_negativo);
+					*/
 					
 					//Medidas extraidas da matriz de confusao
 					double sensibilidade =  verdadeiro_positivo/(verdadeiro_positivo+falso_negativo); //taxa de verdadeiros positivos ou revocacao
@@ -310,6 +345,7 @@ public class Classificacao_Numeros {
 					System.out.format("\nTaxa de Erro = %.2f",taxa_erro);
 					System.out.format("\n\nF_Score = %.2f",f_score);
 					
+					/*
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Sensibilidade = %.2f", sensibilidade);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de falsos positivos = %.2f", taxa_falsos_positivos);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Especificidade = %.2f", especificidade);
@@ -319,6 +355,7 @@ public class Classificacao_Numeros {
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Acuracidade = %.2f", taxa_acuracia);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("Taxa de Erro = %.2f", taxa_erro);
 					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("\nF_Score = %.2f", f_score);
+					*/
 					
 					// Para o arquivo .csv:
 					gravar[1][iteradorGravar] = "";
@@ -347,7 +384,7 @@ public class Classificacao_Numeros {
 					
 					System.out.format("\n----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 					
-					gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
+					//gravar[0][iteradorGravar] = gravar[0][iteradorGravar] + "\n" + String.format("----------Fim One x One: %.2f x %.2f--------\n", classes[i], classes[j]);
 					iteradorGravar++;	
 					
 				}else if(j < i){
@@ -480,7 +517,7 @@ public class Classificacao_Numeros {
 			
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros positivos");
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
-					medias_falsos_negativos.get(i, 0), Math.sqrt(variancia_uma_coluna(verdadeiros_positivos_classe, i)));
+					medias_verdadeiros_positivos.get(i, 0), Math.sqrt(variancia_uma_coluna(verdadeiros_positivos_classe, i)));
 			
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos positivos");
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
@@ -492,7 +529,7 @@ public class Classificacao_Numeros {
 			
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos negativos");
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
-					media_uma_coluna(falsos_negativos_classe, i), Math.sqrt(variancia_uma_coluna(falsos_negativos_classe, i)));
+					medias_falsos_negativos.get(i, 0), Math.sqrt(variancia_uma_coluna(falsos_negativos_classe, i)));
 			
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de erro");
 			gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
@@ -534,8 +571,8 @@ public class Classificacao_Numeros {
 			
 			iteradorGravar++;
 			
-			media_geral_falso_negativo = media_geral_falso_negativo + medias_falsos_positivos.get(i, 0);
-			media_geral_falso_positivo = media_geral_falso_positivo + media_uma_coluna(falsos_negativos_classe, i);
+			media_geral_falso_positivo = media_geral_falso_negativo + medias_falsos_positivos.get(i, 0);
+			media_geral_falso_negativo = media_geral_falso_positivo + medias_falsos_negativos.get(i, 0);
 			media_geral_verdadeiro_positivo = media_geral_verdadeiro_positivo + medias_verdadeiros_positivos.get(i, 0);
 			media_geral_verdadeiro_negativo = media_geral_verdadeiro_negativo + medias_verdadeiros_negativos.get(i, 0);
 			
@@ -552,20 +589,281 @@ public class Classificacao_Numeros {
 			//System.out.println("Rodou");
 		}
 		
-		media_geral_falso_negativo = media_geral_falso_negativo/(double)((classes.length-1)*(classes.length-1));
-		media_geral_falso_positivo = media_geral_falso_positivo/(double)((classes.length-1)*(classes.length-1));
-		media_geral_verdadeiro_positivo = media_geral_verdadeiro_positivo/(double)((classes.length-1)*(classes.length-1));
-		media_geral_verdadeiro_negativo = media_geral_verdadeiro_negativo/(double)((classes.length-1)*(classes.length-1));
+		media_geral_verdadeiro_positivo = media_geral_verdadeiro_positivo/(double)(classes.length);
+		media_geral_verdadeiro_negativo = media_geral_verdadeiro_negativo/(double)(classes.length);
+		media_geral_falso_negativo = media_geral_falso_negativo/(double)(classes.length);
+		media_geral_falso_positivo = media_geral_falso_positivo/(double)(classes.length);
 		
-		media_geral_sensibilidade = media_geral_sensibilidade/(double)((classes.length-1)*(classes.length-1));
-		media_geral_taxa_falsos_positivos = media_geral_taxa_falsos_positivos/(double)((classes.length-1)*(classes.length-1));
-		media_geral_especificidade = media_geral_especificidade/(double)((classes.length-1)*(classes.length-1));
-		media_geral_precisao = media_geral_precisao/(double)((classes.length-1)*(classes.length-1));
-		media_geral_preditividade_negativa = media_geral_preditividade_negativa/(double)((classes.length-1)*(classes.length-1));
-		media_geral_taxa_falsas_descobertas = media_geral_taxa_falsas_descobertas/(double)((classes.length-1)*(classes.length-1));
-		media_geral_taxa_acuracia = media_geral_taxa_acuracia/(double)((classes.length-1)*(classes.length-1));
-		media_geral_taxa_erro = media_geral_taxa_erro/(double)((classes.length-1)*(classes.length-1));
-		media_geral_f_score = media_geral_f_score/(double)((classes.length-1)*(classes.length-1));
+		media_geral_sensibilidade = media_geral_sensibilidade/(double)(classes.length);
+		media_geral_taxa_falsos_positivos = media_geral_taxa_falsos_positivos/(double)(classes.length);
+		media_geral_especificidade = media_geral_especificidade/(double)(classes.length);
+		media_geral_precisao = media_geral_precisao/(double)(classes.length);
+		media_geral_preditividade_negativa = media_geral_preditividade_negativa/(double)(classes.length);
+		media_geral_taxa_falsas_descobertas = media_geral_taxa_falsas_descobertas/(double)(classes.length);
+		media_geral_taxa_acuracia = media_geral_taxa_acuracia/(double)(classes.length);
+		media_geral_taxa_erro = media_geral_taxa_erro/(double)(classes.length);
+		media_geral_f_score = media_geral_f_score/(double)(classes.length);
+		
+		// .csv
+		gravar[1][iteradorGravar] = "\n\n";
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Medidas de avaliacao rede\n");
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_falso_negativo, Math.sqrt(Pre_Processamento.variancia_coluna(medias_verdadeiros_positivos)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_falso_positivo, Math.sqrt(Pre_Processamento.variancia_coluna(medias_falsos_positivos)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros negativos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_verdadeiro_negativo, Math.sqrt(Pre_Processamento.variancia_coluna(medias_verdadeiros_negativos)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos negativos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_falso_negativo, Math.sqrt(Pre_Processamento.variancia_coluna(medias_falsos_negativos)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de erro");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_taxa_erro, Math.sqrt(Pre_Processamento.variancia_coluna(medias_taxa_erro)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Precisao");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_precisao, Math.sqrt(Pre_Processamento.variancia_coluna(medias_precisao)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Sensibilidade");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_sensibilidade, Math.sqrt(Pre_Processamento.variancia_coluna(medias_sensibilidade)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxa de falsos positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_taxa_falsos_positivos, Math.sqrt(Pre_Processamento.variancia_coluna(medias_taxa_falsos_positivos)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Especificidade");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_especificidade, Math.sqrt(Pre_Processamento.variancia_coluna(medias_especificidade)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Preditividade negativa");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_preditividade_negativa, Math.sqrt(Pre_Processamento.variancia_coluna(medias_preditividade_negativa)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de falsas descobertas");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_taxa_falsas_descobertas, Math.sqrt(Pre_Processamento.variancia_coluna(medias_taxa_falsas_descobertas)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de acuracia");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_taxa_acuracia, Math.sqrt(Pre_Processamento.variancia_coluna(medias_taxa_acuracia)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Media,%.2f,Desvio padrao,%.2f\n", 
+				media_geral_f_score, Math.sqrt(Pre_Processamento.variancia_coluna(medias_f_score)[0]));
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n\n";
+		
+		
+		double classe_maior_falso_negativo = 0.0;
+		double classe_maior_falso_positivo = 0.0;
+		double classe_maior_verdadeiro_positivo = 0.0;
+		double classe_maior_verdadeiro_negativo = 0.0;
+		
+		double classe_maior_sensibilidade = 0.0;
+		double classe_maior_taxa_falsos_positivos = 0.0;
+		double classe_maior_especificidade = 0.0;
+		double classe_maior_precisao = 0.0;
+		double classe_maior_preditividade_negativa = 0.0;
+		double classe_maior_taxa_falsas_descobertas = 0.0;
+		double classe_maior_taxa_acuracia = 0.0;
+		double classe_maior_taxa_erro = 0.0;
+		double classe_maior_f_score = 0.0;
+		
+		double classe_menor_falso_negativo = 0.0;
+		double classe_menor_falso_positivo = 0.0;
+		double classe_menor_verdadeiro_positivo = 0.0;
+		double classe_menor_verdadeiro_negativo = 0.0;
+		
+		double classe_menor_sensibilidade = 0.0;
+		double classe_menor_taxa_falsos_positivos = 0.0;
+		double classe_menor_especificidade = 0.0;
+		double classe_menor_precisao = 0.0;
+		double classe_menor_preditividade_negativa = 0.0;
+		double classe_menor_taxa_falsas_descobertas = 0.0;
+		double classe_menor_taxa_acuracia = 0.0;
+		double classe_menor_taxa_erro = 0.0;
+		double classe_menor_f_score = 0.0;
+		
+		
+		for(int i = 0; i < classes.length; i++){
+			/* Salva as classes que tem os menores valores para cada atributo. */
+			
+			if(medias_falsos_negativos.get(i, 0)==JamaUtils.getMax(medias_falsos_negativos)){
+				classe_maior_falso_negativo = classes[i];
+			}
+			
+			if(medias_falsos_positivos.get(i, 0)==JamaUtils.getMax(medias_falsos_positivos)){
+				classe_maior_falso_positivo = classes[i];
+			}
+			
+			if(medias_verdadeiros_positivos.get(i, 0)==JamaUtils.getMax(medias_verdadeiros_positivos)){
+				classe_maior_verdadeiro_positivo = classes[i];
+			}
+			
+			if(medias_verdadeiros_negativos.get(i, 0)==JamaUtils.getMax(medias_verdadeiros_negativos)){
+				classe_maior_verdadeiro_negativo = classes[i];
+			}
+			
+			if(medias_sensibilidade.get(i, 0)==JamaUtils.getMax(medias_sensibilidade)){
+				classe_maior_sensibilidade = classes[i];
+			}
+			
+			if(medias_taxa_falsos_positivos.get(i, 0)==JamaUtils.getMax(medias_taxa_falsos_positivos)){
+				classe_maior_taxa_falsos_positivos = classes[i];
+			}
+			
+			if(medias_especificidade.get(i, 0)==JamaUtils.getMax(medias_especificidade)){
+				classe_maior_especificidade = classes[i];
+			}
+			
+			if(medias_precisao.get(i, 0)==JamaUtils.getMax(medias_precisao)){
+				classe_maior_precisao = classes[i];
+			}
+			
+			if(medias_preditividade_negativa.get(i, 0)==JamaUtils.getMax(medias_preditividade_negativa)){
+				classe_maior_preditividade_negativa = classes[i];
+			}
+			
+			if(medias_taxa_falsas_descobertas.get(i, 0)==JamaUtils.getMax(medias_taxa_falsas_descobertas)){
+				classe_maior_taxa_falsas_descobertas = classes[i];
+			}
+			
+			if(medias_taxa_acuracia.get(i, 0)==JamaUtils.getMax(medias_taxa_acuracia)){
+				classe_maior_taxa_acuracia = classes[i];
+			}
+			
+			if(medias_taxa_erro.get(i, 0)==JamaUtils.getMax(medias_taxa_erro)){
+				classe_maior_taxa_erro = classes[i];
+			}
+			
+			if(medias_f_score.get(i, 0)==JamaUtils.getMax(medias_f_score)){
+				classe_maior_f_score = classes[i];
+			}
+			
+			
+			
+			/* Salva as classes que tem os menores valores para cada atributo. */
+			
+			if(medias_falsos_negativos.get(i, 0)==JamaUtils.getMin(medias_falsos_negativos)){
+				classe_menor_falso_negativo = classes[i];
+			}
+			
+			if(medias_falsos_positivos.get(i, 0)==JamaUtils.getMin(medias_falsos_positivos)){
+				classe_menor_falso_positivo = classes[i];
+			}
+			
+			if(medias_verdadeiros_positivos.get(i, 0)==JamaUtils.getMin(medias_verdadeiros_positivos)){
+				classe_menor_verdadeiro_positivo = classes[i];
+			}
+			
+			if(medias_verdadeiros_negativos.get(i, 0)==JamaUtils.getMin(medias_verdadeiros_negativos)){
+				classe_menor_verdadeiro_negativo = classes[i];
+			}
+			
+			if(medias_sensibilidade.get(i, 0)==JamaUtils.getMin(medias_sensibilidade)){
+				classe_menor_sensibilidade = classes[i];
+			}
+			
+			if(medias_taxa_falsos_positivos.get(i, 0)==JamaUtils.getMin(medias_taxa_falsos_positivos)){
+				classe_menor_taxa_falsos_positivos = classes[i];
+			}
+			
+			if(medias_especificidade.get(i, 0)==JamaUtils.getMin(medias_especificidade)){
+				classe_menor_especificidade = classes[i];
+			}
+			
+			if(medias_precisao.get(i, 0)==JamaUtils.getMin(medias_precisao)){
+				classe_menor_precisao = classes[i];
+			}
+			
+			if(medias_preditividade_negativa.get(i, 0)==JamaUtils.getMin(medias_preditividade_negativa)){
+				classe_menor_preditividade_negativa = classes[i];
+			}
+			
+			if(medias_taxa_falsas_descobertas.get(i, 0)==JamaUtils.getMin(medias_taxa_falsas_descobertas)){
+				classe_menor_taxa_falsas_descobertas = classes[i];
+			}
+			
+			if(medias_taxa_acuracia.get(i, 0)==JamaUtils.getMin(medias_taxa_acuracia)){
+				classe_menor_taxa_acuracia = classes[i];
+			}
+			
+			if(medias_taxa_erro.get(i, 0)==JamaUtils.getMin(medias_taxa_erro)){
+				classe_menor_taxa_erro = classes[i];
+			}
+			
+			if(medias_f_score.get(i, 0)==JamaUtils.getMin(medias_f_score)){
+				classe_menor_f_score = classes[i];
+			}
+		}
+		
+		// .csv
+		gravar[1][iteradorGravar] = "\n";
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Avaliacao das classes\n");
+		
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_verdadeiro_positivo, classe_maior_verdadeiro_positivo);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_falso_positivo, classe_maior_falso_positivo);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Verdadeiros negativos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_verdadeiro_negativo, classe_maior_verdadeiro_negativo);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Falsos negativos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_falso_negativo, classe_maior_falso_negativo);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de erro");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_taxa_erro, classe_maior_taxa_erro);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Precisao");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_precisao, classe_maior_precisao);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Sensibilidade");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_sensibilidade, classe_maior_sensibilidade);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxa de falsos positivos");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_taxa_falsos_positivos, classe_maior_taxa_falsos_positivos);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Especificidade");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_especificidade, classe_maior_especificidade);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Preditividade negativa");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_preditividade_negativa, classe_maior_preditividade_negativa);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de falsas descobertas");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_taxa_falsas_descobertas, classe_maior_taxa_falsas_descobertas);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Taxas de acuracia");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_taxa_acuracia, classe_maior_taxa_acuracia);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,F_Score");
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n" + String.format(Locale.US,",,,,Menor,%.2f,Maior,%.2f\n", 
+				classe_menor_f_score, classe_maior_f_score);
+		
+		gravar[1][iteradorGravar] = gravar[1][iteradorGravar] + "\n\n";
 		
 		//System.out.println("Acabou");
 		return gravar;
@@ -574,6 +872,7 @@ public class Classificacao_Numeros {
 	private double variancia_uma_coluna(Matrix dados, int coluna){
 		// Metodo de calculo de variancia de uma coluna baseado no metodo variancia_coluna da classe Pre_processamento
 		// Foram necessarias algumas pequenas modificacoes para que pudesse ser utilizada corretamente para as matrizes one x one
+		// Dado que os valores para linha == coluna não são calculados, devido a natureza da matriz one x one
 		double medCol = 0.0;
 		double auxCalc = 0.0;
 		double varCol = 0.0;
@@ -581,8 +880,10 @@ public class Classificacao_Numeros {
 		medCol = media_uma_coluna(dados, coluna);
 		
 		for (int linha = 0; linha < dados.getRowDimension(); linha++) {
-			auxCalc= 
-					auxCalc + ((dados.get(linha, coluna)-medCol) * (dados.get(linha, coluna)-medCol));
+			if(linha!=coluna){
+				auxCalc= 
+						auxCalc + ((dados.get(linha, coluna)-medCol) * (dados.get(linha, coluna)-medCol));	
+			}
 		}
 		varCol = auxCalc/((double)(dados.getRowDimension()-2));
 		return varCol;
@@ -591,6 +892,7 @@ public class Classificacao_Numeros {
 	private static double media_uma_coluna(Matrix dados, int coluna){
 		// Metodo de calculo de media de uma coluna baseado no metodo media_coluna da classe Pre_processamento
 		// Foram necessarias algumas pequenas modificacoes para que pudesse ser utilizada corretamente para as matrizes one x one
+		// Dado que os valores para linha == coluna não são calculados, devido a natureza da matriz one x one
 		double medCol = 0.0;
 		
 		medCol = (double)JamaUtils.colsum(dados, coluna)/(double)(dados.getRowDimension()-1);
