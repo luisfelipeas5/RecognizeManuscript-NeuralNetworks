@@ -1,17 +1,4 @@
-/*
- *  Observacoes para o Senhor Marcelo
- *  Sobre os rotulos, decidi passar no construtor, entÃ£o se vc reparar, eu mudei um pouco o construtor!
- */
-
-/* 
- *  TODO Precisa ter o metodo de remover neuronios nao utilizados apos o treinamento e deve ser feito da seguinte maneira: se uma entrada for da 
- *  da classe x, podemos testar apenas com os neuronios da classe x (exemplo, se a entrada eh da classe 1, deve-se testar quais neuronios
- *  sao ativados da classe 1, apenas), entrada classe 2 -> neuronios da classe 2, e assim por diante. Podemos tentar fazer juntos, nao fiz
- *  pq nao sei como ele ira funcionar no treinamento exatamente
- * */
-
 import Jama.Matrix;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,8 +36,6 @@ public class LVQ extends Rede{
 				j++;
 			}
 		}
-		//imprime_rotulos_dos_pesos();
-		//System.exit(0);
 	}
 	
 	/* As matrizes de entrada e saida desejada sÃ£o transformadas em matrizes "normais" do java */
@@ -58,7 +43,7 @@ public class LVQ extends Rede{
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getRowDimension();
 		this.dimensao = entrada.getColumnDimension();
-		this.classe_alvo = saida_desejada.getRowPackedCopy();		//ver certinho 
+		this.classe_alvo = saida_desejada.getRowPackedCopy();
 	}
 	
 	/* 
@@ -104,10 +89,6 @@ public class LVQ extends Rede{
         }
 	} 
 	
-	/*void rotula_pesos(){ //Pode-se assumir dez classes
-		rotulo_pesos = new double[numero_de_classes*numero_neuronios_saida];
-	}*/
-	
 	/* Imprime a classe de cada vetor prototipo (neuronio) */
 	
 	void imprime_rotulos_dos_pesos(){
@@ -128,19 +109,12 @@ public class LVQ extends Rede{
 	 * nao era da mesma classe que a instancia dividido pelo numero de instancias
 	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
 	double get_erro(){	
-	
 		double contador_de_erros = 0;
 		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo
-
-		//imprime_matriz_de_pesos();
-		//System.out.println("");
-		//System.out.println("Epoca 0");
-		//System.out.println("");
-			
-		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
-			
-		for(int k = 0; k < numero_de_instancias; k++){	
 		
+		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
+		//System.out.println("####Iterando sobre todas as instancias");
+		for(int k = 0; k < numero_de_instancias; k++){	
 			/* Passo 2 - Encontrar o vetor (neuronio) de saida tal que a distancia seja minima */
 			
 			neuronio_ganhador = 0;
@@ -151,7 +125,6 @@ public class LVQ extends Rede{
 						neuronio_ganhador = i;
 					}
 				}
-				//System.out.println(distancia_euclidiana[i] + "	neuronio ganhador:" + neuronio_ganhador);
 			}
 		
 			/*
@@ -182,12 +155,14 @@ public class LVQ extends Rede{
 				}
 			}
 		}
+		//System.out.println("####Instancias iteradas");
 		if(necessiadade_atualizar_pesos) {
 			/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
 			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);
 			//System.out.println("Taxa Aprendizado="+taxa_de_aprendizado); 
 		}
-		return contador_de_erros/((double)vetores_de_entrada.length) ;
+		//System.out.println("###Termino do get_erro");
+		return contador_de_erros/((double)vetores_de_entrada.length);
 	}
 	
 	/* Metodo que gera uma Matrix com as saidas da rede para uma sequencia de entradas */
@@ -294,6 +269,7 @@ public class LVQ extends Rede{
 		}
 		pesos=pesos_apos_corte;
 		rotulo_pesos=rotulos_apos_corte;
+		numero_neuronios_saida=numero_neuronio_ideal;
 	}
 	
 }
