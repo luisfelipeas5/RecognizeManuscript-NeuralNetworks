@@ -110,7 +110,7 @@ public class Classificacao_Numeros {
 		confusao = matriz_confusao(lvq); //Calcula as matries de confusao para a LVQ
 		System.out.println("#----------------Termino da Matriz de Confusao------------------#");
 		
-		Grava_Resultados.grava_arquivo("Resultados_LVQ_"+numero_neuronios_classe+"neuronios.txt", lvq.get_saidas(), confusao, numero_epocas);
+		Grava_Resultados.grava_arquivo("LVQ_"+numero_neuronios_classe+"neuronios_"+numero_epocas+"epocas", lvq.get_saidas(), confusao, numero_epocas);
 	}
 	
 	/*

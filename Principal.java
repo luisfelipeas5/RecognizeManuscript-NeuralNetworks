@@ -249,12 +249,12 @@ public class Principal {
 			
 			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		}
-		
+		/*
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
 		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios, 
 				numero_neuronios_escondidos, modo_treinamento, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
-		
+		*/
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 				numero_neuronios_classe, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);

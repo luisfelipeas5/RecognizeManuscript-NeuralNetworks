@@ -1,3 +1,7 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import Jama.Matrix;
 import edu.umbc.cs.maple.utils.*;
 // http://www.seas.upenn.edu/~eeaton/software/Utils/javadoc/edu/umbc/cs/maple/utils/JamaUtils.html
@@ -23,6 +27,11 @@ public class Pre_Processamento{
 				}
 			}
 		}
+		
+		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(dados);
+		Double[] classes=indices_instancias_classe_teste.keySet().toArray( new Double[0]);
+		Arrays.sort(classes);
+		double intervalo = classes[1] - classes[0];
 		
 		aux = (Matrix)resultado.clone();
 		
