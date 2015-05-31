@@ -2,31 +2,37 @@ import Jama.Matrix;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class LVQ extends Rede{
 	
-	double[][] vetores_de_entrada;	// dados de entrada
-	double[] classe_alvo;			// vetor que guarda as classes das instancias (de entrada)
-	int numero_de_instancias;		// vetores_de_entrada[i]
-	int dimensao;					// da entrada
-	int numero_de_classes;			// alvo, pode ser assumido como 10!!!
+	/* Atributos de entrada */
+	double[][] vetores_de_entrada;	// Os dados de entrada serao armazenadas nessa matriz
+	double[] classe_alvo;			// Vetor que guarda as classes das instancias (de entrada), ou a saida desejada
+	int numero_de_instancias;		// Quantidade de linhas da matriz de entrada (numero de entradas)
+	int dimensao;					// Quantidade de colunas da matriz de entradas (atributos)
+	int numero_de_classes;			// Quantidade de classes possiveis para classificacao (no caso do EP, 10)
 	
-	double[][]pesos;				// aleatorio e sera passado pela classe treinamento
-	double[] rotulo_pesos;			// classes dos vetores prototipos
-	int numero_neuronios_saida;		// vetores prototipos para cada classe
-	double taxa_de_aprendizado;		// definir
-	int neuronio_ganhador;			// indice do vetor da classe ganhadora
+	/* Atributos relacionados aos pesos */
+	double[][]pesos;				// Pesos que sao passados pela classe Treinamento (cada linha representa um neurônio)
+	double[] rotulo_pesos;			// Classes dos neuronios (onde cada linha de pesos[][] tem sua classe na mesma linha em rotulo_pesos[])
+	
+	/* Parametros e atributos para o funcionamento da rede */
+	int numero_neuronios_saida;		// Quantidade de neuronios (vetores prototipos) para cada classe
+	double taxa_de_aprendizado;		// Taxa que determina a regulacao de convergencia
+	int neuronio_ganhador;			// Variavel que guarda o indice do neuronio ganhador (dentre todos os vetores)
 	double[] distancia_euclidiana;	// conterah as distancias de uma entrada em relacao aos neuronios
 	
-	boolean necessiadade_atualizar_pesos=true;
+	boolean necessidade_atualizar_pesos = true;	// Controle da classe Treinamento.java 
 	
+	/* Construtor da rede LVQ 
+	 * Estende a classe abstrata rede, que tambem possue construtor */
 	public LVQ(int numero_neuronios_classe, double taxa_de_aprendizado, double[] classes){	
 		super(numero_neuronios_classe);
 		this.numero_neuronios_saida = numero_neuronios_classe;
 		this.taxa_de_aprendizado = taxa_de_aprendizado;
 		this.numero_de_classes = classes.length;
 		
+		/* Os rotulos sao inicializados de acordo com a quantidade de neuronios para cada classe */
 		Arrays.sort(classes);
 		this.rotulo_pesos=new double[numero_neuronios_classe*classes.length];
 		int j=0;
@@ -38,7 +44,8 @@ public class LVQ extends Rede{
 		}
 	}
 	
-	/* As matrizes de entrada e saida desejada sÃ£o transformadas em matrizes "normais" do java */
+	/* As matrizes de entrada e saida desejada sao copiadas para os atributos desta classe
+	 * As copias sao realizadas por conveniencia (e familiarizacao com java)  */
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
 		this.numero_de_instancias = entrada.getRowDimension();
@@ -46,19 +53,16 @@ public class LVQ extends Rede{
 		this.classe_alvo = saida_desejada.getRowPackedCopy();
 	}
 	
-	/* 
-	 * Na LVQ, a matriz de pesos, que eh a matriz onde cada linha corresponde 
-	 * a um vetor prototipo (neuronio) sera passado como parametro 
-	 */
+	/* Os vetores prototipos (ou neuronios) sao dados para a rede */ 
 	void set_pesos (Matrix pesos_a, Matrix pesos_b){
 		this.pesos = pesos_a.getArrayCopy();
 	} 
 	
 	void set_modo_treinamento (int modo_treinamento){
-		// Nao eh utilizado na LVQ
+		// Utiliza-se apenas na rede MLP
 	} 
 	
-	/* Distancia Euclidiana sera utilizada no EP */
+	/* Metodo que calcula a Distancia Euclidiana, que sera utilizada no EP */
 	public double distancia_euclidiana(double[] vetor1, double[] vetor2){
 		double distancia =0;
 		for(int j=0;j<dimensao;j++){
@@ -67,56 +71,45 @@ public class LVQ extends Rede{
 		return Math.sqrt(distancia);
 	}
 	
-	/* A matriz de pesos tem o numero de linhas igual ao numero de neuronios de saida
-	e numero de colunas igual ao numero de atributo, ou seja, a dimensao das entrasas */
-	public void inicializa_pesos(){	
-		pesos = new double[numero_neuronios_saida*numero_de_classes][dimensao];
-		Random rd = new Random();
-		for(int i = 0; i<numero_neuronios_saida*numero_de_classes; i++){
-			for(int j = 0; j<dimensao; j++){
-				pesos[i][j] = rd.nextDouble();
-			} 	
-		}
-	}
-	
 	/* Imprime a matriz de pesos */
 	void imprime_matriz_de_pesos(){
 		for(int x=0; x < numero_neuronios_saida*numero_de_classes; x++){    
 			for(int y=0; y < dimensao; y++){
-                //System.out.print(pesos[x][y]+"\t");
+                System.out.print(pesos[x][y]+"\t");
             }
-            //System.out.println();
+            System.out.println();
         }
 	} 
 	
 	/* Imprime a classe de cada vetor prototipo (neuronio) */
-	
 	void imprime_rotulos_dos_pesos(){
 		for (int y = 0; y < rotulo_pesos.length; y++){
 			System.out.println(rotulo_pesos[y]);
 		}	
 	}
 	
-	/* A constante pode ser trocada, porem como visto em aula, 0.9 eh um bom numero
-	 * Funcoes tambem podem ser utilizadas para o decrescimento da taxa */
+	/* Metodo responsavel pela reducao da taxa de aprendizado
+	 * A diminuicao ocorre no final de cada epoca do treinamento da rede */
 	public double diminui_taxa_de_aprendizado(double taxa_de_aprendizado_atual){
 		double taxa_atualizada;
-		taxa_atualizada = taxa_de_aprendizado_atual*0.99999;
+		taxa_atualizada = taxa_de_aprendizado_atual*0.9999;
 		return taxa_atualizada;
 	}
 
-	/* Retornar o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador 
-	 * nao era da mesma classe que a instancia dividido pelo numero de instancias
-	 * Aqui eh feito a primeira epoca da lvq, no treinamento eh adicionado apenas um laco para a quantidade de epocas desejadas */
+	/* Retorna o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador 
+	 * nao era da mesma classe que a instancia dividido pelo numero de instancias.
+	 * Nesse metodo, eh feito uma epoca da rede LVQ, seu treinamento eh controlado pela classe
+	 * Treinamento.java */
 	double get_erro(){	
-		double contador_de_erros = 0;
-		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];//matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo
+		double contador_de_erros = 0;	// Sera retornado ao final de uma epoca
 		
-		/* Passo 1 - Para cada vetor de entrada, executa os passos 3 e 4 */
-		//System.out.println("####Iterando sobre todas as instancias");
+		/* Matriz que guardarah as distancias de uma instancia em relacao a cada vetor prototipo */
+		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];
+		
+		/* Passo 1 - Para cada vetor de entrada, executa os proximos dois passos (3 e 4) */
 		for(int k = 0; k < numero_de_instancias; k++){	
-			/* Passo 2 - Encontrar o vetor (neuronio) de saida tal que a distancia seja minima */
-			
+
+			/* Passo 2 - Encontrar o vetor (neuronio) de saida tal que a distancia seja a menor */
 			neuronio_ganhador = 0;
 			for(int i = 0; i< numero_neuronios_saida*numero_de_classes; i++){
 				distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
@@ -127,21 +120,18 @@ public class LVQ extends Rede{
 				}
 			}
 		
-			/*
-			 * Se os pesos devem ser atualizados (conjunto de entradas eh o conjunto de treinamento)
-			 *  (nao se deve atualizar os peses quando temos o conjunto de validacao como conjunto de entradas):
+			/* Se os pesos devem ser atualizados (isto eh, se o conjunto de entradas for o conjunto de treinamento), atualiza.
+			 * Nao ha atualizacao de pesos quando temos o conjunto de validacao como conjunto de entradas).
 			 */
-			if(necessiadade_atualizar_pesos) {
-				/* Passo 3 - Alterando os pesos analisando a classe definida. Sao aplicados as regras de aprendizado. A soma ocorre quando 
-				a classificacao sugerida pela LVQ eh correta (o vetor resultante da operaÃ§Ã£o estÃ¡ situado entre o vetor protÃ³tipo e o vetor
-				de dados, ou seja, houve a movimentaÃ§Ã£o do vetor protÃ³tipo na direÃ§Ã£o do dado). JÃ¡ a subtracao ocorre quando a classificacao
-				sugerida eh incorreta (tendo efeito contrario) e o contador de erros eh incrementado */
+			if(necessidade_atualizar_pesos) {
 				
+				/* Passo 3 - Alterando os pesos analisando a classe definida. Sao aplicados as regras de aprendizado. 
+				 * A soma ocorre quando a classificacao sugerida pela LVQ eh correta (o vetor resultante da operacaoo
+				 *  esta situado entre o vetor prototipo e o vetor de dados, ou seja, houve a movimentacao do vetor 
+				 *  prototipo na direcaoo do dado). Ja a subtracao ocorre quando a classificacao sugerida eh incorreta
+				 *  (tendo efeito contrario) e o contador de erros eh incrementado */
 				//imprime_rotulos_dos_pesos();
-				//System.out.println("k="+k+" classe_alvo.length="+classe_alvo.length);
-				//System.out.println("neuronio_ganhador="+neuronio_ganhador+ "rotulo_pesos="+rotulo_pesos.length);
-				
-				if(classe_alvo[k] == rotulo_pesos[neuronio_ganhador]){	// Preciso colocar os rotulos dos pesos
+				if(classe_alvo[k] == rotulo_pesos[neuronio_ganhador]){	// Compara a classe da entrada com a do neuronio
 					//System.out.println("Acertou!!");
 					for(int a = 0; a < dimensao; a++){
 						pesos[neuronio_ganhador][a] = pesos[neuronio_ganhador][a] + (taxa_de_aprendizado * (vetores_de_entrada[k][a] - pesos[neuronio_ganhador][a])); 
@@ -155,13 +145,13 @@ public class LVQ extends Rede{
 				}
 			}
 		}
-		//System.out.println("####Instancias iteradas");
-		if(necessiadade_atualizar_pesos) {
-			/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante (sendo linear) ou por meio de uma funcao */
-			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado);
-			//System.out.println("Taxa Aprendizado="+taxa_de_aprendizado); 
+		
+		if(necessidade_atualizar_pesos) {
+			
+			/* Reduzir a taxa de aprendizado, pode ser por meio de uma constante ou por meio de uma funcao */
+			taxa_de_aprendizado = diminui_taxa_de_aprendizado(taxa_de_aprendizado); 
 		}
-		//System.out.println("###Termino do get_erro");
+		
 		return contador_de_erros/((double)vetores_de_entrada.length);
 	}
 	
@@ -169,6 +159,7 @@ public class LVQ extends Rede{
 	Matrix get_saidas(){
 		double[] saidas_da_rede = new double[numero_de_instancias];
 		
+		/* Mesma sequencia de passos do get_saida(), porem nao possui as atualizacoes */
 		int neuronio_ganhador = 0;
 		distancia_euclidiana = new double[numero_neuronios_saida*numero_de_classes];	
 		for(int k = 0; k < numero_de_instancias; k++){			
@@ -177,7 +168,6 @@ public class LVQ extends Rede{
 				distancia_euclidiana[i] = distancia_euclidiana(pesos[i] ,vetores_de_entrada[k]);
 				
 				/* A classe do neuronio ganhador eh colocada em uma matriz, sendo retornada */
-				
 				if(i!= 0){
 					if(distancia_euclidiana[i]<distancia_euclidiana[neuronio_ganhador]){
 						neuronio_ganhador = i;
@@ -191,29 +181,29 @@ public class LVQ extends Rede{
 
 		return saidas;
 	}
-	/*
-	 * Diminui o numero de neuronios que cada classe tem, de acordo com um numero ideal de neuronios
+	
+	/* Diminui o numero de neuronios que cada classe possui, de acordo com um numero ideal de neuronios
 	 * definido como parametro. Os neuronios retirados sao aqueles que sao menos ativados dentre os
-	 * que sao daquela classe em questa passada como parametro.
-	 */
+	 * que sao daquela classe em questa passada como parametro. */
 	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe) {
 		
-		//Obtem-se os indices dos pesos que sao referentes a classe que sera efetuado o corte
+		/*Obtem-se os indices dos pesos que sao referentes a classe que sera efetuado o corte */
 		List<Integer> indice_neuronios_classe=new ArrayList<Integer>();
 		for (int indice_peso = 0; indice_peso < pesos.length; indice_peso++) {
 			if(rotulo_pesos[indice_peso]==classe) {
 				indice_neuronios_classe.add(indice_peso);
 			}
 		}
-		//Armazena quantas vezes cada um dos neuronios foi o vencedor
+
+		/* Armazena a quantidade de vezes em que cada um dos neuronios foi o vencedor */
 		int[] vezes_ganhador=new int[indice_neuronios_classe.size()];
-		/*
-		 * Cada instancia, que tem como saida desejada igual a classe para corte, eh jogada na rede para
-		 * calcular o neuronio ganhador
-		 */
+		
+		/* Cada instancia, que tem como saida desejada igual a classe para corte, eh jogada na
+		 * rede para calcular o neuronio ganhador*/
 		for(int indice_instancia=0; indice_instancia<entradas_classe.getRowDimension(); indice_instancia++) {
 			int neuronio_ganhador=0;
-			//Calcula o neuronio ganhador dessa instancia
+			
+			/* Calcula o neuronio ganhador dessa instancia */
 			double[] distancia_euclidiana=new double[indice_neuronios_classe.size()];
 			for(int i=0; i< indice_neuronios_classe.size(); i++){ 
 				int indice_peso=indice_neuronios_classe.get(i);
@@ -226,40 +216,42 @@ public class LVQ extends Rede{
 				}
 			}
 			
-			//Acrescentar o numero de vitorias do neuronio ganhador
+			/* Acrescentar o numero de vitorias do neuronio ganhador */
 			vezes_ganhador[neuronio_ganhador]+=1;
 		}
-		List<Integer> indice_neuronios_classe_exluidos=new ArrayList<Integer>();
-		//Seleciona os indices na matriz de pesos dos pesos que serao excluidos
+		List<Integer> indice_neuronios_classe_excluidos=new ArrayList<Integer>();
+		
+		/* Seleciona os indices na matriz de pesos, que serao excluidos */
 		for (int indice_peso_i = 0; indice_peso_i < vezes_ganhador.length; indice_peso_i++) {
-			int numero_neuronios_mais_vencedores=0; //numero de neuronio com mais vitorias do que esse neuronio
+			int numero_neuronios_mais_vencedores=0; // numero de neuronio com mais vitorias do que esse neuronio
 			for (int indice_peso_j = 0; indice_peso_j < vezes_ganhador.length; indice_peso_j++) {
 				if(vezes_ganhador[indice_peso_i]<=vezes_ganhador[indice_peso_j]) {
 					numero_neuronios_mais_vencedores+=1;
 				}
 			}
-			//Se o numero de neuronios mais vencedores que ele for maior do que a quantidade
-			//ideal de neuronios, esse peso eh classificado como exlcluido
+			
+			/* Se o numero de neuronios mais vencedores que o neuronio iterado no primeiro laco
+			 * for maior do que a quantidade ideal de neuronios, esse peso eh classificado como excluido */
 			if(numero_neuronios_mais_vencedores > numero_neuronio_ideal ) {
-				indice_neuronios_classe_exluidos.add( indice_neuronios_classe.get(indice_peso_i) );
-				if(indice_neuronios_classe_exluidos.size()==(indice_neuronios_classe.size()-numero_neuronio_ideal)) {
+				indice_neuronios_classe_excluidos.add( indice_neuronios_classe.get(indice_peso_i) );
+				if(indice_neuronios_classe_excluidos.size()==(indice_neuronios_classe.size()-numero_neuronio_ideal)) {
 					break;
 				}
 			}
 		}
 		
-		/*
-		 * Faz-se a atualizacao da matriz de pesos, deletando aqueles neuronios que foram marcados para serem
-		 * excluidos
-		*/
-		int numero_linhas_novos_pesos=pesos.length - ( indice_neuronios_classe_exluidos.size());
+		/* Faz-se a atualizacao da matriz de pesos, deletando aqueles 
+		 * neuronios que foram marcados para serem excluidos */
+		int numero_linhas_novos_pesos=pesos.length - ( indice_neuronios_classe_excluidos.size());
 		double[][] pesos_apos_corte=new double[numero_linhas_novos_pesos][pesos[0].length];
 		double[] rotulos_apos_corte=new double[numero_linhas_novos_pesos];
 		int linha_vazia_novos_pesos=0;
 		for (int i = 0; i < pesos.length; i++) {
-			//Se o indice nao estiver na lista de excluidos
-			if( ! indice_neuronios_classe_exluidos.contains(i) ) {
-				//adiciona esse pesos a matriz nova de pesos
+			
+			/* Se o indice nao estiver na lista de excluidos */
+			if( ! indice_neuronios_classe_excluidos.contains(i) ) {
+				
+				/* Adiciona esse pesos a matriz nova de pesos */
 				rotulos_apos_corte[linha_vazia_novos_pesos]=rotulo_pesos[i];
 				for (int j = 0; j < pesos[0].length; j++) {
 					pesos_apos_corte[linha_vazia_novos_pesos][j]=pesos[i][j];
