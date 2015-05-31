@@ -244,6 +244,7 @@ public class MLP extends Rede{
 				taxa_aprendizado = calcula_taxa_aprendizado(erros.get(erros.getRowDimension()-1,0), erros.getRowDimension()-1, 4);
 			}
 		}
+		this.alpha = taxa_aprendizado;
 		return erro_quadrado_medio;
 	}
 	
