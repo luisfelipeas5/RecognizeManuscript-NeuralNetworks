@@ -115,6 +115,8 @@ public class Treinamento {
 			System.out.format("\nEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f\n", (epoca_atual+1), erro_total_treinamento, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
+			//System.out.println("Parando na primeira época!");
+			//System.exit(0);
 		}
 		
 		/*
