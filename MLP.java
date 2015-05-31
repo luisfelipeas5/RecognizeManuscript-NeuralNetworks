@@ -7,16 +7,13 @@ import java.util.LinkedList;
 //Instrumentos matematicos: 
 import java.lang.Math; 
 
+/**
+* 
+*@author Antonio 
+*/
+
+/** Classe usada para implementar a rede MLP (Multilayer Perceptron).*/
 public class MLP extends Rede{
-	/*Durante o processo "propagation", primeiro multiplicamos a matriz de entrada pela primeira matriz
-	de pesos. Ao resultado, aplicamos uma funcao de ativacao (no caso deste ep, eh a funcao sigmoide).
-	A matriz existente antes da aplicacao da funcao foi colocada na posicao 0 do vetor semi_results
-	enquanto que a matriz resultante desta aplicacao foi salva na posicao 1 do vetor saidas_rede. Alem 
-	disso, a matriz correspondente a saidas_rede[0] eh multiplicada pela segunda matriz de pesos e uma 
-	nova matriz eh obtida. Essa nova matriz eh colocada na posicao 1 de semi_results. Ao aplicar uma
-	nova funcao de ativacao nessa matriz (que poderia ser linear, mas, em vez disso, foi utilizada uma 
-	nova sigmoide), obtem-se a matriz correspondente a posicao 1 do vetor saidas_rede*/
-	
 	boolean treina_padrao_padrao; 
 	boolean treina_batelada;
 	boolean atualiza_alpha;
@@ -51,6 +48,8 @@ public class MLP extends Rede{
 		this.atualiza_alpha = atualiza_alpha; 
 	}
 	
+	/** Retorna uma representacao textual da rede, informando o numero de neuronios, o tipo de treinamento, a taxa de
+	aprendizado inicial e se esta serah atualizada ou nao.*/
 	public String toString() {
 		String retorno = "Rede neural MLP com " +super.numero_neuronios +" neuronios escondidos, atualizacao ";
 		if (this.treina_padrao_padrao && !this.treina_batelada) {
@@ -67,19 +66,18 @@ public class MLP extends Rede{
 		return retorno; 
 	}
 	
-	//Funcao de sigmoide (logistica)
+	/** Funcao sigmoide (logistica) */
 	public double sigmoide(double x) {
 		return 1.0/(1.0+Math.exp((-1.0)*x)); 
 	}
 	
-	//Derivada da funcao sigmoide
+	/** Derivada da funcao sigmoide */
 	public double sigmoide_linha (double x) { 
 		return sigmoide(x)*(1.0-sigmoide(x)); 
 	}
 	
-	/*Metodo que aplica a funcao de ativacao a cada elemento de uma matriz */
+	/** Aplica a funcao de ativacao (sigmoide) a cada elemento da matriz de saida da segunda parte da matriz */
 	public Matrix g(Matrix x) {
-		//return x;
 		Matrix x_apf=new Matrix(x.getRowDimension(), x.getColumnDimension());
 		for (int i = 0; i < x.getRowDimension(); i++) {
 			for (int j = 0; j < x.getColumnDimension(); j++) {
@@ -90,44 +88,44 @@ public class MLP extends Rede{
 		return x_apf; 
 	}
 	
+	/** Aplica a derivada da funcao de ativacao a cada elemento da matriz de saida da segunda parte da matriz */
 	public Matrix g_linha(Matrix x) {
 		Matrix resultado=new Matrix(x.getRowDimension(), x.getColumnDimension());
 		for (int i = 0; i < x.getRowDimension(); i++) {
 			for (int j = 0; j < x.getColumnDimension(); j++) {
 				double novo_elemento= sigmoide_linha(x.get(i, j));
-				//double novo_elemento=1;
 				resultado.set(i, j, novo_elemento);
 			}
 		}
 		return resultado;
 	}
 	
-	/*Metodo que aplica a funcao de ativacao a cada elemento de uma matriz */
+	/** Aplica a funcao de ativacao (sigmoide) a cada elemento da matriz de saida da primeira parte da matriz */
 	public Matrix f(Matrix x) {
-		//return x;
 		Matrix x_apf=new Matrix(x.getRowDimension(), x.getColumnDimension());
 		for (int i = 0; i < x.getRowDimension(); i++) {
 			for (int j = 0; j < x.getColumnDimension(); j++) {
 				double novo_valor=sigmoide(x.get(i, j));
-				//double novo_valor=x.get(i, j);
 				x_apf.set(i, j, novo_valor);
 			}
 		}
 		return x_apf; 
 	}
 	
+	/** Aplica a derivada da funcao de ativacao a cada elemento da matriz de saida da segunda parte da matriz */
 	public Matrix f_linha(Matrix x) {
 		Matrix resultado=new Matrix(x.getRowDimension(), x.getColumnDimension());
 		for (int i = 0; i < x.getRowDimension(); i++) {
 			for (int j = 0; j < x.getColumnDimension(); j++) {
 				double novo_elemento= sigmoide_linha(x.get(i, j));
-				//double novo_elemento=1;
 				resultado.set(i, j, novo_elemento);
 			}
 		}
 		return resultado;
 	}
 	
+	/** Calcula a saida da rede para uma dada instancia (que corresponde a uma linha da matriz de entrada e da 
+	matriz de saida desejada). Alem disso, recebe como parametro as matrizes de pesos iniciais. */
 	Matrix calcula_saida(Matrix entrada, Matrix saida_desejada, Matrix pesos_a, Matrix pesos_b) {
 		this.entrada_instancia_atual = entrada;
 		this.saida_instancia_atual = saida_desejada; 
@@ -148,7 +146,7 @@ public class MLP extends Rede{
 		saidas_rede[1] = Y;
 		Matrix e = saida_desejada.minus(Y);
 		Matrix erro_quadrado=new Matrix(e.getRowDimension(), e.getColumnDimension());
-		//Elevar erros dessa instancia ao quadrado
+		
 		for (int i = 0; i < e.getRowDimension(); i++) {
 			for (int j = 0; j < e.getColumnDimension(); j++) {
 				double erro=e.get(i, j);
@@ -159,6 +157,8 @@ public class MLP extends Rede{
 		return Y; 
 	}
 	
+	/** Atualiza as matrizes de pesos baseando-se no erro obtido em uma instancia especifica e
+	empregando uma taxa de aprendizado dada.*/
 	public void atualiza_pesos (int instancia, double erro, double taxa_aprendizado) {
 		this.dJdB = new Matrix (pesos_b.getRowDimension(), pesos_b.getColumnDimension());  
 		this.dJdA = new Matrix (pesos_a.getRowDimension(), pesos_a.getColumnDimension());
@@ -171,6 +171,8 @@ public class MLP extends Rede{
 		pesos_b=novos_pesos_b;
 	}
 	
+	/** Dadas duas matrizes, esse metodo extrai os elementos de cada uma delas e os posiciona linearmente 
+	em um vetor, cujo comprimento eh igual a soma da quantidade de elementos existente nas duas matrizes. */
 	Matrix calcula_vetor (Matrix A, Matrix B) {
 		Matrix a = new Matrix (A.getRowPackedCopy(), A.getRowPackedCopy().length);
 		Matrix b = new Matrix (B.getRowPackedCopy(), B.getRowPackedCopy().length); 
@@ -180,7 +182,10 @@ public class MLP extends Rede{
 		return vetor; 
 	}
 	
-	/**/
+	/** Retorna o erro quadratico medio, apos aplicar na rede um dos tipos de treinamento possiveis (padrao a padrao). No caso do 
+	treinamento padrao a padrao, as matrizes de pesos sao atualizadas a cada instancia; no caso do treinamento em batelada, as 
+	matrizes de pesos sao atualizadas a cada epoca. Em nossa implementacao, a taxa de aprendizado usada no treinamento pode ser 
+	atualizada ou nao.*/
 	public double get_erro() {
 		double taxa_aprendizado = this.alpha;
 		//saidas da epoca
@@ -248,6 +253,8 @@ public class MLP extends Rede{
 		return erro_quadrado_medio;
 	}
 	
+	/** Calcula as matrizes de gradiente dJdA e dJdB correspondentes a matrizes A e B dadas, com base no erro relacionado ao processamento
+	da rede para uma instancia especifica. */
 	void calcula_gradientes_A_B (Matrix A, Matrix B, Matrix dJdA, Matrix dJdB, double erro, int indice_instancia) {
 		Matrix f_linha_YIN = f_linha(YINs.getMatrix(indice_instancia, indice_instancia, 0, YINs.getColumnDimension()-1));
 		//Calculo de dJdB
@@ -281,6 +288,7 @@ public class MLP extends Rede{
 		}
 	}
 	
+	/** Obtem uma matriz que contem todas as saidas da rede em uma dada epoca. */
 	public Matrix get_saidas () {
 		Matrix saidas_mlp=new Matrix(saidas_desejadas.getRowDimension(), saidas_desejadas.getColumnDimension());
 		for (int i = 0; i < saidas_mlp.getRowDimension(); i++) {
@@ -293,11 +301,14 @@ public class MLP extends Rede{
 		return saidas_mlp;
 	}
 	
+	/** Passa para a rede MLP as matrizes de pesos iniciais */
 	void set_pesos (Matrix pesos_a, Matrix pesos_b) {
 		this.pesos_a = pesos_a; 
 		this.pesos_b = pesos_b; 
 	}
 	
+	/** Transmite para a rede as matrizes que contem as entradas e as correspondentes saidas desejadas sobre as quais o
+	treinamento da rede acontecera durante a epoca.*/
 	void set_problema (Matrix entrada, Matrix saida_desejada) {
 		this.entradas = entrada; 
 		this.saidas_desejadas = saida_desejada; 
@@ -305,7 +316,8 @@ public class MLP extends Rede{
 		this.EQM = 0.0; 
 		this.saidas_todas_instancias = new LinkedList<Matrix>();  
 	}
-		
+	
+	/**Informa para a rede qual o modo de treinamento desejado: padrao a padrao (1) ou batelada (2)*/	
 	void set_modo_treinamento(int modo_treinamento) {
 		if (modo_treinamento == 1) { 
 			this.treina_batelada = false; 
@@ -316,7 +328,11 @@ public class MLP extends Rede{
 			this.treina_padrao_padrao = false; 
 		}
 	}
-		
+	
+	/** No caso da taxa de aprendizado poder ser atualizada, esse metodo calcula a melhor taxa de aprendizado dentro de um intervalo
+	especificado entre os limiares taxa_inferior e taxa_superior, atraves do metodo de bissecao. Tanto o erro como o indice da instancia 
+	sao requisitados pelo metodo que calcula as novas matrizes de gradientes. Alem disso, o numero de iteracoes maximo desejado para o
+	metodo de bissecao tambem eh passado por parametro.*/
 	double calcula_taxa_aprendizado (double erro, int indice, int num_iteracoes) {
 		double taxa_inferior = 0.0; 
 		double taxa_superior = 1.0; 
