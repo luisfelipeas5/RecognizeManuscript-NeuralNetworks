@@ -5,31 +5,41 @@ import java.util.Map;
 import java.util.Random;
 import Jama.Matrix;
 
+/**
+ * A classe Treinamento eh responsavel pelo controle de epocas do treinamento da rede passada como
+ * parametro. Durante as epocas, guarda-se os erros referentes de treinamento e de validacao para
+ * comparacao futura. Alem disso eh responsavel por fazer o corte da LVQ, caso a rede do objeto seja
+ * uma.
+ */
 public class Treinamento {
-	/*
-	 * A classe treinamento eh responsavel pelo controle de epocas do treinamento da rede passada como
-	 * parametro. Durante as epocas, guarda-se os erros referentes de treinamento e de validacao para
-	 * comparacao futura. Alem disso eh responsavel por fazer o corte da LVQ, caso a rede do objeto seja
-	 * uma.
-	 */
 	Rede rede;
-	Matrix pesos_a;
-	Matrix pesos_b;
 	
+	/**
+	 * Este construtor define qual rede sera treinada 
+	 * 
+	 */
 	public Treinamento(Rede rede) {
 		this.rede=rede;
 	}
 
-	/*
-	 * Esse método treina a rede setada para o objeto
-	 * passando como parametro o conjunto de dados para treinamento e para validacao,
-	 * e utiliza, como condicao de parada do treinamento, um numero limite de epocas 
-	 * e indica qual epoca seria ideal para parar o treinamento. Essa epoca ideal seria quando
-	 * o erro de treinamento e erro da validacao sao iguais em determinada epoca. 
-	 * O retorno do metodo eh uma matriz coluna com os erros quadraticos da rede 
-	 * calculados pela propria rede em cada epoca que houve treinamento.
-	 * O metodo de treinamento (batelada ou padrao a padrao) esta definido internamente na Rede,
+	/**
+	 * Esse método treina a rede do objeto e recebe como parametro:
+	 * @param entradas_treinamento Matrix - conjunto de instancias de entradas do conjunto de treinamento.
+	 * cada linha eh uma instancia e cada coluna eh um atributo de cada entrada
+	 * @param saidas_desejadas_treinamento Matrix - cada linha representa a saida desejada para
+	 * cada instancia de entrada do conjunto treinamento
+	 * @param entradas_validacao Matrix - conjunto de instancias de entradas do conjunto de validacao.
+	 * cada linha eh uma instancia e cada coluna eh um atributo de cada entrada
+	 * @param saidas_desejadas_validacao Matrix - cada linha representa a saida desejada para
+	 * cada instancia de entrada do conjunto validacao
+	 * @param numero_limite_epocas int - quantidade limite de epocas que serve como condicao de 
+	 * parada do treinamento
+	 * @return erros_epocas Matrix - uma matriz coluna com os erros da rede calculados pela propria rede
+	 * em cada epoca que houve treinamento.
+	 * 	O metodo de treinamento (batelada ou padrao a padrao) esta definido internamente na Rede,
 	 * e foi decidido quando esta foi instanciada
+	 * 	Esse metodo indica qual epoca seria ideal para parar o treinamento. Essa epoca ideal seria quando
+	 * o erro de treinamento e erro da validacao sao iguais em determinada epoca.
 	 */
 	public Matrix treina(Matrix entradas_treinamento, Matrix saidas_desejadas_treinamento,
 						Matrix entradas_validacao, Matrix saidas_desejadas_validacao, 
@@ -87,10 +97,8 @@ public class Treinamento {
 			 * Caso a rede seja uma MLP, a epoca ideal para parada eh guardada quando o
 			 * erro de treinamento for menor ou igual ao erro de validacao
 			 */
-			if(eh_mlp) {
-				if(erro_total_treinamento<=erro_total_validacao) {
-					epoca_ideal=epoca_atual;
-				}
+			if(erro_total_treinamento<=erro_total_validacao) {
+				epoca_ideal=epoca_atual;
 			}
 			//O conjunto de entradas sao embaralhadas antes de treinar a rede
 			Holdout.embaralhar_conjuntos(entradas_treinamento, saidas_desejadas_treinamento);
@@ -115,8 +123,6 @@ public class Treinamento {
 			System.out.format("\nEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f\n", (epoca_atual+1), erro_total_treinamento, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
-			//System.out.println("Parando na primeira época!");
-			//System.exit(0);
 		}
 		
 		/*
@@ -165,7 +171,7 @@ public class Treinamento {
 		return erros_epocas;
 	}
 	
-	/*
+	/**
 	 * Esse metodo, dado uma matriz pesos de dimensoes quaisquer, preenche pesos com valores aleatorios
 	 */
 	public static void gera_pesos_aleatorios(Matrix pesos, double intervalo_pesos_aleatorios) {
