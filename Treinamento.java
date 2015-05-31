@@ -112,7 +112,7 @@ public class Treinamento {
 			erros_epocas.set(epoca_atual, 1, erro_total_validacao);
 			
 			//Status do treinamento:
-			System.out.format("\nEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f", (epoca_atual+1), erro_total_treinamento, erro_total_validacao);
+			System.out.format("\nEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f\n", (epoca_atual+1), erro_total_treinamento, erro_total_validacao);
 			//Passou-se uma epoca!
 			epoca_atual+=1;
 		}
@@ -123,7 +123,6 @@ public class Treinamento {
 		 */
 		if(!eh_mlp) {
 			LVQ lvq=(LVQ)rede;
-			
 			/*
 			 * As classes existentes no conjunto de treinamento sao armazenadas e o indice referente
 			 * a cada instacia de entrada que corresponde a essa classe
@@ -141,7 +140,6 @@ public class Treinamento {
 				//Lista de indices da instancia de entrada do treinamento que corresponde aquela classe i
 				List<Integer> indices_classe=indices_instancias_classe_treinamento.get(classes[i]);
 				Iterator<Integer> iterator_indices_classe = indices_classe.iterator();
-				
 				/*
 				 * Cria um novo conjunto de dados para fazer o corte da LVQ. Esse conjunto
 				 * contera somente as entradas da classe iterada e as saidas da classe iterada
@@ -159,8 +157,9 @@ public class Treinamento {
 				lvq.corte_de_neuronios(numero_ideal_de_neuronios, classes[i], entradas_classe);
 			}
 		}
+		
 		System.out.println("\tEpoca ideal = "+epoca_ideal);
-		System.out.format("\tEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f\n", epoca_atual, erro_total_treinamento, erro_total_validacao);
+		System.out.format("\tEpoca = %d: Erro do treinamento = %.5f ; Erro da validacao = %.5f \n", epoca_atual, erro_total_treinamento, erro_total_validacao);
 		return erros_epocas;
 	}
 	
