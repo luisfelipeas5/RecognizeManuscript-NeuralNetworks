@@ -221,7 +221,7 @@ public class LVQ extends Rede{
 	 * definido como parametro. Os neuronios retirados sao aqueles que sao menos ativados dentre os
 	 * que sao daquela classe em questa passada como parametro.
 	 */
-	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe, Matrix saidas_desejadas_classe) {
+	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe) {
 		
 		//Obtem-se os indices dos pesos que sao referentes a classe que sera efetuado o corte
 		List<Integer> indice_neuronios_classe=new ArrayList<Integer>();
@@ -230,7 +230,6 @@ public class LVQ extends Rede{
 				indice_neuronios_classe.add(indice_peso);
 			}
 		}
-		
 		//Armazena quantas vezes cada um dos neuronios foi o vencedor
 		int[] vezes_ganhador=new int[indice_neuronios_classe.size()];
 		/*
@@ -255,20 +254,22 @@ public class LVQ extends Rede{
 			//Acrescentar o numero de vitorias do neuronio ganhador
 			vezes_ganhador[neuronio_ganhador]+=1;
 		}
-		
 		List<Integer> indice_neuronios_classe_exluidos=new ArrayList<Integer>();
 		//Seleciona os indices na matriz de pesos dos pesos que serao excluidos
-		for (int indice_peso_exluido = 0; indice_peso_exluido < vezes_ganhador.length; indice_peso_exluido++) {
+		for (int indice_peso_i = 0; indice_peso_i < vezes_ganhador.length; indice_peso_i++) {
 			int numero_neuronios_mais_vencedores=0; //numero de neuronio com mais vitorias do que esse neuronio
-			for (int j = indice_peso_exluido; j < vezes_ganhador.length; j++) {
-				if(vezes_ganhador[indice_peso_exluido]<vezes_ganhador[j]) {
+			for (int indice_peso_j = 0; indice_peso_j < vezes_ganhador.length; indice_peso_j++) {
+				if(vezes_ganhador[indice_peso_i]<=vezes_ganhador[indice_peso_j]) {
 					numero_neuronios_mais_vencedores+=1;
 				}
 			}
 			//Se o numero de neuronios mais vencedores que ele for maior do que a quantidade
 			//ideal de neuronios, esse peso eh classificado como exlcluido
 			if(numero_neuronios_mais_vencedores > numero_neuronio_ideal ) {
-				indice_neuronios_classe_exluidos.add( indice_neuronios_classe.get(indice_peso_exluido) );
+				indice_neuronios_classe_exluidos.add( indice_neuronios_classe.get(indice_peso_i) );
+				if(indice_neuronios_classe_exluidos.size()==(indice_neuronios_classe.size()-numero_neuronio_ideal)) {
+					break;
+				}
 			}
 		}
 		
@@ -278,13 +279,13 @@ public class LVQ extends Rede{
 		*/
 		int numero_linhas_novos_pesos=pesos.length - ( indice_neuronios_classe_exluidos.size());
 		double[][] pesos_apos_corte=new double[numero_linhas_novos_pesos][pesos[0].length];
-		double[] roulo_apos_corte=new double[numero_linhas_novos_pesos];
+		double[] rotulos_apos_corte=new double[numero_linhas_novos_pesos];
 		int linha_vazia_novos_pesos=0;
 		for (int i = 0; i < pesos.length; i++) {
 			//Se o indice nao estiver na lista de excluidos
 			if( ! indice_neuronios_classe_exluidos.contains(i) ) {
 				//adiciona esse pesos a matriz nova de pesos
-				roulo_apos_corte[i]=rotulo_pesos[i];
+				rotulos_apos_corte[linha_vazia_novos_pesos]=rotulo_pesos[i];
 				for (int j = 0; j < pesos[0].length; j++) {
 					pesos_apos_corte[linha_vazia_novos_pesos][j]=pesos[i][j];
 				}
@@ -292,6 +293,7 @@ public class LVQ extends Rede{
 			}
 		}
 		pesos=pesos_apos_corte;
+		rotulo_pesos=rotulos_apos_corte;
 	}
 	
 }

@@ -162,7 +162,7 @@ public class Holdout {
 			System.out.println("Classes de Treinamento -> Numero de Instancias");
 			while(iterator_classes_treinamento.hasNext()) {
 				Double valor=iterator_classes_treinamento.next();
-				System.out.format("%.2f -> %d",valor , indices_instancias_classe_treinamento.get(valor).size());
+				System.out.format("%.2f -> %d ",valor , indices_instancias_classe_treinamento.get(valor).size());
 			}
 	 		System.out.println();
 			
