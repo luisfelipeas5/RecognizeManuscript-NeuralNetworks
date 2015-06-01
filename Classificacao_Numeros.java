@@ -36,7 +36,7 @@ public class Classificacao_Numeros {
 		indices_instancias_classe=Holdout.contar_numero_de_instancias(saidas_desejadas_treinamento);
 	}
 	
-	/* -----------------------MLP----------------------------------------------
+	/**
 	 * Uma nova rede MLP eh criada com numero de neuronios e taxa de aprendizado (parametros).
 	 * Na instanciacao do novo objeto se define tambem se a taxa de aprendizado
 	 * ira ser atualizada durante o treinamento ou nao. Alem disso, o modo de treinamento (padrao a padrao=1 
@@ -73,8 +73,7 @@ public class Classificacao_Numeros {
 		
 	}
 	
-	/* -----------------------LVQ----------------------------------------------
-	 * Uma nova LVQ eh criada com numero de neuronios por classe e taxa de aprendizado inicial (parametros).
+	/** Uma nova LVQ eh criada com numero de neuronios por classe e taxa de aprendizado inicial (parametros).
 	 * Na instanciacao do novo objeto eh passado tambem quantas instancias existem por classe.
 	 * O numero_epocas eh a quantidade de epocas em que a rede será treinada
 	 */
@@ -113,7 +112,7 @@ public class Classificacao_Numeros {
 		Grava_Resultados.grava_arquivo("LVQ_"+numero_neuronios_classe+"neuronios_"+numero_epocas+"epocas", lvq.get_saidas(), confusao, numero_epocas);
 	}
 	
-	/*
+	/**
 	 * Esse metodo disponibiliza o grafico erro X epocas de uma determinada rede
 	 * 		- O numero de epocas eh passado como parametro;
 	 */
@@ -125,7 +124,7 @@ public class Classificacao_Numeros {
         grafico.setVisible(true);
 	}
 	
-	//Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All
+	/**Exibe a matriz de confusao de uma rede, usando os metodos One X One e One X All*/
 	public String[][] matriz_confusao(Rede rede) {
 		//Armazena os valores de classes existentes
 		Map<Double, List<Integer>> indices_instancias_classe_teste = Holdout.contar_numero_de_instancias(this.saidas_desejadas_teste);
@@ -896,8 +895,8 @@ public class Classificacao_Numeros {
 		return gravar;
 	}
 
+	/** Metodo de calculo de variancia de uma coluna baseado no metodo variancia_coluna da classe Pre_processamento */
 	private double variancia_uma_coluna(Matrix dados, int coluna){
-		// Metodo de calculo de variancia de uma coluna baseado no metodo variancia_coluna da classe Pre_processamento
 		// Foram necessarias algumas pequenas modificacoes para que pudesse ser utilizada corretamente para as matrizes one x one
 		// Dado que os valores para linha == coluna não são calculados, devido a natureza da matriz one x one
 		double medCol = 0.0;
@@ -916,8 +915,8 @@ public class Classificacao_Numeros {
 		return varCol;
 	}
 	
+	/** Metodo de calculo de media de uma coluna baseado no metodo media_coluna da classe Pre_processamento */
 	private static double media_uma_coluna(Matrix dados, int coluna){
-		// Metodo de calculo de media de uma coluna baseado no metodo media_coluna da classe Pre_processamento
 		// Foram necessarias algumas pequenas modificacoes para que pudesse ser utilizada corretamente para as matrizes one x one
 		// Dado que os valores para linha == coluna não são calculados, devido a natureza da matriz one x one
 		double medCol = 0.0;
@@ -927,6 +926,7 @@ public class Classificacao_Numeros {
 		return medCol;
 	}
 	
+	/** Metodo que adiciona bias a uma matriz de entrada*/
 	public static Matrix adiciona_bias(Matrix entradas_sem_bias) {
 		Matrix entradas;
 		//Adicionando o Bias
