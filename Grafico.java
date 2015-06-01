@@ -16,6 +16,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import Jama.Matrix;
 
+/** Classe usada para gerar os graficos de erro X epoca, usados para avaliar o desempenho de nossa rede */
 public class Grafico extends ApplicationFrame{
 	private static final long serialVersionUID = 1L;
 	String titulo;
@@ -51,6 +52,7 @@ public class Grafico extends ApplicationFrame{
     }
     */
     
+	/** Fornece os dados a fim de construir o grafico */
     private CategoryDataset setDados(Matrix dados) {
         
     	final DefaultCategoryDataset dados_dataset = new DefaultCategoryDataset();
@@ -70,7 +72,7 @@ public class Grafico extends ApplicationFrame{
     	return dados_dataset;
     }
     
-    
+    /** Gera o grafico propriamente dito*/
     private JFreeChart criaGrafico(final CategoryDataset dados) {
         
         final JFreeChart grafico = ChartFactory.createLineChart(
@@ -101,6 +103,7 @@ public class Grafico extends ApplicationFrame{
         return grafico;
     }
     
+	/** Metodo usado para testar a criacao de graficos. */
     public static void main(final String[] args) {
     	
     	double[][] demo_d = new double[3][200];
