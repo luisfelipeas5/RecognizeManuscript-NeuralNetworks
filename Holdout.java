@@ -11,16 +11,11 @@ import Jama.Matrix;
 
 public class Holdout {
 
-	/*
-	 * Esse metodo retorna uma matriz de conjunto de dados:
-	 * As linhas: 
-	 *  - a primeira linha se refere ao conjunto treinamento
-	 *  - a segunda linha se refere ao conjunto validacao
-	 *  - a terceira linha se refere ao conjunto de teste
-	 * As colunas:
-	 * 	- a primeira coluna se refere as entradas de cada conjunto
-	 * 	- a segunda coluna se refere as saidas desejadas de cada conjunto
-	 * Recebe como parametro o connjunto de entrada, o conjunto de saidas desejadas
+	/**
+	 * Esse metodo retorna uma matriz de conjunto de dados, onde a primeira linha se refere ao conjunto treinamento, 
+	 * a segunda linha se refere ao conjunto validacao e a terceira linha se refere ao conjunto de teste. Alem disso,
+	 * a primeira coluna se refere as entradas de cada conjunto e a segunda coluna se refere as saidas desejadas 
+	 * de cada conjunto. Recebe como parametro o connjunto de entrada, o conjunto de saidas desejadas
 	 * e uma estrutura que reune os valores de classe existentes no conjunto e o indice de cada instancia
 	 * de cada classe
 	 */
@@ -225,7 +220,7 @@ public class Holdout {
 		return conjuntos_dados;
 	}
 
-	/*
+	/**
 	 * Dado duas matrizes, o metodo troca as instancias de lugares para
 	 * embaralhar o conjunto de dados originais, utilizando um metodo Randomico
 	 */
@@ -247,7 +242,7 @@ public class Holdout {
 		}
 	}
 	
-	/*
+	/**
 	 * Esse metodo devolve uma lista que contem o numero de valores repetidos
 	 * de cada valor dentro de uma matriz de dados passada como argumento
 	 */
@@ -263,3 +258,4 @@ public class Holdout {
 		return indice_de_instancias;
 	}
 }
+
