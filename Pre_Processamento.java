@@ -4,10 +4,11 @@ import java.util.Map;
 
 import Jama.Matrix;
 import edu.umbc.cs.maple.utils.*;
+/**A classe Pre_Processamento eh composta por metodos que representam diferentes formas de pre-processar os dados de entrada*/
 // http://www.seas.upenn.edu/~eeaton/software/Utils/javadoc/edu/umbc/cs/maple/utils/JamaUtils.html
 // http://www.seas.upenn.edu/~eeaton/software.html
 public class Pre_Processamento{
-	
+	/**Codifica os dados de entrada de acordo com o criterio minmax*/	
 	public static Matrix codifica_minmax(Matrix dados){
 		// Pressupoe classes discretas que variam em intervalos unitarios = 1; ex: 1, 2, 3...
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
@@ -48,7 +49,7 @@ public class Pre_Processamento{
 		
 		return resultado;
 	}
-	
+	/**Normaliza os dados segundo o valor maximo dentre os existentes */
 	public static Matrix normaliza_max(Matrix dados){
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 	
@@ -64,7 +65,7 @@ public class Pre_Processamento{
 		}
 		return resultado;
 	}
-	
+	/**Normaliza os dados segundo o criterio minmax*/
 	public static Matrix normaliza_minmax(Matrix dados){
 		Matrix resultado = new Matrix(dados.getRowDimension(),dados.getColumnDimension());
 		
@@ -85,7 +86,7 @@ public class Pre_Processamento{
 		
 		return resultado;
 	}
-	
+	/**Normaliza os dados segundo o criterio sigmoidal */
 	public static Matrix normaliza_sigmoidal(Matrix dados){
 		double[] varCol = new double[dados.getColumnDimension()];
 		double[] medCol = new double[dados.getColumnDimension()];
@@ -107,7 +108,7 @@ public class Pre_Processamento{
 		
 		return resultado;
 	}
-	
+	/**Normaliza os dados segundo o criterio zscore*/
 	public static Matrix normaliza_zscore(Matrix dados){
 		
 		double[] medCol = new double[dados.getColumnDimension()];
@@ -130,14 +131,14 @@ public class Pre_Processamento{
 		
 		return resultado;
 	}
-	
+	/** Metodo cujo objetivo eh preencher uma matriz auxiliar apenas com as colunas que
+		possuem desvio padrao maior que o limite desejado.*/
 	public static Matrix remove_zeros(Matrix dados, int porcentagem){
 		/* Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
 		Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
 		int porcentagem = 100. Com isso, corte = numero de linhas das colunas. */
 		
-		/* O codigo abaixo serve para preencher a matrix aux apenas com as colunas que
-		possuem desvio padrao maior que o limite desejado.
+		/* 
 		As colunas com numero de zeros maior que o desejado sao "puladas", ou seja
 		nao sao copiadas para a matriz aux. A matriz aux possui as mesmas dimensoes
 		da matriz de dados fornecida. Isso pode ser constatado em sua inicializacao.
@@ -188,14 +189,14 @@ public class Pre_Processamento{
 		return resultado;
 	}
 	
+	/** O metodo tem como objetivo preencher uma matriz auxiliar apenas com as colunas que
+		possuem desvio padrao maior que o limite desejado.*/
 	public static Matrix remove_desvio_baixo(Matrix dados, double limiar){
 		/* Corte eh calculado a partir da porcentagem estipulada durante a chamada do metodo
 		Ex: Se deseja-se eliminar todas as colunas compostas 100% de zeros, basta passar
 		int porcentagem = 100. Com isso, corte = numero de linhas das colunas. */
 		
-		/* O codigo abaixo serve para preencher a matrix aux apenas com as colunas que
-		possuem desvio padrao maior que o limite desejado.
-		As colunas com desvio padrao maior que o limite sao "puladas", ou seja
+		/* 	As colunas com desvio padrao maior que o limite sao "puladas", ou seja
 		nao sao copiadas para a matriz aux. A matriz aux possui as mesmas dimensoes
 		da matriz de dados fornecida. Isso pode ser constatado em sua inicializacao.
 		 
@@ -244,6 +245,7 @@ public class Pre_Processamento{
 		return resultado;
 	}
 	
+	/**Metodo que retorna a variancia dos dados presentes em uma coluna*/
 	public static double[] variancia_coluna(Matrix dados){
 		double[] medCol = new double[dados.getColumnDimension()];
 		double[] auxCol = new double[dados.getColumnDimension()];
@@ -262,6 +264,7 @@ public class Pre_Processamento{
 		return varCol;
 	}
 	
+	/**Metodo que retorna a media dos dados presentes em uma coluna*/
 	public static double[] media_coluna(Matrix dados){
 		double[] medCol = new double[dados.getColumnDimension()];
 		
@@ -271,12 +274,13 @@ public class Pre_Processamento{
 		
 		return medCol;
 	}
-		
+	
+	/**Metodo que implementa a funcao sigmoidal */
 	public static double f_sigmoide(double x) {
 		return (1/( 1 + Math.pow(Math.E,(-1*x))));
 	}
 	
-	
+	/**Metodo que fora usado para testar o pre-processamento*/
 	public static void main(String[] args){
 		//Situacao_Problema sit = Leitura_Arquivo.obtem_dados(args[0]);
 		//Matrix demo = sit.get_entrada();
