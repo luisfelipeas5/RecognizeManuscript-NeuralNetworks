@@ -8,9 +8,10 @@ import java.io.Writer;
 
 import Jama.Matrix;
 
-
+/**Classe que possui a funcao de gerar um arquivo com os resultados da rede*/
 public class Grava_Resultados {
-	
+	/**Grava em um arquivo ".txt" de saida as respostas da rede, bem como as medidas de avalizacao e a epoca em que houve o termino 
+	da execucao */
 	public static void grava_arquivo(String nome_arquivo, Matrix resposta_rede, String[][] medidas_avaliacao, int epoca_parada){
 		String novaLinha = System.getProperty("line.separator");
 		
@@ -27,17 +28,6 @@ public class Grava_Resultados {
 			}
 			
 			writer.write(""+novaLinha+novaLinha);
-			
-			// Medidas de avaliacao agora somente no arquivo .csv
-			/*
-			writer.write("Medidas de avaliacao: "+novaLinha);
-			for (int i = 0; i < medidas_avaliacao.length; i++) {
-				if(medidas_avaliacao[0][i]!=null)
-				writer.write(medidas_avaliacao[0][i]);
-			}
-			
-			writer.write(""+novaLinha+novaLinha);
-			*/
 			
 			writer.write("Epoca de parada: "+epoca_parada);
 			
@@ -69,6 +59,7 @@ public class Grava_Resultados {
 		}
 	}
 	
+	/**Transforma a matriz que contem a saida da rede para o conjunto de teste em uma matriz de String */
 	public static String[][] toString(Matrix dados){
 		// Matrix dados eh uma matriz linha com a saida da rede para o conjunto de teste
 		String[][] resultado = new String[dados.getRowDimension()][dados.getColumnDimension()];
@@ -81,6 +72,7 @@ public class Grava_Resultados {
 		return resultado;
 	}
 	
+	/**Metodo que fora usado para testar esta classe */
 	public static void main(String[] args) {
 		//String teste1String= "teste1.txt";
 		
