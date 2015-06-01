@@ -1,6 +1,9 @@
 import Jama.Matrix;
 
+/**Classe que gerencia as demais classes que compoem o exercicio-programa. */
 public class Principal {
+	/**Metodo responsavel por receber os parametros de entrada (que sao melhor explicados no arquivo Readme), obter as entradas e 
+	respectivas saidas esperadas, pre-processar os dados do conjunto de entrada e iniciar o treinamento para as redes MLP e LVQ */
 	public static void main(String[] args) {
 		/* args[0] = Nome do arquivo do conjunto de dados de treino
 		 * args[1] = Nome do arquivo do conjunto de dados de validação
@@ -249,12 +252,12 @@ public class Principal {
 			
 			classificacao_numeros = new Classificacao_Numeros(conjuntos_dados);
 		}
-		/*
+		
 		System.out.println("\n#----------------Inicio da Analise da MLP------------------#");
 		classificacao_numeros.analisa_mlp(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios, 
 				numero_neuronios_escondidos, modo_treinamento, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);
 		System.out.println("#----------------Termino da Analise da MLP----------------#");
-		*/
+		
 		System.out.println("\n#----------------Inicio da Analise da LVQ------------------#");
 		classificacao_numeros.analisa_lvq(taxa_aprendizado_inicial, taxa_aprendizado_variavel, pesos_aleatorios,
 				numero_neuronios_classe, numero_epocas, intervalo_pesos_aleatorios, limiar_erro);
