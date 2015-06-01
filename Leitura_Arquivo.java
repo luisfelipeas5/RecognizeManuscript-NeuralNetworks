@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException; 
 import java.io.FileReader;
 import java.util.Scanner; 
 import java.util.NoSuchElementException; 
@@ -6,11 +5,10 @@ import java.util.LinkedList;
 import java.lang.String; 
 import java.lang.Double; 
 
-/*Classe auxiliar: 
-Serve apenas para ler o arquivo de texto. Para isso, contem o metodo obtem_dados que le o arquivo de entrada por meio de um 
-objeto do tipo Scanner. Este metodo retorna um objeto da classe Situacao_problema, que eh usada para compactar as matrizes 
-de entrada e de saida esperada. */
+/** Classe que serve apenas para ler o arquivo de texto. */
 public class Leitura_Arquivo {
+	/** Le o arquivo de entrada por meio de um objeto do tipo Scanner. Este metodo retorna um objeto da 
+	classe Situacao_problema, que eh usada para compactar as matrizes de entrada e de saida esperada.*/
 	public static Situacao_Problema obtem_dados (String arquivo) {
 		double[][] matriz_dados;
 		double[][] saida;
