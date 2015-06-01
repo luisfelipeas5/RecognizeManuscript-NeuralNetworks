@@ -1,7 +1,6 @@
 import Jama.Matrix; 
 
-/*Classe auxiliar: 
-Serve apenas para compactar as matrizes de entrada e saida esperada, obtidas a partir da leitura do arquivo de texto*/
+/** Serve apenas para compactar as matrizes de entrada e saida esperada, obtidas a partir da leitura do arquivo de texto.*/
 public class Situacao_Problema {
 	Matrix entrada; 
 	Matrix saida; 
@@ -19,22 +18,27 @@ public class Situacao_Problema {
 		dim_saida[1] = dados_saida[0].length; 
 	}
 	
+	/**Retorna uma matriz que contem todas as instancias de entrada. */
 	public Matrix get_entrada() {
 		return entrada; 
 	}
 	
+	/**Retorna uma matriz que contem todas as instancias de saida esperada.*/
 	public Matrix get_saida() {
 		return saida; 
 	}
 	
+	/**Retorna o numero de entradas. */
 	public int numero_entradas() {
 		return dim_entrada[1]; 
 	}
 	
+	/**Retorna o numero de saidas. */
 	public int numero_saidas() {
 		return dim_saida[1];  
 	}
 	
+	/**Retorna o numero de instancias. */
 	public int numero_instancias() {
 		return dim_entrada[0]; 
 	}
