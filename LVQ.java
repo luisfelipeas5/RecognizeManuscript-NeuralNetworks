@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**Classe que implementa a rede LVQ (Learning vector quantization) */
 public class LVQ extends Rede{
 	
 	/* Atributos de entrada */
@@ -24,8 +25,8 @@ public class LVQ extends Rede{
 	
 	boolean necessidade_atualizar_pesos = true;	// Controle da classe Treinamento.java 
 	
-	/* Construtor da rede LVQ 
-	 * Estende a classe abstrata rede, que tambem possue construtor */
+	/** Construtor da rede LVQ 
+	 * Estende a classe abstrata rede, que tambem possui construtor */
 	public LVQ(int numero_neuronios_classe, double taxa_de_aprendizado, double[] classes){	
 		super(numero_neuronios_classe);
 		this.numero_neuronios_saida = numero_neuronios_classe;
@@ -44,7 +45,7 @@ public class LVQ extends Rede{
 		}
 	}
 	
-	/* As matrizes de entrada e saida desejada sao copiadas para os atributos desta classe
+	/** As matrizes de entrada e saida desejada sao copiadas para os atributos desta classe
 	 * As copias sao realizadas por conveniencia (e familiarizacao com java)  */
 	void set_problema (Matrix entrada, Matrix saida_desejada){
 		this.vetores_de_entrada = entrada.getArrayCopy();
@@ -53,7 +54,7 @@ public class LVQ extends Rede{
 		this.classe_alvo = saida_desejada.getRowPackedCopy();
 	}
 	
-	/* Os vetores prototipos (ou neuronios) sao dados para a rede */ 
+	/** Os vetores prototipos (ou neuronios) sao dados para a rede */ 
 	void set_pesos (Matrix pesos_a, Matrix pesos_b){
 		this.pesos = pesos_a.getArrayCopy();
 	} 
@@ -62,7 +63,7 @@ public class LVQ extends Rede{
 		// Utiliza-se apenas na rede MLP
 	} 
 	
-	/* Metodo que calcula a Distancia Euclidiana, que sera utilizada no EP */
+	/** Metodo que calcula a Distancia Euclidiana, que sera utilizada no EP */
 	public double distancia_euclidiana(double[] vetor1, double[] vetor2){
 		double distancia =0;
 		for(int j=0;j<dimensao;j++){
@@ -71,7 +72,7 @@ public class LVQ extends Rede{
 		return Math.sqrt(distancia);
 	}
 	
-	/* Imprime a matriz de pesos */
+	/** Imprime a matriz de pesos */
 	void imprime_matriz_de_pesos(){
 		for(int x=0; x < numero_neuronios_saida*numero_de_classes; x++){    
 			for(int y=0; y < dimensao; y++){
@@ -81,14 +82,14 @@ public class LVQ extends Rede{
         }
 	} 
 	
-	/* Imprime a classe de cada vetor prototipo (neuronio) */
+	/** Imprime a classe de cada vetor prototipo (neuronio) */
 	void imprime_rotulos_dos_pesos(){
 		for (int y = 0; y < rotulo_pesos.length; y++){
 			System.out.println(rotulo_pesos[y]);
 		}	
 	}
 	
-	/* Metodo responsavel pela reducao da taxa de aprendizado
+	/** Metodo responsavel pela reducao da taxa de aprendizado
 	 * A diminuicao ocorre no final de cada epoca do treinamento da rede */
 	public double diminui_taxa_de_aprendizado(double taxa_de_aprendizado_atual){
 		double taxa_atualizada;
@@ -96,7 +97,7 @@ public class LVQ extends Rede{
 		return taxa_atualizada;
 	}
 
-	/* Retorna o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador 
+	/** Retorna o erro de um unica epoca, ou seja, a quantidade de vezes que o neuronio ganhador 
 	 * nao era da mesma classe que a instancia dividido pelo numero de instancias.
 	 * Nesse metodo, eh feito uma epoca da rede LVQ, seu treinamento eh controlado pela classe
 	 * Treinamento.java */
@@ -155,7 +156,7 @@ public class LVQ extends Rede{
 		return contador_de_erros/((double)vetores_de_entrada.length);
 	}
 	
-	/* Metodo que gera uma Matrix com as saidas da rede para uma sequencia de entradas */
+	/** Metodo que gera uma Matrix com as saidas da rede para uma sequencia de entradas */
 	Matrix get_saidas(){
 		double[] saidas_da_rede = new double[numero_de_instancias];
 		
@@ -182,7 +183,7 @@ public class LVQ extends Rede{
 		return saidas;
 	}
 	
-	/* Diminui o numero de neuronios que cada classe possui, de acordo com um numero ideal de neuronios
+	/** Diminui o numero de neuronios que cada classe possui, de acordo com um numero ideal de neuronios
 	 * definido como parametro. Os neuronios retirados sao aqueles que sao menos ativados dentre os
 	 * que sao daquela classe em questa passada como parametro. */
 	public void corte_de_neuronios(int numero_neuronio_ideal, double classe, Matrix entradas_classe) {
